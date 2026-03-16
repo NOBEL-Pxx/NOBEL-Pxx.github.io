@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>灵动小精灵演示</title>
+    <style>
+        /* --- 网页基础样式 (演示用) --- */
+        body {
+            font-family: 'Segoe UI', '微软雅黑', sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden; /* 防止小精灵跳出屏幕出现滚动条 */
+        }
+        .card {
+            background: rgba(255, 255, 255, 0.9);
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            text-align: center;
+            max-width: 500px;
+            backdrop-filter: blur(10px);
+        }
+        h1 { color: #2d3436; margin-bottom: 10px; }
+        p { color: #636e72; line-height: 1.6; }
+        .btn {
+            background: #6c5ce7;
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 50px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: transform 0.2s, background 0.2s;
+            margin-top: 20px;
+            box-shadow: 0 4px 15px rgba(108, 92, 231, 0.3);
+        }
+        .btn:hover {
+            background: #5b4bc4;
+            transform: translateY(-2px);
+        }
+        .btn:active {
+            transform: translateY(1px);
+        }
+
+        /* --- 🌟 小精灵核心样式 (进阶版) --- */
+
+        /* 1. 容器：固定在右下角 */
+        #elf-container {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 160px;
+            cursor: pointer;
+            /* 移除容器本身的过渡，让内部图片动 */
+        }
+
+        /* 2. 对话气泡 (优化版) */
+        #elf-bubble {
+            background: #ffffff;
+            color: #2d3436;
+            padding: 15px 20px;
+            border-radius: 20px 20px 20px 5px; /* 左下角尖角 */
+            box-shadow: 0 8px 20px rgba(0,0,0,0.12);
+            margin-bottom: 15px;
+            font-size: 15px;
+            line-height: 1.5;
+            text-align: left;
+            position: relative;
+            opacity: 0;
+            transform: translateY(20px) scale(0.9);
+            transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1); /* 弹性弹出 */
+            max-width: 220px;
+            border: 1px solid #f0f0f0;
+            pointer-events: none; /* 让点击穿透气泡直达图片 */
+        }
+
+        #elf-bubble.show {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+        }
+
+        /* 3. 小精灵图片 (核心动画区) */
+        #elf-image {
+            width: 140px; /* 稍微大一点 */
+            height: auto;
+            filter: drop-shadow(0 10px 15px rgba(0,0,0,0.2)); /* 更重的阴影增加立体感 */
+            
+            /* 默认状态：呼吸悬浮 */
+            animation: float 3s ease-in-out infinite;
+            
+            /* 关键：所有动作变化的过渡效果 */
+            transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), 
+                        filter 0.3s ease;
+            
+            transform-origin: bottom center; /* 以脚底为中心旋转/缩放 */
+        }
+
+        /* --- 动作类名 (JS会动态添加这些类) --- */
+
+        /* A. 说话状态：轻微震动 + 放大 */
+        #elf-image.state-talking {
+            animation: talk-vibrate 0.3s infinite alternate;
+            transform: scale(1.05);
+        }
+
+        /* B. 指向状态：身体倾斜 + 手臂延伸感 */
+        #elf-image.state-pointing {
+            /* 假设图片是向右指，我们让它向左倾斜，制造用力感 */
+            transform: rotate(-12deg) scaleX(1.1) translateY(-5px);
+            animation: none; /* 停止悬浮，专注于指向动作 */
+        }
+
+        /* C. 开心状态：跳跃 */
+        #elf-image.state-happy {
+            animation: happy-jump 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        /* D. 点击反馈：被按压的感觉 */
+        #elf-container:active #elf-image {
+            transform: scale(0.95) !important;
+            filter: drop-shadow(0 5px 5px rgba(0,0,0,0.2));
+            animation: none !important;
+        }
+
+        /* --- 动画定义 --- */
+        
+        /* 悬浮 */
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-8px); }
+        }
+
+        /* 说话震动 */
+        @keyframes talk-vibrate {
+            from { transform: scale(1.05) translateY(0); }
+            to { transform: scale(1.08) translateY(-2px); }
+        }
+
+        /* 开心跳跃 */
+        @keyframes happy-jump {
+            0% { transform: translateY(0) scale(1); }
+            40% { transform: translateY(-40px) scale(1.1, 0.9); } /* 挤压准备 */
+            60% { transform: translateY(-40px) scale(0.9, 1.1); }
+            100% { transform: translateY(0) scale(1); }
+        }
+
+        /* 鼠标跟随微动 (可选增强) */
+        /* 当鼠标在屏幕左侧时，让小精灵稍微向左看 */
+        body.mouse-left #elf-image {
+            transform: rotate(5deg) scaleX(-1); /* 简单翻转模拟转头，需图片支持或慎用 */
+            /* 注意：如果图片本身有方向性（如手指向右），翻转会导致手指向左，需谨慎使用。
+               这里我们改用轻微的旋转来模拟注视，不翻转X轴，以免穿帮 */
+        }
+        /* 更安全的注视效果：仅轻微旋转 */
+        body.mouse-left #elf-image:not(.state-pointing):not(.state-happy) {
+             transform: rotate(5deg) translateY(-8px); 
+        }
+        body.mouse-right #elf-image:not(.state-pointing):not(.state-happy) {
+             transform: rotate(-5deg) translateY(-8px);
+        }
+
+    </style>
+</head>
+<body>
+
+    <!-- 演示内容 -->
+    <div class="card">
+        <h1>👋 嗨！看看右下角</h1>
+        <p>现在的我不再是生硬的图片切换了。</p>
+        <p>试试点击我，或者移动鼠标看看我的反应？</p>
+        <button class="btn" onclick="triggerSuccess()">完成任务 🎉</button>
+        <p style="font-size: 12px; color: #999; margin-top: 20px;">
+            提示：点击小精灵可循环切换状态<br>
+            移动鼠标到屏幕左右侧，它会微微转头看你
+        </p>
+    </div>
+
+    <!-- 🌟 小精灵结构 -->
+    <div id="elf-container" onclick="nextStep()">
+        <div id="elf-bubble">你好呀！我是你的灵动向导，点我试试！✨</div>
+        <!-- 确保 src 指向你的本地文件 -->
+        <img id="elf-image" src="elf-idle.png" alt="Cute Elf">
+    </div>
+
+    <script>
+        // --- 配置区域 ---
+        const images = {
+            idle: 'elf-idle.png',
+            talk: 'elf-talk.png',
+            point: 'elf-point.png',
+            happy: 'elf-happy.png'
+        };
+
+        // 剧本：台词 + 对应图片 + 对应的 CSS 动作类名
+        const steps = [
+            { 
+                text: "你好呀！现在的我动作更自然了吧？✨", 
+                img: images.idle, 
+                cssClass: '' 
+            },
+            { 
+                text: "看这里！我在给你介绍功能呢 👉", 
+                img: images.talk, 
+                cssClass: 'state-talking' 
+            },
+            { 
+                text: "比如这个按钮，点击它可以提交任务哦！", 
+                img: images.point, 
+                cssClass: 'state-pointing' 
+            },
+            { 
+                text: "太棒了！任务完成！给你比个心！💖", 
+                img: images.happy, 
+                cssClass: 'state-happy' 
+            }
+        ];
+
+        let currentStepIndex = 0;
+        const elfImg = document.getElementById('elf-image');
+        const elfBubble = document.getElementById('elf-bubble');
+        const elfContainer = document.getElementById('elf-container');
+
+        // 初始化：显示气泡
+        setTimeout(() => {
+            elfBubble.classList.add('show');
+        }, 800);
+
+        // 切换动作函数
+        function nextStep() {
+            currentStepIndex = (currentStepIndex + 1) % steps.length;
+            const step = steps[currentStepIndex];
+
+            // 1. 隐藏气泡 (制造节奏感)
+            elfBubble.classList.remove('show');
+
+            // 2. 清除所有旧的动作类名
+            elfImg.classList.remove('state-talking', 'state-pointing', 'state-happy');
+            // 强制重绘 (Reflow)，确保动画可以重新触发 (特别是跳跃动画)
+            void elfImg.offsetWidth; 
+
+            // 3. 短暂延迟后：换图 + 加新类名 + 显示气泡
+            setTimeout(() => {
+                elfImg.src = step.img;
+                
+                // 添加新的动作类名
+                if (step.cssClass) {
+                    elfImg.classList.add(step.cssClass);
+                } else {
+                    // 如果没有特定类名，恢复默认的悬浮动画 (CSS中已定义)
+                    // 不需要额外操作，移除其他类名后自动回归 default
+                }
+
+                elfBubble.innerText = step.text;
+                elfBubble.classList.add('show');
+            }, 250); // 250ms 的延迟让动作更连贯
+        }
+
+        // 外部触发成功 (绑定给页面上的按钮)
+        function triggerSuccess() {
+            // 强制跳到第4步 (开心)
+            currentStepIndex = 3; 
+            const step = steps[3];
+            
+            elfBubble.classList.remove('show');
+            elfImg.classList.remove('state-talking', 'state-pointing', 'state-happy');
+            void elfImg.offsetWidth; // 重置动画
+
+            setTimeout(() => {
+                elfImg.src = step.img;
+                elfImg.classList.add(step.cssClass);
+                elfBubble.innerText = step.text;
+                elfBubble.classList.add('show');
+            }, 200);
+        }
+
+        // --- 🌟 高级互动：鼠标跟随 ---
+        document.addEventListener('mousemove', (e) => {
+            const width = window.innerWidth;
+            const mouseX = e.clientX;
+
+            // 移除旧的方位类
+            document.body.classList.remove('mouse-left', 'mouse-right');
+
+            // 判断鼠标在左边还是右边
+            if (mouseX < width / 2) {
+                document.body.classList.add('mouse-left');
+            } else {
+                document.body.classList.add('mouse-right');
+            }
+            
+            // 如果正在做特定动作（如指向、跳跃），暂时禁止鼠标跟随干扰，保持动作完整性
+            if (elfImg.classList.contains('state-pointing') || elfImg.classList.contains('state-happy')) {
+                document.body.classList.remove('mouse-left', 'mouse-right');
+            }
+        });
+
+    </script>
+</body>
+</html>

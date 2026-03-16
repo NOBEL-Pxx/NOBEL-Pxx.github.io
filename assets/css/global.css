@@ -1,0 +1,148 @@
+/* assets/css/global.css */
+
+:root {
+    /* 品牌色盘：新中式科技风 */
+    --color-primary: #3b82f6;       /* 科技蓝：代表数据、平台 */
+    --color-accent: #d97706;        /* 丰收黄：代表农业、百合 */
+    --color-success: #10b981;       /* 生态绿：代表乡村、生机 */
+    --color-danger: #ef4444;        /* 警示红：代表痛点 */
+    
+    /* 中性色 */
+    --color-text-main: #1e293b;
+    --color-text-sub: #64748b;
+    --color-bg-light: #f8fafc;
+    
+    /* 阴影系统 */
+    --shadow-soft: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+    --shadow-float: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth; /* 平滑滚动 */
+}
+
+body {
+    font-family: 'PingFang SC', 'Microsoft YaHei', 'Helvetica Neue', Arial, sans-serif;
+    color: var(--color-text-main);
+    background-color: #ffffff;
+    line-height: 1.6;
+    overflow-x: hidden;
+}
+
+/* 自定义滚动条 (Webkit) */
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+::-webkit-scrollbar-track {
+    background: #f1f5f9;
+}
+::-webkit-scrollbar-thumb {
+    background: #cbd5e1;
+    border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+    background: #94a3b8;
+}
+
+/* 通用容器 */
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+.section-padding {
+    padding: 80px 0;
+}
+
+.section-title {
+    text-align: center;
+    margin-bottom: 60px;
+}
+.section-title h2 {
+    font-size: 2.2rem;
+    font-weight: 800;
+    margin-bottom: 15px;
+    background: linear-gradient(to right, var(--color-primary), var(--color-accent));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+.section-title p {
+    color: var(--color-text-sub);
+    font-size: 1.1rem;
+}
+
+/* 按钮系统 */
+.btn {
+    display: inline-block;
+    padding: 12px 32px;
+    border-radius: 50px;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    border: none;
+    font-size: 1rem;
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, var(--color-accent), #b45309);
+    color: white;
+    box-shadow: 0 4px 15px rgba(217, 119, 6, 0.3);
+}
+.btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(217, 119, 6, 0.4);
+}
+
+.btn-outline {
+    background: transparent;
+    border: 2px solid var(--color-primary);
+    color: var(--color-primary);
+}
+.btn-outline:hover {
+    background: var(--color-primary);
+    color: white;
+}
+
+/* 动画类 (由 main.js 触发) */
+.reveal-up {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: all 0.8s cubic-bezier(0.5, 0, 0, 1);
+}
+.reveal-scale {
+    opacity: 0;
+    transform: scale(0.95);
+    transition: all 0.8s cubic-bezier(0.5, 0, 0, 1);
+}
+.reveal-up.active, .reveal-scale.active {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+}
+
+/* 延迟工具类 */
+.delay-100 { transition-delay: 0.1s; }
+.delay-200 { transition-delay: 0.2s; }
+.delay-300 { transition-delay: 0.3s; }
+.delay-400 { transition-delay: 0.4s; }
+
+/* 移动端适配 (Media Queries) */
+@media (max-width: 768px) {
+    .section-title h2 { font-size: 1.8rem; }
+    .section-padding { padding: 50px 0; }
+    
+    /* 移动端导航栏处理 (简单版：隐藏非激活链接，实际项目中建议做汉堡菜单) */
+    header { padding: 15px 20px; }
+    nav { display: none; } /* 简化处理：移动端暂时隐藏顶部复杂导航，依靠返回首页按钮 */
+    /* 如果需要移动端菜单，需要额外加 JS，这里为了保持代码简洁，建议评委主要在平板/电脑观看，或手机仅看单页 */
+    
+    .logo { font-size: 1.1rem !important; }
+}

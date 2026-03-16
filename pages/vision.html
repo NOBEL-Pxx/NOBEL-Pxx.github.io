@@ -1,0 +1,1294 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>愿景模式 - 兰州大学·金鹰</title>
+
+  <!-- 引入全局样式 (注意相对路径) -->
+  <link rel="stylesheet" href="../assets/css/global.css" />
+
+  <!-- 引入 ECharts (CDN版本) -->
+  <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
+
+  <!-- 引入高德地图加载器 (JS API 2.0) -->
+  <script type="text/javascript">
+    window._AMapSecurityConfig = {
+      securityJsCode: "7c82cb60f4a6eb306418c697b99fb7fa",
+    };
+  </script>
+  <script src="https://webapi.amap.com/loader.js"></script>
+
+  <style>
+    /* ✅ 让粒子 canvas 作为“空白处背景”，不挡住任何交互 */
+    canvas[id^="c_n"] { pointer-events: none; }
+
+    /* 页面特有样式 */
+    .vision-hero {
+      height: 70vh;
+      background-image: linear-gradient(rgba(15, 23, 42, 0.6), rgba(15, 23, 42, 0.82)),
+        url("../images/hero/2.jpg");
+      background-size: cover;
+      background-position: center;
+      background-attachment: fixed;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    #hero-particles {
+      position: absolute;
+      inset: 0;
+      z-index: 0;
+      opacity: 0.35;
+      pointer-events: none;
+    }
+
+    .vision-hero .container {
+      position: relative;
+      z-index: 1;
+    }
+
+    /* ✅ 白框框（工具条）现在放到地图外侧上方：不再 absolute */
+    .map-toolbar {
+      width: 100%;
+      margin: 18px auto 12px;
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 14px;
+      border-radius: 14px;
+      background: rgba(255, 255, 255, 0.92);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(226, 232, 240, 0.90);
+      box-shadow: 0 10px 26px rgba(2, 6, 23, 0.08);
+    }
+
+    .toolbar-left,
+    .toolbar-right {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 10px;
+      border-radius: 999px;
+      border: 1px solid rgba(226, 232, 240, 0.90);
+      background: #fff;
+      color: #0f172a;
+      font-size: 0.92rem;
+      user-select: none;
+      white-space: nowrap;
+    }
+
+    .chip strong { font-weight: 800; }
+
+    .btn-mini {
+      border: 1px solid rgba(226, 232, 240, 0.90);
+      background: #fff;
+      color: #0f172a;
+      padding: 8px 10px;
+      border-radius: 10px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: transform 0.08s ease, box-shadow 0.15s ease, border-color 0.15s ease;
+      font-size: 0.92rem;
+      white-space: nowrap;
+    }
+
+    .btn-mini:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 10px 18px rgba(2, 6, 23, 0.08);
+      border-color: rgba(148, 163, 184, 0.80);
+    }
+
+    .btn-mini:active {
+      transform: translateY(0);
+      box-shadow: none;
+    }
+
+    .btn-mini.primary {
+      border-color: rgba(217, 119, 6, 0.35);
+      background: rgba(217, 119, 6, 0.08);
+      color: #b45309;
+    }
+
+    .btn-mini.active {
+      border-color: rgba(59, 130, 246, 0.35);
+      background: rgba(59, 130, 246, 0.08);
+      color: #1d4ed8;
+    }
+
+    .switch {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 10px;
+      border-radius: 10px;
+      border: 1px solid rgba(226, 232, 240, 0.90);
+      background: #fff;
+      font-size: 0.92rem;
+      color: #0f172a;
+      white-space: nowrap;
+    }
+
+    .switch input {
+      width: 18px;
+      height: 18px;
+      accent-color: #d97706;
+      cursor: pointer;
+    }
+
+    .map-container {
+      width: 100%;
+      height: 580px;
+      background: #fff;
+      border-radius: 16px;
+      box-shadow: 0 12px 40px rgba(2, 6, 23, 0.10);
+      margin-top: 0; /* ✅ 工具条已经在外侧 */
+      position: relative;
+      overflow: hidden;
+      border: 1px solid rgba(148, 163, 184, 0.35);
+    }
+
+    /* 高德地图容器 */
+    #amap-container {
+      width: 100%;
+      height: 100%;
+      position: absolute;
+      inset: 0;
+      z-index: 1;
+    }
+
+    /* 背景柔化层（不影响交互） */
+    .map-soften {
+      position: absolute;
+      inset: 0;
+      z-index: 1;
+      pointer-events: none;
+      backdrop-filter: saturate(0.92) contrast(0.98);
+    }
+
+    /* ECharts 容器：默认不接管鼠标（地图模式） */
+    #vision-map {
+      width: 100%;
+      height: 100%;
+      position: absolute;
+      inset: 0;
+      z-index: 2;
+      pointer-events: none;
+    }
+
+    /* 节点模式：ECharts 接管鼠标 */
+    #vision-map.node-mode {
+      pointer-events: auto;
+    }
+
+    /* 雾化遮罩 */
+    .map-vignette {
+      position: absolute;
+      inset: 0;
+      z-index: 3;
+      pointer-events: none;
+      background:
+        radial-gradient(900px 420px at 50% -10%, rgba(255,255,255,0.55), rgba(255,255,255,0.00) 58%),
+        linear-gradient(180deg, rgba(255,255,255,0.08), rgba(2,6,23,0.05));
+      mix-blend-mode: multiply;
+    }
+
+    .grid-3 {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 32px;
+      margin-top: 40px;
+    }
+
+    .strategy-point { text-align: center; }
+    .icon-box { font-size: 3rem; margin-bottom: 16px; display: block; }
+
+    /* 导航栏样式 */
+    header {
+      position: fixed;
+      top: 0;
+      width: 100%;
+      padding: 20px 50px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      z-index: 1000;
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(10px);
+      box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    }
+
+    nav a {
+      margin-left: 25px;
+      text-decoration: none;
+      color: #1e293b;
+      font-weight: 600;
+      font-size: 0.95rem;
+      position: relative;
+    }
+    nav a:hover, nav a.active { color: #d97706; }
+    nav a.active::after {
+      content: "";
+      position: absolute;
+      bottom: -5px;
+      left: 0;
+      width: 100%;
+      height: 2px;
+      background: #d97706;
+    }
+
+    .back-link {
+      position: absolute;
+      left: 20px;
+      color: #64748b;
+      font-size: 0.9rem;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+    .back-link:hover { color: #d97706; }
+
+    @media (max-width: 900px) {
+      header { padding: 15px 20px; }
+      nav { display: none; }
+      .vision-hero { height: 56vh; }
+      .map-container { height: 520px; }
+
+      /* ✅ 工具条移动到外侧后：移动端更紧凑 */
+      .map-toolbar { margin: 14px auto 10px; padding: 10px 10px; }
+    }
+  </style>
+</head>
+
+<body>
+  <!-- 顶部导航 -->
+  <header>
+    <a href="../index.html" class="back-link">
+      <span>←</span> 返回首页
+    </a>
+    <div class="logo" style="font-weight: 800; font-size: 1.3rem; color: #d97706;">
+      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+      <span style="color:#1e293b">兰州大学·金鹰</span>
+    </div>
+    <nav>
+      <a href="vision.html" class="active">愿景模式</a>
+      <a href="painpoints.html">痛点破局</a>
+      <a href="solution.html">解决方案</a>
+      <a href="market.html">市场分析</a>
+      <a href="business.html">商业模式</a>
+      <a href="team.html">核心团队</a>
+    </nav>
+  </header>
+
+  <!-- 愿景首屏 -->
+  <section class="vision-hero">
+    <canvas id="hero-particles"></canvas>
+
+    <div class="container reveal-up">
+      <h1 style="font-size: 3.5rem; margin-bottom: 24px; text-shadow: 0 4px 10px rgba(0,0,0,0.30);">
+        "1+N" 联营共同体
+      </h1>
+      <p style="font-size: 1.4rem; max-width: 800px; margin: 0 auto; opacity: 0.95; text-shadow: 0 2px 4px rgba(0,0,0,0.30);">
+        以<strong style="color: #fbbf24;">夏官营镇</strong>为核心引擎，辐射带动<strong>N个协作县</strong><br />
+        打破行政壁垒，重构资源配置，打造西北乡村振兴新范式
+      </p>
+      <div style="margin-top: 40px;">
+        <a href="#strategy-map" class="btn btn-primary" style="padding: 15px 40px; font-size: 1.1rem;">
+          查看战略图谱
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- 战略图谱可视化 -->
+  <section id="strategy-map" class="container section-padding">
+    <div class="section-title reveal-up">
+      <h2>全域协同战略图谱</h2>
+      <p style="color: #64748b; font-size: 1.1rem;">数据驱动下的资源流动与价值分配网络</p>
+    </div>
+
+    <!-- ✅ 工具条移到地图外侧上方：就在“数据驱动...”下面 -->
+    <div class="map-toolbar reveal-up delay-100">
+      <div class="toolbar-left">
+        <span class="chip">
+          <strong>交互模式</strong>：
+          <span id="modeText" style="color:#0f172a;">地图拖拽</span>
+        </span>
+
+        <button id="btnMapMode" class="btn-mini active" type="button">地图模式</button>
+        <button id="btnNodeMode" class="btn-mini" type="button">节点模式</button>
+
+        <label class="switch" title="显示/隐藏节点标签（自动防重叠）">
+          <input id="toggleLabels" type="checkbox" checked />
+          标签
+        </label>
+
+        <label class="switch" title="显示/隐藏产业节点（赛事/园区/基地等）">
+          <input id="toggleIndustry" type="checkbox" checked />
+          产业节点
+        </label>
+      </div>
+
+      <div class="toolbar-right">
+        <button id="btnReset" class="btn-mini primary" type="button">复位视角</button>
+      </div>
+    </div>
+
+    <!-- 地图容器 -->
+    <div id="vision-map-wrapper" class="map-container reveal-scale delay-100">
+      <div id="amap-container"></div>
+      <div class="map-soften"></div>
+      <div id="vision-map"></div>
+      <div class="map-vignette"></div>
+    </div>
+
+    <div style="text-align: center; margin-top: 22px;">
+      <span style="display:inline-block; width: 12px; height: 12px; background: #d97706; border-radius: 50%; margin-right: 5px;"></span>核心引擎（夏官营）
+      <span style="display:inline-block; width: 12px; height: 12px; background: #3b82f6; border-radius: 50%; margin: 0 5px 0 15px;"></span>协作县域
+      <span style="display:inline-block; width: 12px; height: 12px; background: #10b981; border-radius: 50%; margin: 0 5px 0 15px;"></span>产业基地
+      <span style="display:inline-block; width: 12px; height: 12px; background: #ef4444; border-radius: 50%; margin: 0 5px 0 15px;"></span>品牌赛事
+    </div>
+  </section>
+
+  <!-- 三大核心策略 -->
+  <section class="container section-padding" style="background: #f1f5f9; border-radius: 12px; margin-bottom: 60px;">
+    <div class="section-title reveal-up">
+      <h2>实施路径</h2>
+    </div>
+
+    <div class="grid-3">
+      <div class="card strategy-point reveal-up delay-100">
+        <span class="icon-box">🏛️</span>
+        <h3>组织共建</h3>
+        <p style="color: #64748b; margin-top: 12px; line-height: 1.8;">
+          成立跨区域联营公司，统一标准、统一品牌、统一调度，解决“各自为战”的分散难题。
+        </p>
+        <a href="operations.html#org-structure" style="color: #d97706; font-weight: bold; margin-top: 20px; display: inline-block; border-bottom: 2px solid transparent;">
+          查看组织架构 →
+        </a>
+      </div>
+
+      <div class="card strategy-point reveal-up delay-200">
+        <span class="icon-box">🔗</span>
+        <h3>链条共融</h3>
+        <p style="color: #64748b; margin-top: 12px; line-height: 1.8;">
+          打通“种植 - 加工 - 赛事 - 旅游”全产业链，实现农产品就地增值、游客就地消费，形成闭环。
+        </p>
+        <a href="solution.html#ecosystem" style="color: #d97706; font-weight: bold; margin-top: 20px; display: inline-block; border-bottom: 2px solid transparent;">
+          查看生态闭环 →
+        </a>
+      </div>
+
+      <div class="card strategy-point reveal-up delay-300">
+        <span class="icon-box">💰</span>
+        <h3>利益共享</h3>
+        <p style="color: #64748b; margin-top: 12px; line-height: 1.8;">
+          建立可执行的分红机制，确保村集体、农户、企业三方共赢，提升乡村振兴内生动力。
+        </p>
+        <a href="business.html#finance" style="color: #d97706; font-weight: bold; margin-top: 20px; display: inline-block; border-bottom: 2px solid transparent;">
+          查看财务模型 →
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- 底部引导 -->
+  <section class="container section-padding" style="text-align: center; padding-bottom: 100px;">
+    <h3 class="reveal-up" style="font-size: 1.8rem;">准备好了解具体的破局方案了吗？</h3>
+    <p class="reveal-up delay-100" style="color: #64748b; margin: 15px 0 30px;">深入分析行业四大顽疾与我们的独家解法</p>
+    <a href="painpoints.html" class="btn btn-primary reveal-up delay-200">深入痛点分析</a>
+  </section>
+
+  <!-- 脚本逻辑 -->
+  <script src="../assets/js/main.js"></script>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      const chartDom = document.getElementById("vision-map");
+      const myChart = echarts.init(chartDom, null, { renderer: "canvas" });
+
+      const btnMapMode = document.getElementById("btnMapMode");
+      const btnNodeMode = document.getElementById("btnNodeMode");
+      const btnReset = document.getElementById("btnReset");
+      const modeText = document.getElementById("modeText");
+      const toggleLabels = document.getElementById("toggleLabels");
+      const toggleIndustry = document.getElementById("toggleIndustry");
+
+      let interactionMode = "map"; // map | node
+      let showLabels = true;
+      let showIndustry = true;
+
+      let amap = null;
+      let AMapRef = null;
+
+      const defaultView = {
+        zoom: 8.5,
+        center: [104.1, 36.3],
+      };
+
+      const AMAP_KEY = "bb47f9f56784a3188ed07dbe5a19b6d1";
+
+      // 数据结构保持不变
+      const geoData = {
+        nodes: [
+          { name: "夏官营镇", value: 100, category: 0, symbolSize: 58, lon: 104.1125, lat: 35.843 },
+
+          { name: "榆中县", value: 60, category: 1, symbolSize: 42, lon: 104.1125, lat: 35.843 },
+          { name: "皋兰县", value: 50, category: 1, symbolSize: 38, lon: 103.97, lat: 36.32 },
+          { name: "白银区", value: 45, category: 1, symbolSize: 36, lon: 104.18, lat: 36.54 },
+          { name: "景泰县", value: 40, category: 1, symbolSize: 34, lon: 104.05, lat: 37.14 },
+
+          { name: "马拉松赛事", value: 30, category: 3, symbolSize: 30, lon: 104.1125, lat: 35.843 },
+          { name: "百合产业园", value: 35, category: 2, symbolSize: 32, lon: 104.1125, lat: 35.843 },
+          { name: "高原夏菜基地", value: 32, category: 2, symbolSize: 30, lon: 103.97, lat: 36.32 },
+        ],
+        links: [
+          { source: "夏官营镇", target: "榆中县" },
+          { source: "夏官营镇", target: "皋兰县" },
+          { source: "夏官营镇", target: "白银区" },
+          { source: "夏官营镇", target: "景泰县" },
+          { source: "夏官营镇", target: "马拉松赛事" },
+          { source: "夏官营镇", target: "百合产业园" },
+          { source: "夏官营镇", target: "高原夏菜基地" },
+          { source: "榆中县", target: "百合产业园" },
+          { source: "皋兰县", target: "马拉松赛事" },
+          { source: "白银区", target: "高原夏菜基地" },
+          { source: "皋兰县", target: "白银区" },
+          { source: "白银区", target: "景泰县" },
+        ],
+      };
+
+      const colors = ["#d97706", "#3b82f6", "#10b981", "#ef4444"];
+
+      /* 县域特产配置（用于 tooltip 展示；网图占位） */
+      const countySpecialties = {
+        "榆中县": {
+          title: "榆中县 · 核心特产",
+          items: [
+            {
+              name: "高原夏菜（白菜）",
+              desc: "冷凉气候优势，口感脆甜、供应稳定。",
+              img: "https://commons.wikimedia.org/wiki/Special:FilePath/ChineseCabbage.jpg",
+            },
+            {
+              name: "高原夏菜（西兰花）",
+              desc: "昼夜温差大，品质更紧实。",
+              img: "https://commons.wikimedia.org/wiki/Special:FilePath/Broccoli.jpg",
+            },
+          ],
+        },
+        "皋兰县": {
+          title: "皋兰县 · 核心特产",
+          items: [
+            {
+              name: "百合（示意）",
+              desc: "以百合相关产业为代表的特色农产品方向。",
+              img: "https://commons.wikimedia.org/wiki/Special:FilePath/Lilium%20davidii%205.jpg",
+            },
+            {
+              name: "高原夏菜（示意）",
+              desc: "适宜冷凉型蔬菜种植与供应链协作。",
+              img: "https://commons.wikimedia.org/wiki/Special:FilePath/ChineseCabbage.jpg",
+            },
+          ],
+        },
+        "白银区": {
+          title: "白银区 · 核心特产",
+          items: [
+            {
+              name: "高原夏菜（西兰花）",
+              desc: "规模化种植与采后分拣运输协作空间大。",
+              img: "https://commons.wikimedia.org/wiki/Special:FilePath/Broccoli.jpg",
+            },
+            {
+              name: "高原夏菜（白菜）",
+              desc: "以基地化生产为主，保障夏季错峰供给。",
+              img: "https://commons.wikimedia.org/wiki/Special:FilePath/ChineseCabbage.jpg",
+            },
+          ],
+        },
+        "景泰县": {
+          title: "景泰县 · 核心特产",
+          items: [
+            {
+              name: "高原夏菜（示意）",
+              desc: "以冷凉型蔬菜协作与订单农业为重点方向。",
+              img: "https://commons.wikimedia.org/wiki/Special:FilePath/ChineseCabbage.jpg",
+            },
+            {
+              name: "百合（示意）",
+              desc: "可作为特色作物/加工联动的补充方向。",
+              img: "https://commons.wikimedia.org/wiki/Special:FilePath/Lilium%20davidii3.JPG",
+            },
+          ],
+        },
+      };
+
+      function lngLatToPixel(lon, lat) {
+        if (!amap || !AMapRef) return { x: 0, y: 0 };
+        const pixel = amap.lngLatToContainer(new AMapRef.LngLat(lon, lat));
+        return { x: pixel.getX(), y: pixel.getY() };
+      }
+
+      function applyCollisionSeparation(nodesPx) {
+        if (!amap) return nodesPx;
+
+        const zoom = amap.getZoom();
+        const gridSize = zoom >= 10 ? 14 : 18;
+        const groups = new Map();
+
+        nodesPx.forEach((n) => {
+          const gx = Math.round(n.x / gridSize);
+          const gy = Math.round(n.y / gridSize);
+          const key = gx + "," + gy;
+          if (!groups.has(key)) groups.set(key, []);
+          groups.get(key).push(n);
+        });
+
+        groups.forEach((group) => {
+          if (group.length <= 1) return;
+
+          group.sort((a, b) => (b.value || 0) - (a.value || 0));
+          const center = { x: group[0].x, y: group[0].y };
+
+          for (let i = 1; i < group.length; i++) {
+            const angle = (2 * Math.PI * (i - 1)) / (group.length - 1);
+            const baseRadius = 22 + (group[0].symbolSize || 40) * 0.25;
+            const zoomFactor = Math.max(0.85, Math.min(1.25, 10 / zoom));
+            const radius = baseRadius * zoomFactor + i * 4;
+
+            group[i].x = center.x + Math.cos(angle) * radius;
+            group[i].y = center.y + Math.sin(angle) * radius;
+          }
+        });
+
+        return nodesPx;
+      }
+
+      function relaxNodePositions(nodesPx) {
+        if (!amap) return nodesPx;
+
+        const zoom = amap.getZoom();
+        const minDist = Math.max(30, Math.min(56, 64 - zoom * 3));
+        const iters = 8;
+
+        const maxValue = Math.max(...nodesPx.map((n) => n.value || 0));
+        const isAnchor = (n) => n.category === 0 || (n.value || 0) === maxValue;
+
+        for (let k = 0; k < iters; k++) {
+          for (let i = 0; i < nodesPx.length; i++) {
+            for (let j = i + 1; j < nodesPx.length; j++) {
+              const a = nodesPx[i];
+              const b = nodesPx[j];
+
+              const dx = b.x - a.x;
+              const dy = b.y - a.y;
+              const dist = Math.sqrt(dx * dx + dy * dy) || 0.0001;
+
+              if (dist < minDist) {
+                const push = (minDist - dist) / dist;
+                const px = dx * push * 0.5;
+                const py = dy * push * 0.5;
+
+                const aAnchor = isAnchor(a);
+                const bAnchor = isAnchor(b);
+
+                if (!aAnchor) { a.x -= px; a.y -= py; }
+                if (!bAnchor) { b.x += px; b.y += py; }
+
+                if (aAnchor && bAnchor) {
+                  a.x -= px * 0.25; a.y -= py * 0.25;
+                  b.x += px * 0.25; b.y += py * 0.25;
+                }
+              }
+            }
+          }
+        }
+
+        return nodesPx;
+      }
+
+      function computeLabelPlan(nodesPx) {
+        if (!amap) return { offsets: {}, visible: {} };
+
+        const zoom = amap.getZoom();
+        const base = Math.max(18, Math.min(34, 40 - zoom * 1.4));
+        const gap = Math.max(8, Math.min(14, 18 - zoom * 0.6));
+
+        function priority(n) {
+          if (n.category === 0) return 1000;
+          if (n.category === 1) return 800;
+          if (n.category === 2) return 600;
+          if (n.category === 3) return 600;
+          return 500;
+        }
+
+        const sorted = [...nodesPx].sort((a, b) => {
+          const pa = priority(a), pb = priority(b);
+          if (pb !== pa) return pb - pa;
+          return (b.value || 0) - (a.value || 0);
+        });
+
+        const offsets = {};
+        const visible = {};
+        const placedRects = [];
+
+        function estimateRect(node, off) {
+          const text = node.name || "";
+          const w = Math.min(140, Math.max(64, text.length * 12 + 24));
+          const h = 24;
+          const cx = node.x + off[0];
+          const cy = node.y + off[1];
+          return {
+            x: cx - w / 2 - gap,
+            y: cy - h - 10 - gap,
+            w: w + gap * 2,
+            h: h + gap * 2,
+          };
+        }
+
+        function intersects(a, b) {
+          return !(
+            a.x + a.w < b.x ||
+            b.x + b.w < a.x ||
+            a.y + a.h < b.y ||
+            b.y + b.h < a.y
+          );
+        }
+
+        function candidatesFor(node) {
+          const ring1 = base;
+          const ring2 = base * 1.45;
+          const ring3 = base * 1.9;
+
+          const coreFirst = [
+            [0, -ring2],
+            [ ring1, -ring1],
+            [-ring1, -ring1],
+          ];
+
+          const dirs = [
+            [ ring1, -ring1], [-ring1, -ring1],
+            [ ring1,  ring1], [-ring1,  ring1],
+            [ 0,     -ring1],
+            [ ring1,  0],
+            [-ring1,  0],
+            [ 0,      ring1],
+          ];
+
+          const more = [
+            [ ring2, -ring2], [-ring2, -ring2],
+            [ ring2,  ring2], [-ring2,  ring2],
+            [ 0,     -ring2],
+            [ ring2,  0],
+            [-ring2,  0],
+            [ 0,      ring2],
+          ];
+
+          const far = [
+            [ ring3, -ring1], [-ring3, -ring1],
+            [ ring3,  ring1], [-ring3,  ring1],
+            [ ring1, -ring3], [-ring1, -ring3],
+            [ ring1,  ring3], [-ring1,  ring3],
+          ];
+
+          const sideStick = [
+            [ ring2 * 2.2, -ring1 * 0.2],
+            [-ring2 * 2.2, -ring1 * 0.2],
+            [ ring2 * 2.2,  ring1 * 0.6],
+            [-ring2 * 2.2,  ring1 * 0.6],
+          ];
+
+          let cand = [];
+          if (node.category === 0) cand = cand.concat(coreFirst);
+          cand = cand.concat(dirs, more, far, sideStick);
+
+          const seen = new Set();
+          const out = [];
+          cand.forEach((o) => {
+            const k = o[0].toFixed(2) + "," + o[1].toFixed(2);
+            if (!seen.has(k)) { seen.add(k); out.push(o); }
+          });
+          return out;
+        }
+
+        for (const node of sorted) {
+          const cands = candidatesFor(node);
+
+          let chosen = null;
+          let chosenRect = null;
+
+          let bestHit = 1e9;
+          let best = null;
+          let bestRect = null;
+
+          for (let i = 0; i < cands.length; i++) {
+            const off = cands[i];
+            const rect = estimateRect(node, off);
+
+            let hit = 0;
+            for (let r = 0; r < placedRects.length; r++) {
+              if (intersects(rect, placedRects[r])) hit++;
+              if (hit > bestHit) break;
+            }
+
+            if (hit === 0) {
+              chosen = off;
+              chosenRect = rect;
+              break;
+            }
+
+            if (hit < bestHit) {
+              bestHit = hit;
+              best = off;
+              bestRect = rect;
+            }
+          }
+
+          if (chosen) {
+            offsets[node.name] = chosen;
+            visible[node.name] = true;
+            placedRects.push(chosenRect);
+            continue;
+          }
+
+          const p = priority(node);
+          if (p >= 800) {
+            offsets[node.name] = best || [0, -base];
+            visible[node.name] = true;
+            if (bestRect) placedRects.push(bestRect);
+          } else {
+            if (bestHit <= 1) {
+              offsets[node.name] = best || [0, -base];
+              visible[node.name] = true;
+              if (bestRect) placedRects.push(bestRect);
+            } else {
+              offsets[node.name] = best || [0, -base];
+              visible[node.name] = false;
+            }
+          }
+        }
+
+        return { offsets, visible };
+      }
+
+      function renderCountyTooltip(name) {
+        const data = countySpecialties[name];
+        if (!data) return null;
+
+        const cards = data.items.map((it) => {
+          const safeImg = it.img || "";
+          const safeName = it.name || "";
+          const safeDesc = it.desc || "";
+          return `
+            <div style="
+              display:flex; gap:10px; align-items:center;
+              padding:10px; border-radius:12px;
+              border:1px solid rgba(226,232,240,0.95);
+              background: rgba(255,255,255,0.96);
+              box-shadow: 0 10px 18px rgba(2,6,23,0.08);
+            ">
+              <div style="
+                width:68px; height:52px; border-radius:10px; overflow:hidden;
+                border:1px solid rgba(226,232,240,0.95);
+                background:#f8fafc; flex:0 0 auto;
+              ">
+                <img src="${safeImg}" alt="${safeName}"
+                  style="width:100%;height:100%;object-fit:cover;display:block;"
+                  onerror="this.style.display='none'; this.parentNode.style.background='#f1f5f9';"
+                />
+              </div>
+              <div style="min-width: 180px;">
+                <div style="font-weight:900; color:#0f172a; font-size:13px; line-height:1.2;">
+                  ${safeName}
+                </div>
+                <div style="margin-top:4px; color:#475569; font-size:12px; line-height:1.35;">
+                  ${safeDesc}
+                </div>
+              </div>
+            </div>
+          `;
+        }).join(`<div style="height:10px;"></div>`);
+
+        return `
+          <div style="min-width: 320px; max-width: 380px;">
+            <div style="
+              font-weight: 950; font-size: 14px; color:#0f172a;
+              margin-bottom: 10px; display:flex; align-items:center; gap:10px;
+            ">
+              <span style="
+                display:inline-block; width:10px; height:10px; border-radius:50%;
+                background:#3b82f6;
+              "></span>
+              ${data.title}
+            </div>
+            ${cards}
+            <div style="margin-top:10px; color:#64748b; font-size:12px;">
+              提示：在“节点模式”下悬停查看更稳定
+            </div>
+          </div>
+        `;
+      }
+
+      function renderChart() {
+        if (!amap) return;
+
+        const filteredNodes = geoData.nodes.filter((n) => {
+          if (!showIndustry && n.category === 2) return false;
+          return true;
+        });
+
+        let nodesPx = filteredNodes.map((node) => {
+          const pos = lngLatToPixel(node.lon, node.lat);
+          return { ...node, x: pos.x, y: pos.y };
+        });
+
+        nodesPx = applyCollisionSeparation(nodesPx);
+        nodesPx = relaxNodePositions(nodesPx);
+
+        const plan = computeLabelPlan(nodesPx);
+        const labelOffsets = plan.offsets || {};
+        const labelVisible = plan.visible || {};
+
+        const chartNodes = nodesPx.map((node) => {
+          const off = labelOffsets[node.name] || [0, -22];
+          const perNodeShow = (labelVisible[node.name] !== false);
+          return {
+            name: node.name,
+            value: node.value,
+            category: node.category,
+            symbolSize: node.symbolSize,
+            x: node.x,
+            y: node.y,
+            itemStyle: {
+              color: colors[node.category] || "#cbd5e1",
+              shadowBlur: 14,
+              shadowColor: "rgba(2, 6, 23, 0.25)",
+              borderColor: "rgba(255,255,255,0.95)",
+              borderWidth: 2,
+            },
+            label: {
+              show: showLabels && perNodeShow,
+              position: "top",
+              offset: off,
+            },
+            emphasis: {
+              itemStyle: {
+                shadowBlur: 22,
+                shadowColor: "rgba(2, 6, 23, 0.35)",
+                borderWidth: 3,
+              },
+            },
+          };
+        });
+
+        const nodeNameSet = new Set(filteredNodes.map((n) => n.name));
+        const chartLinks = geoData.links
+          .filter((l) => nodeNameSet.has(l.source) && nodeNameSet.has(l.target))
+          .map((link) => ({
+            source: link.source,
+            target: link.target,
+            lineStyle: {
+              color: "rgba(148, 163, 184, 0.80)",
+              width: 2,
+              opacity: 0.55,
+              curveness: 0.18,
+            },
+            emphasis: {
+              lineStyle: {
+                width: 5,
+                opacity: 0.95,
+                color: "rgba(217, 119, 6, 0.95)",
+                },
+            },
+          }));
+
+        const option = {
+          backgroundColor: "rgba(0,0,0,0)",
+          animation: true,
+          animationDuration: 650,
+          animationEasing: "cubicOut",
+          tooltip: {
+            trigger: "item",
+            confine: true,
+            backgroundColor: "rgba(255,255,255,0.96)",
+            borderColor: "rgba(226,232,240,0.95)",
+            borderWidth: 1,
+            textStyle: { color: "#0f172a" },
+            extraCssText:
+              "box-shadow: 0 12px 28px rgba(2,6,23,0.14); border-radius: 14px; padding: 12px 12px;",
+            formatter: function (p) {
+              if (p.dataType === "node") {
+                if (p.data.category === 1) {
+                  const html = renderCountyTooltip(p.name);
+                  if (html) return html;
+                }
+                const catMap = ["核心引擎", "协作县域", "产业基地", "品牌赛事"];
+                const catName = catMap[p.data.category] || "节点";
+                return `
+                  <div style="font-weight:900; font-size: 14px; margin-bottom:6px;">${p.name}</div>
+                  <div style="color:#475569; font-weight:700; margin-bottom:6px;">类型：${catName}</div>
+                  <div style="color:#0f172a;">协同强度：<span style="font-weight:900;">${p.data.value}</span></div>
+                  <div style="margin-top:6px; color:#64748b; font-size:12px;">提示：节点模式下可悬停查看</div>
+                `;
+              }
+              return p.name;
+            },
+          },
+          series: [
+            {
+              type: "graph",
+              layout: "none",
+              data: chartNodes,
+              links: chartLinks,
+              roam: false,
+              symbol: "circle",
+              edgeSymbol: ["none", "arrow"],
+              edgeSymbolSize: 10,
+              label: {
+                show: showLabels,
+                formatter: "{b}",
+                fontSize: 11,
+                fontWeight: 800,
+                color: "#0f172a",
+                backgroundColor: "rgba(255,255,255,0.90)",
+                padding: [3, 8],
+                borderRadius: 999,
+                distance: 6,
+                overflow: "truncate",
+                width: 110,
+                shadowBlur: 10,
+                shadowColor: "rgba(2,6,23,0.12)",
+              },
+              labelLayout: {
+                hideOverlap: true,
+                moveOverlap: "shiftY",
+                draggable: false,
+              },
+              lineStyle: { curveness: 0.18 },
+              emphasis: { focus: "adjacency", scale: true },
+              select: {
+                itemStyle: {
+                  borderColor: "rgba(59,130,246,0.95)",
+                  borderWidth: 3,
+                },
+              },
+            },
+          ],
+        };
+
+        myChart.setOption(option, true);
+      }
+
+      function setMode(mode) {
+        interactionMode = mode;
+
+        if (mode === "map") {
+          chartDom.classList.remove("node-mode");
+          btnMapMode.classList.add("active");
+          btnNodeMode.classList.remove("active");
+          modeText.textContent = "地图拖拽";
+          if (amap) amap.setStatus({ dragEnable: true, zoomEnable: true, doubleClickZoom: true });
+        } else {
+          chartDom.classList.add("node-mode");
+          btnNodeMode.classList.add("active");
+          btnMapMode.classList.remove("active");
+          modeText.textContent = "节点交互";
+          if (amap) amap.setStatus({ dragEnable: false, zoomEnable: false, doubleClickZoom: false });
+        }
+      }
+
+      btnMapMode.addEventListener("click", () => setMode("map"));
+      btnNodeMode.addEventListener("click", () => setMode("node"));
+
+      toggleLabels.addEventListener("change", () => {
+        showLabels = toggleLabels.checked;
+        renderChart();
+      });
+
+      toggleIndustry.addEventListener("change", () => {
+        showIndustry = toggleIndustry.checked;
+        renderChart();
+      });
+
+      btnReset.addEventListener("click", () => {
+        if (!amap) return;
+        amap.setZoomAndCenter(defaultView.zoom, defaultView.center, true);
+        setTimeout(renderChart, 120);
+      });
+
+      AMapLoader.load({
+        key: AMAP_KEY,
+        version: "2.0",
+        plugins: ["AMap.Scale", "AMap.ToolBar"],
+      })
+        .then((AMap) => {
+          AMapRef = AMap;
+
+          amap = new AMap.Map("amap-container", {
+            zoom: defaultView.zoom,
+            center: defaultView.center,
+            viewMode: "2D",
+            mapStyle: "amap://styles/normal",
+            showLabel: true,
+            features: ["bg", "road", "building", "point"],
+          });
+
+          amap.addControl(new AMap.Scale());
+          amap.addControl(new AMap.ToolBar({ position: "RB" }));
+
+          setTimeout(renderChart, 140);
+
+          amap.on(["moveend", "zoomend"], function () {
+            renderChart();
+          });
+
+          setMode("map");
+        })
+        .catch((err) => {
+          console.error("高德地图加载失败，请检查 Key", err);
+          alert("地图加载失败：请检查控制台错误或 Key 配置。");
+        });
+
+      window.addEventListener("resize", function () {
+        myChart.resize();
+        if (amap) {
+          amap.resize();
+          setTimeout(renderChart, 120);
+        }
+      });
+
+      (function initHeroParticles() {
+        const canvas = document.getElementById("hero-particles");
+        const hero = document.querySelector(".vision-hero");
+        if (!canvas || !hero) return;
+
+        const ctx = canvas.getContext("2d");
+        let w = 0, h = 0;
+        const fixedColors = [
+          "rgba(255, 255, 255, 0.85)",
+          "rgba(251, 191, 36, 0.65)",
+          "rgba(59, 130, 246, 0.55)",
+          "rgba(16, 185, 129, 0.55)",
+        ];
+
+        const particles = [];
+        const count = Math.min(180, Math.floor((window.innerWidth * window.innerHeight) / 12000));
+
+        function resize() {
+          w = canvas.width = hero.clientWidth;
+          h = canvas.height = hero.clientHeight;
+        }
+
+        function rand(min, max) {
+          return min + Math.random() * (max - min);
+        }
+
+        function spawn() {
+          particles.length = 0;
+          for (let i = 0; i < count; i++) {
+            particles.push({
+              x: rand(0, w),
+              y: rand(0, h),
+              vx: rand(-0.35, 0.35),
+              vy: rand(-0.35, 0.35),
+              r: rand(0.8, 1.8),
+              c: fixedColors[Math.floor(Math.random() * fixedColors.length)],
+            });
+          }
+        }
+
+        function step() {
+          ctx.clearRect(0, 0, w, h);
+
+          for (const p of particles) {
+            p.x += p.vx;
+            p.y += p.vy;
+            if (p.x < 0 || p.x > w) p.vx *= -1;
+            if (p.y < 0 || p.y > h) p.vy *= -1;
+
+            ctx.beginPath();
+            ctx.fillStyle = p.c;
+            ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+            ctx.fill();
+          }
+
+          for (let i = 0; i < particles.length; i++) {
+            for (let j = i + 1; j < particles.length; j++) {
+              const a = particles[i];
+              const b = particles[j];
+              const dx = a.x - b.x;
+              const dy = a.y - b.y;
+              const d2 = dx * dx + dy * dy;
+              if (d2 < 9000) {
+                const t = 1 - d2 / 9000;
+                ctx.strokeStyle = "rgba(255,255,255," + (0.12 * t) + ")";
+                ctx.lineWidth = 1;
+                ctx.beginPath();
+                ctx.moveTo(a.x, a.y);
+                ctx.lineTo(b.x, b.y);
+                ctx.stroke();
+              }
+            }
+          }
+
+          requestAnimationFrame(step);
+        }
+
+        resize();
+        spawn();
+        step();
+
+        window.addEventListener("resize", () => {
+          resize();
+          spawn();
+        });
+      })();
+    });
+  </script>
+
+  <!-- ✅ 彩色粒子交互特效：作为“空白处背景” -->
+  <!-- 不改原逻辑：用 script 标签属性控制 zIndex / opacity / count -->
+  <script zIndex="-1" opacity="0.6" count="400">
+    !(function () {
+      function n(n, e, t) {
+        return n.getAttribute(e) || t;
+      }
+      function e(n) {
+        return document.getElementsByTagName(n);
+      }
+      function t() {
+        var t = e("script"),
+          o = t.length,
+          i = t[o - 1];
+        return {
+          l: o,
+          z: n(i, "zIndex", -1),
+          o: n(i, "opacity", 0.6),
+          c: n(i, "color", "0,255,0"), 
+          n: n(i, "count", 400), // 粒子的数量
+        };
+      }
+
+      function o() {
+        (a = m.width =
+          window.innerWidth ||
+          document.documentElement.clientWidth ||
+          document.body.clientWidth),
+          (c = m.height =
+            window.innerHeight ||
+            document.documentElement.clientHeight ||
+            document.body.clientHeight);
+      }
+      function i() {
+        r.clearRect(0, 0, a, c);
+        var n, e, t, o, m, l;
+        s.forEach(function (particle, index) {
+          for (
+            particle.x += particle.xa,
+            particle.y += particle.ya,
+            particle.xa *= particle.x > a || particle.x < 0 ? -1 : 1,
+            particle.ya *= particle.y > c || particle.y < 0 ? -1 : 1,
+            // 使用粒子的颜色属性进行绘制
+            r.fillStyle = particle.color,
+            r.fillRect(particle.x - 0.5, particle.y - 0.5, 1, 1),
+            e = index + 1;
+            e < u.length;
+            e++
+          ) {
+            (n = u[e]),
+              null !== n.x &&
+              null !== n.y &&
+              ((o = particle.x - n.x),
+                (m = particle.y - n.y),
+                (l = o * o + m * m),
+                l < n.max &&
+                (n === y &&
+                  l >= n.max / 2 &&
+                  ((particle.x -= 0.03 * o), (particle.y -= 0.03 * m)),
+                  (t = (n.max - l) / n.max),
+                  r.beginPath(),
+                  (r.lineWidth = t / 2),
+                  // 连线颜色和粒子颜色一致
+                  r.strokeStyle = particle.color,
+                  r.moveTo(particle.x, particle.y),
+                  r.lineTo(n.x, n.y),
+                  r.stroke()));
+          }
+        }),
+          x(i);
+      }
+      var fixedColors = [
+        "rgba(255, 0, 0, 1.0)",   // 红色
+        "rgba(0, 255, 0, 1.0)",   // 绿色
+        "rgba(0, 0, 255, 1.0)",   // 蓝色
+        "rgba(255, 255, 0, 1.0)", // 黄色
+        "rgba(0, 255, 255, 0.8)", // 青色
+        "rgba(255, 0, 255, 0.8)", // 紫色
+        "rgba(255, 165, 0, 0.8)", // 橙色
+        "rgba(127, 255, 212, 1.0)",
+          "rgba(0, 255, 127, 1.0)"
+      ];
+      var a,
+        c,
+        u,
+        m = document.createElement("canvas"),
+        d = t(),
+        l = "c_n" + d.l,
+        r = m.getContext("2d"),
+        x =
+          window.requestAnimationFrame ||
+          window.webkitRequestAnimationFrame ||
+          window.mozRequestAnimationFrame ||
+          window.oRequestAnimationFrame ||
+          window.msRequestAnimationFrame ||
+          function (n) {
+            window.setTimeout(n, 1e3 / 45);
+          },
+        w = Math.random,
+        y = { x: null, y: null, max: 2e4 };
+      (m.id = l),
+        (m.style.cssText =
+          "position:fixed;top:0;left:0;z-index:" + d.z + ";opacity:" + d.o),
+        e("body")[0].appendChild(m),
+        o(),
+        (window.onresize = o),
+        (window.onmousemove = function (n) {
+          (n = n || window.event), (y.x = n.clientX), (y.y = n.clientY);
+        }),
+        (window.onmouseout = function () {
+          (y.x = null), (y.y = null);
+        });
+
+        //固定颜色
+        for (var s = [], f = 0; d.n > f; f++) {
+        var h = w() * a,
+          g = w() * c,
+          v = 2 * w() - 1,
+          p = 2 * w() - 1,
+          // 从固定颜色数组中随机选择一个颜色
+          color = fixedColors[Math.floor(Math.random() * fixedColors.length)];
+        s.push({ x: h, y: g, xa: v, ya: p, max: 6e3, color: color }); // 使用选定的固定颜色
+      }
+
+      (u = s.concat([y])),
+        setTimeout(function () {
+          i();
+        }, 100);
+    })();
+  </script>
+</body>
+</html>

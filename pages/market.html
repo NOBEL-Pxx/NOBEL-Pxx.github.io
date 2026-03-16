@@ -1,0 +1,693 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>市场分析 - 兰州大学·金鹰</title>
+    <!-- 引入全局样式（假设存在，若不存在不影响核心功能） -->
+    <link rel="stylesheet" href="../assets/css/global.css">
+    <!-- 引入 ECharts -->
+    <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
+    <!-- 引入 Google Fonts 增加科技感字体 -->
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Noto+Sans+SC:wght@300;500;700;900&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --neon-blue: #00f3ff;
+            --neon-purple: #bc13fe;
+            --neon-green: #0aff60;
+            --neon-orange: #ff9e00;
+            --dark-bg: #050510;
+            --glass-bg: rgba(255, 255, 255, 0.05);
+            --glass-border: rgba(255, 255, 255, 0.1);
+        }
+
+        body {
+            font-family: 'Noto Sans SC', sans-serif;
+            background-color: var(--dark-bg);
+            color: #fff;
+            overflow-x: hidden;
+            margin: 0;
+        }
+
+        /* 动态网格背景 */
+        .bg-grid {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background-image: 
+                linear-gradient(rgba(0, 243, 255, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 243, 255, 0.03) 1px, transparent 1px);
+            background-size: 50px 50px;
+            z-index: -2;
+            perspective: 500px;
+            transform-style: preserve-3d;
+            animation: gridMove 20s linear infinite;
+        }
+
+        @keyframes gridMove {
+            0% { transform: translateY(0) rotateX(20deg); }
+            100% { transform: translateY(50px) rotateX(20deg); }
+        }
+
+        /* 头部导航增强 */
+        header {
+            position: fixed; top: 0; width: 100%; padding: 15px 50px;
+            display: flex; justify-content: space-between; align-items: center;
+            z-index: 1000;
+            background: rgba(5, 5, 16, 0.8);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--glass-border);
+            box-shadow: 0 0 20px rgba(0, 243, 255, 0.1);
+        }
+
+        nav a {
+            margin-left: 25px; text-decoration: none;
+            color: #ccc; font-weight: 600; font-size: 0.95rem;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        nav a:hover, nav a.active {
+            color: var(--neon-blue);
+            text-shadow: 0 0 10px var(--neon-blue);
+        }
+
+        nav a.active::after {
+            content: ''; position: absolute; bottom: -5px; left: 0; width: 100%; height: 2px;
+            background: var(--neon-blue);
+            box-shadow: 0 0 10px var(--neon-blue);
+        }
+
+        .logo {
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 800; font-size: 1.4rem;
+            background: linear-gradient(90deg, #fff, var(--neon-orange));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 0 20px rgba(255, 158, 0, 0.5);
+        }
+
+        .back-link {
+            position: absolute; left: 20px;
+            color: var(--neon-green);
+            text-decoration: none;
+            font-weight: bold;
+            transition: 0.3s;
+        }
+        .back-link:hover { text-shadow: 0 0 15px var(--neon-green); transform: translateX(-5px); }
+
+        /* Hero 区域增强 - 替换为背景图 */
+        .market-hero {
+            background: url('../images/hero/5.jpg') center/cover no-repeat;
+            color: white; padding: 140px 0 80px; text-align: center;
+            position: relative; overflow: hidden;
+            border-bottom: 2px solid var(--neon-purple);
+        }
+        /* 遮罩层确保文字清晰 */
+        .market-hero::before {
+            content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+            background: radial-gradient(circle at center, rgba(26, 26, 46, 0.8) 0%, rgba(0, 0, 0, 0.95) 100%);
+            z-index: 1;
+        }
+        .market-hero .container {
+            position: relative; z-index: 2;
+        }
+
+        .market-hero h1 {
+            font-size: 4rem; font-weight: 900;
+            background: linear-gradient(135deg, #fff 0%, var(--neon-blue) 50%, var(--neon-purple) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 0 30px rgba(0, 243, 255, 0.4);
+            margin-bottom: 20px;
+            letter-spacing: 2px;
+        }
+
+        .market-hero p {
+            font-size: 1.4rem; opacity: 0.9; max-width: 800px; margin: 0 auto;
+            color: #ddd;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+        }
+
+        /* 通用容器 */
+        .container { max-width: 1200px; margin: 0 auto; padding: 0 20px; position: relative; z-index: 1; }
+        .section-padding { padding: 80px 0; }
+
+        .section-title {
+            text-align: center; margin-bottom: 60px;
+        }
+        .section-title h2 {
+            font-size: 2.5rem; font-weight: 800;
+            color: #fff;
+            display: inline-block;
+            border-bottom: 3px solid var(--neon-orange);
+            padding-bottom: 10px;
+            text-shadow: 0 0 20px rgba(255, 158, 0, 0.4);
+        }
+        .section-title p { color: #aaa; margin-top: 15px; font-size: 1.1rem; }
+
+        /* 增强版时间轴 */
+        .timeline { position: relative; max-width: 900px; margin: 60px auto; }
+        .timeline::after {
+            content: ''; position: absolute; width: 4px;
+            background: linear-gradient(180deg, var(--neon-blue), var(--neon-purple), var(--neon-green));
+            top: 0; bottom: 0; left: 50%; margin-left: -2px;
+            box-shadow: 0 0 15px var(--neon-blue);
+            border-radius: 2px;
+        }
+
+        .tl-container {
+            padding: 10px 40px; position: relative;
+            background: inherit; width: 50%; box-sizing: border-box;
+        }
+
+        .tl-left { left: 0; text-align: right; }
+        .tl-right { left: 50%; text-align: left; }
+
+        .tl-content {
+            padding: 25px;
+            background: rgba(20, 20, 35, 0.6);
+            border: 1px solid var(--glass-border);
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            position: relative; z-index: 1;
+            backdrop-filter: blur(10px);
+            transition: all 0.4s ease;
+            overflow: hidden;
+        }
+
+        .tl-content::before {
+            content: ''; position: absolute; top: 0; left: 0; width: 4px; height: 100%;
+            background: var(--neon-orange);
+        }
+        .tl-right .tl-content::before { left: auto; right: 0; background: var(--neon-blue); }
+
+        .tl-content:hover {
+            transform: translateY(-10px) scale(1.02);
+            box-shadow: 0 20px 40px rgba(0, 243, 255, 0.2);
+            border-color: var(--neon-blue);
+        }
+
+        .tl-date {
+            font-weight: 900; color: var(--neon-green);
+            font-size: 1.2rem; margin-bottom: 10px; display: block;
+            text-shadow: 0 0 10px rgba(10, 255, 96, 0.5);
+            font-family: 'Orbitron', sans-serif;
+        }
+
+        .tl-content h3 { color: #fff; margin: 10px 0; font-size: 1.3rem; }
+        .tl-content p { color: #bbb; font-size: 0.95rem; line-height: 1.6; }
+
+        /* 时间轴节点光点 */
+        .tl-container::after {
+            content: ''; position: absolute; width: 20px; height: 20px;
+            background: #fff; border: 4px solid var(--dark-bg);
+            border-radius: 50%; top: 25px; z-index: 2;
+            box-shadow: 0 0 15px #fff;
+            animation: pulse 2s infinite;
+        }
+        .tl-left::after { right: -10px; }
+        .tl-right::after { left: -10px; }
+
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.7); }
+            70% { box-shadow: 0 0 0 15px rgba(255, 255, 255, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(255, 255, 255, 0); }
+        }
+
+        /* 图表区域增强 */
+        .charts-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+        
+        .chart-card {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            padding: 30px;
+            backdrop-filter: blur(15px);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .chart-card::before {
+            content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 4px;
+            background: linear-gradient(90deg, var(--neon-blue), var(--neon-purple), var(--neon-orange));
+        }
+
+        .market-chart-box { height: 500px; width: 100%; }
+        .pie-chart-box { height: 400px; width: 100%; }
+        .radar-chart-box { height: 400px; width: 100%; }
+
+        .bottom-chart-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+        }
+
+        /* 按钮增强 */
+        .btn {
+            display: inline-block;
+            padding: 15px 40px;
+            background: linear-gradient(45deg, var(--neon-orange), #ff5e00);
+            color: #fff;
+            text-decoration: none;
+            border-radius: 50px;
+            font-weight: 800;
+            font-size: 1.1rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            box-shadow: 0 10px 20px rgba(255, 158, 0, 0.4);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+        }
+
+        .btn::before {
+            content: ''; position: absolute; top: 0; left: -100%; width: 100%; height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+            transition: 0.5s;
+            z-index: -1;
+        }
+
+        .btn:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(255, 158, 0, 0.6);
+        }
+        .btn:hover::before { left: 100%; }
+
+        /* 响应式 */
+        @media (max-width: 900px) {
+            .charts-grid, .bottom-chart-row { grid-template-columns: 1fr; }
+            .timeline::after { left: 31px; }
+            .tl-container { width: 100%; padding-left: 70px; padding-right: 25px; }
+            .tl-left, .tl-right { left: 0; text-align: left; }
+            .tl-left::after, .tl-right::after { left: 21px; }
+            .tl-left .tl-content::before, .tl-right .tl-content::before { left: 0; right: auto; }
+            .market-hero h1 { font-size: 2.5rem; }
+        }
+
+        /* 动画类 */
+        .reveal-up { opacity: 0; transform: translateY(50px); transition: all 0.8s cubic-bezier(0.5, 0, 0, 1); }
+        .reveal-up.active { opacity: 1; transform: translateY(0); }
+        .reveal-scale { opacity: 0; transform: scale(0.9); transition: all 0.8s cubic-bezier(0.5, 0, 0, 1); }
+        .reveal-scale.active { opacity: 1; transform: scale(1); }
+        .delay-100 { transition-delay: 0.1s; }
+        .delay-200 { transition-delay: 0.2s; }
+        .delay-300 { transition-delay: 0.3s; }
+    </style>
+</head>
+<body>
+    <!-- 动态背景网格 -->
+    <div class="bg-grid"></div>
+
+    <!-- 顶部导航 -->
+    <header>
+        <a href="../index.html" class="back-link">
+            <span>←</span> 返回首页
+        </a>
+        <div class="logo">
+            &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp兰州大学·金鹰
+        </div>
+        <nav>
+            <a href="vision.html">愿景模式</a>
+            <a href="painpoints.html">痛点破局</a>
+            <a href="solution.html">解决方案</a>
+            <a href="market.html" class="active">市场分析</a>
+            <a href="business.html">商业模式</a>
+            <a href="team.html">核心团队</a>
+        </nav>
+    </header>
+
+    <section class="market-hero">
+        <div class="container reveal-up">
+            <h1>万亿蓝海 · 政策风口</h1>
+            <p style="font-size: 1.3rem; opacity: 0.9; max-width: 800px; margin: 0 auto; text-shadow: 0 0 20px rgba(0,0,0,0.8);">
+                乡村振兴国家战略 <span style="color:var(--neon-blue)">✦</span> 数字中国建设 <span style="color:var(--neon-blue)">✦</span> 体旅融合热潮
+            </p>
+        </div>
+    </section>
+
+    <section class="container section-padding">
+        <div class="section-title reveal-up">
+            <h2>政策红利时间轴</h2>
+            <p style="color: #aaa;">顺势而为，借力国家大势，捕捉每一个风口</p>
+        </div>
+        
+        <div class="timeline">
+            <div class="tl-container tl-left reveal-up">
+                <div class="tl-content">
+                    <span class="tl-date">2018</span>
+                    <h3>乡村振兴战略</h3>
+                    <p>中央一号文件正式提出，确立为国家战略，开启新时代乡村发展篇章。</p>
+                </div>
+            </div>
+            <div class="tl-container tl-right reveal-up delay-100">
+                <div class="tl-content">
+                    <span class="tl-date">2022</span>
+                    <h3>数字乡村发展纲要</h3>
+                    <p>明确提出加快农业农村数字化转型，数据成为新农资，手机成为新农具。</p>
+                </div>
+            </div>
+            <div class="tl-container tl-left reveal-up delay-200">
+                <div class="tl-content">
+                    <span class="tl-date">2023</span>
+                    <h3>“体育+"融合发展</h3>
+                    <p>体育总局鼓励体育赛事进景区、进乡村，打造乡村体育旅游新地标。</p>
+                </div>
+            </div>
+            <div class="tl-container tl-right reveal-up delay-300">
+                <div class="tl-content">
+                    <span class="tl-date">2026 (当前)</span>
+                    <h3>千万工程深化</h3>
+                    <p>学习运用“千万工程”经验，全面推进乡村振兴，数字化赋能产业升级。</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="container section-padding">
+        <div class="section-title reveal-up">
+            <h2>市场规模与多维增长预测</h2>
+            <p style="color: #aaa;">西北特色农产品与乡村文旅的双重增长引擎驱动</p>
+        </div>
+        
+        <!-- 主图表区：趋势 + 占比 -->
+        <div class="charts-grid reveal-scale">
+            <div class="chart-card">
+                <h3 style="color:#fff; margin-bottom:20px; font-family:'Orbitron';">双引擎增长趋势 (亿元)</h3>
+                <div id="market-chart" class="market-chart-box"></div>
+            </div>
+            <div class="chart-card">
+                <h3 style="color:#fff; margin-bottom:20px; font-family:'Orbitron';">2026 市场结构预测</h3>
+                <div id="pie-chart" class="pie-chart-box"></div>
+            </div>
+        </div>
+
+        <!-- 副图表区：雷达图 + 柱状对比 -->
+        <div class="bottom-chart-row reveal-scale delay-100">
+            <div class="chart-card">
+                <h3 style="color:#fff; margin-bottom:20px; font-family:'Orbitron';">政策驱动力维度分析</h3>
+                <div id="radar-chart" class="radar-chart-box"></div>
+            </div>
+            <div class="chart-card">
+                <h3 style="color:#fff; margin-bottom:20px; font-family:'Orbitron';">年均复合增长率 (CAGR)</h3>
+                <div id="bar-chart" class="radar-chart-box"></div>
+            </div>
+        </div>
+    </section>
+
+    <section class="container section-padding" style="text-align: center; margin-bottom: 50px;">
+        <h3 class="reveal-up" style="font-size: 2rem; color: #fff; text-shadow: 0 0 20px rgba(255,255,255,0.3);">市场巨大 · 方案成熟 · 团队靠谱</h3>
+        <a href="business.html" class="btn reveal-up delay-100" style="margin-top: 30px;">查看商业模式</a>
+    </section>
+
+    <script src="../assets/js/main.js"></script>
+    <script>
+        // 滚动动画监听
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('active');
+                }
+            });
+        }, { threshold: 0.1 });
+
+        document.querySelectorAll('.reveal-up, .reveal-scale').forEach(el => observer.observe(el));
+
+        document.addEventListener('DOMContentLoaded', function() {
+            // 初始化主趋势图
+            var chartDom = document.getElementById('market-chart');
+            var myChart = echarts.init(chartDom);
+            
+            var optionMain = {
+                tooltip: { 
+                    trigger: 'axis',
+                    backgroundColor: 'rgba(0,0,0,0.8)',
+                    borderColor: '#00f3ff',
+                    textStyle: { color: '#fff' }
+                },
+                legend: { 
+                    data: ['特色农产品市场规模', '乡村文旅市场规模'],
+                    textStyle: { color: '#ccc' },
+                    bottom: 0
+                },
+                grid: { left: '3%', right: '4%', bottom: '10%', top: '10%', containLabel: true },
+                xAxis: {
+                    type: 'category',
+                    boundaryGap: false,
+                    data: ['2021', '2022', '2023', '2024', '2025', '2026(E)'],
+                    axisLine: { lineStyle: { color: '#555' } },
+                    axisLabel: { color: '#aaa' }
+                },
+                yAxis: { 
+                    type: 'value', 
+                    name: '亿元',
+                    nameTextStyle: { color: '#aaa' },
+                    splitLine: { lineStyle: { color: 'rgba(255,255,255,0.1)' } },
+                    axisLabel: { color: '#aaa' }
+                },
+                series: [
+                    {
+                        name: '特色农产品市场规模',
+                        type: 'line',
+                        stack: 'Total',
+                        smooth: true,
+                        lineStyle: { width: 3, color: '#d97706', shadowColor: '#d97706', shadowBlur: 10 },
+                        showSymbol: true,
+                        symbol: 'circle',
+                        symbolSize: 8,
+                        itemStyle: { color: '#d97706', borderWidth: 2, borderColor: '#fff' },
+                        areaStyle: { 
+                            opacity: 0.6, 
+                            color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+                                { offset: 0, color: 'rgba(217, 119, 6, 0.8)' }, 
+                                { offset: 1, color: 'rgba(217, 119, 6, 0.1)' }
+                            ]) 
+                        },
+                        emphasis: { focus: 'series' },
+                        data: [1200, 1320, 1510, 1740, 1900, 2100]
+                    },
+                    {
+                        name: '乡村文旅市场规模',
+                        type: 'line',
+                        stack: 'Total',
+                        smooth: true,
+                        lineStyle: { width: 3, color: '#10b981', shadowColor: '#10b981', shadowBlur: 10 },
+                        showSymbol: true,
+                        symbol: 'circle',
+                        symbolSize: 8,
+                        itemStyle: { color: '#10b981', borderWidth: 2, borderColor: '#fff' },
+                        areaStyle: { 
+                            opacity: 0.6, 
+                            color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+                                { offset: 0, color: 'rgba(16, 185, 129, 0.8)' }, 
+                                { offset: 1, color: 'rgba(16, 185, 129, 0.1)' }
+                            ]) 
+                        },
+                        emphasis: { focus: 'series' },
+                        data: [800, 920, 1100, 1350, 1500, 1700]
+                    }
+                ]
+            };
+            myChart.setOption(optionMain);
+
+            // 初始化饼图
+            var pieDom = document.getElementById('pie-chart');
+            var pieChart = echarts.init(pieDom);
+            var optionPie = {
+                tooltip: { trigger: 'item', backgroundColor: 'rgba(0,0,0,0.8)', textStyle: { color: '#fff' } },
+                legend: { top: '5%', left: 'center', textStyle: { color: '#ccc' } },
+                series: [
+                    {
+                        name: '市场构成',
+                        type: 'pie',
+                        radius: ['40%', '70%'],
+                        avoidLabelOverlap: false,
+                        itemStyle: {
+                            borderRadius: 10,
+                            borderColor: '#050510',
+                            borderWidth: 2
+                        },
+                        label: { show: false, position: 'center' },
+                        emphasis: {
+                            label: { show: true, fontSize: 20, fontWeight: 'bold', color: '#fff' }
+                        },
+                        labelLine: { show: false },
+                        data: [
+                            { value: 2100, name: '特色农产品', itemStyle: { color: '#d97706' } },
+                            { value: 1700, name: '乡村文旅', itemStyle: { color: '#10b981' } },
+                            { value: 500, name: '其他衍生', itemStyle: { color: '#bc13fe' } }
+                        ]
+                    }
+                ]
+            };
+            pieChart.setOption(optionPie);
+
+            // 初始化雷达图
+            var radarDom = document.getElementById('radar-chart');
+            var radarChart = echarts.init(radarDom);
+            var optionRadar = {
+                tooltip: {},
+                radar: {
+                    indicator: [
+                        { name: '政策支持', max: 100 },
+                        { name: '市场需求', max: 100 },
+                        { name: '技术成熟度', max: 100 },
+                        { name: '资金投入', max: 100 },
+                        { name: '人才储备', max: 100 }
+                    ],
+                    axisName: { color: '#00f3ff' },
+                    splitArea: { areaStyle: { color: ['rgba(0,243,255,0.1)', 'rgba(0,243,255,0.05)'] } },
+                    splitLine: { lineStyle: { color: 'rgba(0,243,255,0.3)' } }
+                },
+                series: [{
+                    name: '驱动力分析',
+                    type: 'radar',
+                    data: [
+                        {
+                            value: [95, 90, 85, 80, 75],
+                            name: '综合评分',
+                            areaStyle: { color: 'rgba(188, 19, 254, 0.5)' },
+                            lineStyle: { color: '#bc13fe' },
+                            itemStyle: { color: '#bc13fe' }
+                        }
+                    ]
+                }]
+            };
+            radarChart.setOption(optionRadar);
+
+            // 初始化柱状图 (CAGR)
+            var barDom = document.getElementById('bar-chart');
+            var barChart = echarts.init(barDom);
+            var optionBar = {
+                tooltip: { trigger: 'axis', backgroundColor: 'rgba(0,0,0,0.8)', textStyle: { color: '#fff' } },
+                grid: { left: '3%', right: '4%', bottom: '3%', top: '10%', containLabel: true },
+                xAxis: {
+                    type: 'category',
+                    data: ['农产品', '文旅', '整体'],
+                    axisLabel: { color: '#aaa' },
+                    axisLine: { lineStyle: { color: '#555' } }
+                },
+                yAxis: {
+                    type: 'value',
+                    name: '增长率 (%)',
+                    nameTextStyle: { color: '#aaa' },
+                    splitLine: { lineStyle: { color: 'rgba(255,255,255,0.1)' } },
+                    axisLabel: { color: '#aaa' }
+                },
+                series: [{
+                    data: [12.5, 15.8, 14.2],
+                    type: 'bar',
+                    barWidth: '40%',
+                    itemStyle: {
+                        color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+                            { offset: 0, color: '#00f3ff' },
+                            { offset: 1, color: '#0066ff' }
+                        ]),
+                        borderRadius: [10, 10, 0, 0]
+                    },
+                    showBackground: true,
+                    backgroundStyle: { color: 'rgba(255, 255, 255, 0.05)', borderRadius: [10, 10, 0, 0] },
+                    label: { show: true, position: 'top', color: '#fff', fontSize: 14, fontWeight: 'bold' }
+                }]
+            };
+            barChart.setOption(optionBar);
+
+            // 响应式处理
+            window.addEventListener('resize', function() {
+                myChart.resize();
+                pieChart.resize();
+                radarChart.resize();
+                barChart.resize();
+            });
+        });
+    </script>
+
+    <!-- 增强版彩色粒子交互特效代码 -->
+    <script>
+        !(function () {
+          function n(n, e, t) { return n.getAttribute(e) || t; }
+          function e(n) { return document.getElementsByTagName(n); }
+          function t() {
+            var t = e("script"), o = t.length, i = t[o - 1];
+            return { l: o, z: n(i, "zIndex", -2), o: n(i, "opacity", 0.4), c: n(i, "color", "0,255,0"), n: n(i, "count", 300) };
+          }
+
+          function o() {
+            (a = m.width = window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth),
+            (c = m.height = window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight);
+          }
+
+          function i() {
+            r.clearRect(0, 0, a, c);
+            var n, e, t, o, m, l;
+            s.forEach(function (particle, index) {
+              particle.x += particle.xa;
+              particle.y += particle.ya;
+              particle.xa *= particle.x > a || particle.x < 0 ? -1 : 1;
+              particle.ya *= particle.y > c || particle.y < 0 ? -1 : 1;
+              
+              r.fillStyle = particle.color;
+              r.beginPath();
+              r.arc(particle.x, particle.y, particle.size, 0, Math.PI * 2);
+              r.fill();
+
+              for (e = index + 1; e < u.length; e++) {
+                (n = u[e]),
+                null !== n.x && null !== n.y &&
+                ((o = particle.x - n.x), (m = particle.y - n.y), (l = o * o + m * m),
+                l < n.max && (
+                    n === y && l >= n.max / 2 && ((particle.x -= 0.03 * o), (particle.y -= 0.03 * m)),
+                    (t = (n.max - l) / n.max),
+                    r.beginPath(),
+                    (r.lineWidth = t / 1.5),
+                    r.strokeStyle = particle.color.replace('1.0)', '0.4)'), // 降低连线透明度
+                    r.moveTo(particle.x, particle.y),
+                    r.lineTo(n.x, n.y),
+                    r.stroke()
+                ));
+              }
+            }), x(i);
+          }
+
+          // 更加鲜艳的花哨颜色
+          var fixedColors = [
+            "rgba(0, 243, 255, 0.8)",   // 霓虹蓝
+            "rgba(188, 19, 254, 0.8)",   // 霓虹紫
+            "rgba(10, 255, 96, 0.8)",    // 霓虹绿
+            "rgba(255, 158, 0, 0.8)",    // 霓虹橙
+            "rgba(255, 0, 85, 0.8)",     // 霓虹红
+            "rgba(255, 255, 255, 0.6)"   // 白色
+          ];
+
+          var a, c, u, m = document.createElement("canvas"), d = t(), l = "c_n" + d.l, r = m.getContext("2d"),
+          x = window.requestAnimationFrame || window.webkitRequestAnimationFrame || window.mozRequestAnimationFrame || window.oRequestAnimationFrame || window.msRequestAnimationFrame || function (n) { window.setTimeout(n, 1e3 / 45); },
+          w = Math.random, y = { x: null, y: null, max: 20000 };
+
+          (m.id = l),
+          (m.style.cssText = "position:fixed;top:0;left:0;z-index:" + d.z + ";opacity:" + d.o + ";pointer-events:none;"),
+          e("body")[0].appendChild(m),
+          o(),
+          (window.onresize = o),
+          (window.onmousemove = function (n) { (n = n || window.event), (y.x = n.clientX), (y.y = n.clientY); }),
+          (window.onmouseout = function () { (y.x = null), (y.y = null); });
+
+          for (var s = [], f = 0; d.n > f; f++) {
+            var h = w() * a, g = w() * c, v = 2 * w() - 1, p = 2 * w() - 1,
+            size = w() * 2 + 0.5, // 随机大小
+            color = fixedColors[Math.floor(Math.random() * fixedColors.length)];
+            s.push({ x: h, y: g, xa: v, ya: p, max: 6000, color: color, size: size });
+          }
+
+          (u = s.concat([y])),
+          setTimeout(function () { i(); }, 100);
+        })();
+    </script>
+</body>
+</html>

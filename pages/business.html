@@ -1,0 +1,1227 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>商业模式 - 兰州大学·金鹰</title>
+    <!-- 全局样式 -->
+    <link rel="stylesheet" href="../assets/css/global.css">
+    <!-- ECharts CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
+    <!-- 引入谷歌字体以提升质感 -->
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700;900&family=Orbitron:wght@400;700;900&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            /* 更明亮、更“日光感”的主题变量（不改任何逻辑，仅调色与视觉） */
+            --color-primary: #f59e0b;
+            --color-accent:  #fb923c;
+            --color-neon-blue: #22d3ee;
+            --color-neon-purple: #a855f7;
+            --color-neon-green: #22c55e;
+            --color-text-main: #0f172a;
+            --color-text-sub:  #334155;
+
+            --shadow-soft: 0 12px 35px -18px rgba(15, 23, 42, 0.18);
+            --shadow-hover: 0 22px 55px -22px rgba(245, 158, 11, 0.35);
+            --shadow-neon: 0 0 22px rgba(34, 211, 238, 0.35);
+
+            --glass-bg: rgba(255, 255, 255, 0.88);
+            --glass-border: rgba(255, 255, 255, 0.78);
+            --card-gradient: linear-gradient(135deg, rgba(255,255,255,0.95) 0%, rgba(255,255,255,0.72) 100%);
+        }
+
+        body {
+            font-family: 'Noto Sans SC', sans-serif;
+            background-color: #f8fafc;
+            background-image: 
+                radial-gradient(at 0% 0%, rgba(245, 158, 11, 0.10) 0px, transparent 55%),
+                radial-gradient(at 100% 0%, rgba(34, 211, 238, 0.10) 0px, transparent 55%),
+                radial-gradient(at 100% 100%, rgba(168, 85, 247, 0.08) 0px, transparent 60%);
+            overflow-x: hidden;
+            color: var(--color-text-main);
+        }
+
+        /* 页面特有样式 */
+        .business-hero {
+            background: url('../images/hero/6.jpg') center/cover no-repeat;
+            color: white;
+            padding: 140px 0 100px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            clip-path: polygon(0 0, 100% 0, 100% 85%, 0 100%);
+            box-shadow: 0 14px 50px rgba(15, 23, 42, 0.25);
+        }
+        .business-hero::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: linear-gradient(
+                135deg,
+                rgba(255, 255, 255, 0.08) 0%,
+                rgba(15, 23, 42, 0.45) 45%,
+                rgba(15, 23, 42, 0.35) 100%
+            );
+            z-index: 0;
+        }
+
+        /* 背景装饰圆圈 */
+        .bg-circle {
+            position: absolute;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(255,255,255,0.22) 0%, rgba(255,255,255,0) 70%);
+            z-index: 1;
+            filter: blur(26px);
+            animation: float 12s infinite ease-in-out;
+            box-shadow: 0 0 60px rgba(34, 211, 238, 0.18);
+        }
+        .c1 {
+            width: 520px; height: 520px; top: -160px; left: -120px;
+            animation-delay: 0s;
+            background: radial-gradient(circle, rgba(245, 158, 11, 0.28) 0%, transparent 70%);
+        }
+        .c2 {
+            width: 760px; height: 760px; bottom: -240px; right: -180px;
+            animation-delay: -6s;
+            background: radial-gradient(circle, rgba(34, 211, 238, 0.22) 0%, transparent 72%);
+        }
+        .c3 {
+            width: 320px; height: 320px; top: 18%; right: 10%;
+            animation-delay: -3s;
+            background: radial-gradient(circle, rgba(168, 85, 247, 0.20) 0%, transparent 70%);
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            50% { transform: translate(30px, 40px) scale(1.06); }
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .section-padding {
+            padding: 80px 0;
+        }
+
+        .section-title {
+            text-align: center;
+            margin-bottom: 60px;
+            position: relative;
+        }
+        .section-title h2 {
+            font-size: 2.6rem;
+            color: var(--color-text-main);
+            margin-bottom: 15px;
+            background: linear-gradient(to right, #0f172a, #f59e0b, #22d3ee);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-weight: 900;
+            letter-spacing: -1px;
+            display: inline-block;
+        }
+        .section-title::after {
+            content: '';
+            display: block;
+            width: 90px;
+            height: 4px;
+            background: linear-gradient(90deg, var(--color-primary), var(--color-neon-blue));
+            margin: 10px auto 0;
+            border-radius: 999px;
+        }
+
+        /* 商业模式画布网格 */
+        .canvas-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            grid-template-rows: auto auto auto;
+            gap: 24px;
+            margin-top: 40px;
+        }
+        
+        .canvas-item {
+            background: var(--glass-bg);
+            backdrop-filter: blur(18px);
+            -webkit-backdrop-filter: blur(18px);
+            padding: 30px;
+            border-radius: 22px;
+            box-shadow: var(--shadow-soft);
+            border: 1px solid var(--glass-border);
+            border-top: 7px solid rgba(245, 158, 11, 0.9);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .canvas-item::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: linear-gradient(135deg, rgba(255,255,255,0.75) 0%, rgba(255,255,255,0) 70%);
+            opacity: 0;
+            transition: opacity 0.3s;
+            z-index: 0;
+        }
+        
+        .canvas-item::after {
+            content: '';
+            position: absolute;
+            top: -50%; left: -50%; width: 200%; height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.95) 0%, transparent 62%);
+            opacity: 0;
+            transform: scale(0.55);
+            transition: opacity 0.5s, transform 0.5s;
+            z-index: 0;
+        }
+
+        .canvas-item:hover { 
+            transform: translateY(-12px) scale(1.02); 
+            box-shadow: var(--shadow-hover), 0 0 26px rgba(245, 158, 11, 0.18);
+            border-color: rgba(245, 158, 11, 0.55);
+        }
+        .canvas-item:hover::before { opacity: 1; }
+        .canvas-item:hover::after { opacity: 0.12; transform: scale(1); }
+
+        .canvas-content-wrapper {
+            position: relative;
+            z-index: 1;
+        }
+
+        .canvas-item.full-width {
+            grid-column: span 3;
+            border-top-color: rgba(245, 158, 11, 0.95);
+            background: linear-gradient(135deg, #ffffff 0%, #fff7ed 100%);
+        }
+        .canvas-item.half-width { grid-column: span 1; }
+        
+        .canvas-label { 
+            font-size: 0.72rem; 
+            color: #94a3b8; 
+            font-weight: 900; 
+            text-transform: uppercase; 
+            letter-spacing: 2px; 
+            margin-bottom: 15px; 
+            display: block; 
+            font-family: 'Orbitron', sans-serif;
+        }
+        .canvas-title { 
+            font-size: 1.32rem; 
+            font-weight: 900; 
+            color: var(--color-text-main); 
+            margin-bottom: 15px; 
+            line-height: 1.3;
+            text-shadow: 0 1px 0 rgba(255,255,255,0.6);
+        }
+        .canvas-content { 
+            font-size: 0.96rem; 
+            color: var(--color-text-sub); 
+            line-height: 1.85; 
+            font-weight: 500;
+        }
+        .highlight-num { 
+            color: var(--color-primary); 
+            font-weight: 900; 
+            font-size: 1.45rem; 
+            text-shadow: 0 2px 10px rgba(245, 158, 11, 0.20);
+            font-family: 'Orbitron', sans-serif;
+        }
+
+        /* 图表容器 */
+        .chart-row {
+            display: flex;
+            gap: 30px;
+            margin-top: 40px;
+            flex-wrap: wrap;
+        }
+        .chart-box {
+            flex: 1;
+            min-width: 450px;
+            background: linear-gradient(180deg, #ffffff 0%, #fbfdff 100%);
+            padding: 40px;
+            border-radius: 26px;
+            box-shadow: var(--shadow-soft);
+            border: 1px solid rgba(226, 232, 240, 0.8);
+            position: relative;
+            overflow: hidden;
+        }
+        .chart-box::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 4px;
+            background: linear-gradient(90deg, var(--color-neon-blue), var(--color-neon-purple), var(--color-primary));
+        }
+        .chart-container {
+            width: 100%;
+            height: 450px;
+        }
+
+        /* 财务亮点卡片 */
+        .finance-highlights {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 30px;
+            margin-bottom: 60px;
+        }
+        .stat-card {
+            background: linear-gradient(180deg, #ffffff 0%, #fbfdff 100%);
+            padding: 30px;
+            border-radius: 22px;
+            text-align: center;
+            border: 1px solid rgba(226, 232, 240, 0.9);
+            box-shadow: var(--shadow-soft);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            position: relative;
+            overflow: hidden;
+        }
+        .stat-card:hover { 
+            transform: translateY(-10px); 
+            box-shadow: 0 26px 60px -30px rgba(15, 23, 42, 0.35);
+            border-color: rgba(245, 158, 11, 0.55);
+        }
+        .stat-card::after {
+            content: '';
+            position: absolute;
+            bottom: 0; left: 0; width: 100%; height: 5px;
+            background: linear-gradient(90deg, var(--color-primary), var(--color-neon-blue));
+            box-shadow: 0 -2px 14px rgba(245, 158, 11, 0.25);
+        }
+        .stat-value { 
+            font-size: 2.6rem; 
+            font-weight: 900; 
+            background: linear-gradient(135deg, var(--color-primary), #fb7185);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin: 18px 0; 
+            line-height: 1.2;
+            font-family: 'Orbitron', sans-serif;
+            text-shadow: 0 4px 16px rgba(245, 158, 11, 0.12);
+        }
+        .stat-label { 
+            color: #64748b; 
+            font-size: 0.86rem; 
+            font-weight: 800; 
+            text-transform: uppercase; 
+            letter-spacing: 1px; 
+        }
+        .stat-trend {
+            font-size: 0.92rem;
+            font-weight: 800;
+            padding: 5px 14px;
+            border-radius: 999px;
+            display: inline-block;
+            margin-top: 10px;
+            border: 1px solid rgba(226, 232, 240, 0.8);
+            backdrop-filter: blur(6px);
+            -webkit-backdrop-filter: blur(6px);
+        }
+
+        /* 导航栏 */
+        header { 
+            position: fixed; 
+            top: 0; 
+            width: 100%; 
+            padding: 15px 50px; 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            z-index: 1000; 
+            background: rgba(255,255,255,0.92); 
+            backdrop-filter: blur(22px); 
+            -webkit-backdrop-filter: blur(22px);
+            border-bottom: 1px solid rgba(226, 232, 240, 0.75);
+            box-shadow: 0 10px 35px -25px rgba(15, 23, 42, 0.25); 
+            transition: all 0.3s;
+        }
+        nav a { 
+            margin-left: 25px; 
+            text-decoration: none; 
+            color: #475569; 
+            font-weight: 800; 
+            font-size: 0.95rem;
+            position: relative;
+            transition: color 0.3s;
+        }
+        nav a::after {
+            content: '';
+            position: absolute;
+            bottom: -6px; left: 0; width: 0; height: 3px;
+            background: linear-gradient(90deg, var(--color-primary), var(--color-neon-blue));
+            transition: width 0.3s;
+            border-radius: 999px;
+            box-shadow: 0 0 14px rgba(245, 158, 11, 0.28);
+        }
+        nav a:hover, nav a.active { 
+            color: var(--color-primary);
+            text-shadow: 0 0 12px rgba(245, 158, 11, 0.18);
+        }
+        nav a:hover::after, nav a.active::after { width: 100%; }
+        
+        .back-link { 
+            position: absolute; 
+            left: 20px; 
+            color: #64748b; 
+            text-decoration: none;
+            font-weight: 800;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            transition: all 0.3s;
+        }
+        .back-link:hover { 
+            color: var(--color-neon-blue); 
+            text-shadow: 0 0 12px rgba(34, 211, 238, 0.25);
+            transform: translateX(-5px);
+        }
+
+        /* 按钮样式 */
+        .btn {
+            display: inline-block;
+            padding: 15px 42px;
+            background: linear-gradient(135deg, #f59e0b, #fb7185);
+            color: white;
+            border-radius: 999px;
+            text-decoration: none;
+            font-weight: 900;
+            font-size: 1.1rem;
+            box-shadow: 0 16px 40px -18px rgba(245, 158, 11, 0.55);
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            border: 1px solid rgba(255,255,255,0.35);
+        }
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0; left: -100%; width: 100%; height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.45), transparent);
+            transition: 0.5s;
+            z-index: -1;
+        }
+        .btn:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 26px 60px -26px rgba(245, 158, 11, 0.75);
+        }
+        .btn:hover::before { left: 100%; }
+
+        /* 动画类 */
+        .reveal-up { opacity: 0; transform: translateY(40px); transition: all 0.8s cubic-bezier(0.5, 0, 0, 1); }
+        .reveal-up.active { opacity: 1; transform: translateY(0); }
+        .reveal-scale { opacity: 0; transform: scale(0.95); transition: all 0.8s cubic-bezier(0.5, 0, 0, 1); }
+        .reveal-scale.active { opacity: 1; transform: scale(1); }
+        .delay-100 { transition-delay: 0.1s; }
+        .delay-200 { transition-delay: 0.2s; }
+
+        @media (max-width: 900px) {
+            .canvas-grid { grid-template-columns: 1fr; }
+            .canvas-item.full-width, .canvas-item.half-width { grid-column: span 1; }
+            .chart-box { min-width: 100%; }
+            header { padding: 15px 20px; }
+            nav { display: none; } 
+            .business-hero h1 { font-size: 2.5rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- 顶部导航 -->
+    <header>
+        <a href="../index.html" class="back-link">
+            <span>←</span> 返回首页
+        </a>
+        <div class="logo" style="font-weight: 900; font-size: 1.4rem; color: #f59e0b; font-family: 'Orbitron', sans-serif;">
+             &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp<span style="color:#0f172a">兰州大学·金鹰</span>
+        </div>
+        <nav>
+            <a href="vision.html">愿景模式</a>
+            <a href="painpoints.html">痛点破局</a>
+            <a href="solution.html">解决方案</a>
+            <a href="market.html">市场分析</a>
+            <a href="business.html" class="active">商业模式</a>
+            <a href="team.html">核心团队</a>
+        </nav>
+    </header>
+
+    <!-- 首屏 -->
+    <section class="business-hero">
+        <div class="bg-circle c1"></div>
+        <div class="bg-circle c2"></div>
+        <div class="bg-circle c3"></div>
+        <div class="container reveal-up" style="position: relative; z-index: 2;">
+            <h1 style="font-size: 4rem; margin-bottom: 25px; font-weight: 900; letter-spacing: -2px; text-shadow: 0 10px 30px rgba(0,0,0,0.35); font-family: 'Orbitron', sans-serif;">可持续的盈利引擎</h1>
+            <p style="font-size: 1.4rem; opacity: 0.96; max-width: 800px; margin: 0 auto; font-weight: 300; text-shadow: 0 2px 10px rgba(0,0,0,0.22);">
+                多元化收入结构 <span style="color:var(--color-neon-blue)">✦</span> 指数级增长潜力 <span style="color:var(--color-neon-blue)">✦</span> 科学的风险控制
+            </p>
+        </div>
+    </section>
+
+    <!-- 财务亮点概览 -->
+    <section class="container section-padding">
+        <div class="finance-highlights reveal-up">
+            <div class="stat-card">
+                <div class="stat-label">预计第 3 年营收</div>
+                <div class="stat-value">¥ 1,200万</div>
+                <div class="stat-trend" style="color: #10b981; background: rgba(16, 185, 129, 0.10);">↑ 同比增长 45%</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">平均净利率</div>
+                <div class="stat-value">28.5%</div>
+                <div class="stat-trend" style="color: #64748b; background: rgba(100, 116, 139, 0.10);">高于行业平均</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">投资回收期</div>
+                <div class="stat-value">2.4 年</div>
+                <div class="stat-trend" style="color: #f59e0b; background: rgba(245, 158, 11, 0.10);">快速回笼资金</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">带动农户增收</div>
+                <div class="stat-value">¥ 3,500</div>
+                <div class="stat-trend" style="color: #64748b; background: rgba(100, 116, 139, 0.10);">户均/年</div>
+            </div>
+        </div>
+
+        <!-- 成本结构雷达图区域 -->
+        <div class="chart-box reveal-up delay-100" style="margin-bottom: 40px; min-width: auto; width: 100%;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px;">
+                <h3 style="font-size: 1.3rem; font-weight: 900; color: var(--color-text-main); font-family: 'Orbitron', sans-serif;">成本结构分析</h3>
+                <span style="font-size: 0.85rem; color: #64748b; background: #f1f5f9; padding: 6px 16px; border-radius: 999px; font-weight: 700; border: 1px solid #e2e8f0;">单位：百分比</span>
+            </div>
+            <div id="chart-radar" class="chart-container" style="height: 350px;"></div>
+        </div>
+        
+        <!-- 资金流向与业务分布 -->
+        <div class="chart-box reveal-up delay-200" style="margin-bottom: 40px; min-width: auto; width: 100%;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px;">
+                <h3 style="font-size: 1.3rem; font-weight: 900; color: var(--color-text-main); font-family: 'Orbitron', sans-serif;">资金流向与业务分布</h3>
+                <span style="font-size: 0.85rem; color: #64748b; background: #f1f5f9; padding: 6px 16px; border-radius: 999px; font-weight: 700; border: 1px solid #e2e8f0;">单位：万元</span>
+            </div>
+            <div id="chart-sankey" class="chart-container" style="height: 400px;"></div>
+        </div>
+
+        <!-- 盈利与农产品流向流程图 -->
+        <div class="chart-box reveal-up" style="margin-bottom: 40px; min-width: auto; width: 100%;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px;">
+                <h3 style="font-size: 1.3rem; font-weight: 900; color: var(--color-text-main); font-family: 'Orbitron', sans-serif;">盈利闭环与农产品流向</h3>
+                <span style="font-size: 0.85rem; color: #64748b; background: #f1f5f9; padding: 6px 16px; border-radius: 999px; font-weight: 700; border: 1px solid #e2e8f0;">全链路价值流转</span>
+            </div>
+            <div id="chart-flow" class="chart-container" style="height: 450px;"></div>
+        </div>
+    </section>
+
+    <!-- 商业模式画布 -->
+    <section class="container section-padding">
+        <div class="section-title reveal-up">
+            <h2>商业模式画布</h2>
+            <p style="color: #64748b; font-size: 1.1rem; margin-top: 15px;">清晰的价值创造与传递逻辑</p>
+        </div>
+
+        <div class="canvas-grid reveal-scale">
+            <div class="canvas-item full-width">
+                <div class="canvas-content-wrapper">
+                    <span class="canvas-label">Value Propositions (价值主张)</span>
+                    <div class="canvas-title">体旅农融合的一站式数字化解决方案</div>
+                    <div class="canvas-content">
+                        为政府提供<strong>乡村振兴样板</strong>，为农户提供<strong>稳定增收渠道</strong>，为游客提供<strong>深度体验场景</strong>，为企业打造<strong>高效供应链平台</strong>。
+                    </div>
+                </div>
+            </div>
+
+            <div class="canvas-item">
+                <div class="canvas-content-wrapper">
+                    <span class="canvas-label">Key Activities (核心业务)</span>
+                    <div class="canvas-title">平台运营 & 赛事策划</div>
+                    <div class="canvas-content">
+                        • 数字化供应链管理<br>
+                        • 马拉松及节庆活动策划<br>
+                        • 农产品品牌营销<br>
+                        • 农业大数据服务
+                    </div>
+                </div>
+            </div>
+
+            <div class="canvas-item">
+                <div class="canvas-content-wrapper">
+                    <span class="canvas-label">Key Resources (核心资源)</span>
+                    <div class="canvas-title">数据 & 品牌 & 渠道</div>
+                    <div class="canvas-content">
+                        • 兰州大学技术支撑<br>
+                        • "夏官营"地域品牌<br>
+                        • 覆盖甘青宁的物流网<br>
+                        • 稳定的赛事 IP 流量
+                    </div>
+                </div>
+            </div>
+
+            <div class="canvas-item">
+                <div class="canvas-content-wrapper">
+                    <span class="canvas-label">Key Partners (合作伙伴)</span>
+                    <div class="canvas-title">政企农媒四方联动</div>
+                    <div class="canvas-content">
+                        • 地方政府 (政策支持)<br>
+                        • 村集体合作社 (生产端)<br>
+                        • 赞助商与媒体 (推广端)<br>
+                        • 物流公司 (履约端)
+                    </div>
+                </div>
+            </div>
+
+            <div class="canvas-item">
+                <div class="canvas-content-wrapper">
+                    <span class="canvas-label">Customer Relationships (客户关系)</span>
+                    <div class="canvas-title">社群运营 & 会员体系</div>
+                    <div class="canvas-content">
+                        • 跑友社群互动<br>
+                        • 农产品订阅制服务<br>
+                        • 企业定制采购<br>
+                        • 线下体验活动
+                    </div>
+                </div>
+            </div>
+
+            <div class="canvas-item">
+                <div class="canvas-content-wrapper">
+                    <span class="canvas-label">Channels (渠道通路)</span>
+                    <div class="canvas-title">线上线下全域触达</div>
+                    <div class="canvas-content">
+                        • "夏官营通"小程序<br>
+                        • 马拉松赛事现场<br>
+                        • 电商平台 (抖音/淘宝)<br>
+                        • 线下体验店/展销会
+                    </div>
+                </div>
+            </div>
+
+            <div class="canvas-item">
+                <div class="canvas-content-wrapper">
+                    <span class="canvas-label">Customer Segments (客户细分)</span>
+                    <div class="canvas-title">B 端 + C 端双轮驱动</div>
+                    <div class="canvas-content">
+                        • <strong>C 端</strong>：运动爱好者、城市家庭、研学团体<br>
+                        • <strong>B 端</strong>：企事业单位采购、生鲜超市、餐饮连锁
+                    </div>
+                </div>
+            </div>
+
+            <div class="canvas-item" style="border-top-color: #fb7185; background: linear-gradient(135deg, #fff 0%, #fff1f2 100%);">
+                <div class="canvas-content-wrapper">
+                    <span class="canvas-label">Cost Structure (成本结构)</span>
+                    <div class="canvas-content">
+                        • 平台研发与维护<br>
+                        • 赛事活动执行成本<br>
+                        • 物流与仓储费用<br>
+                        • 市场营销推广
+                    </div>
+                </div>
+            </div>
+
+            <div class="canvas-item" style="border-top-color: #22c55e; background: linear-gradient(135deg, #fff 0%, #ecfdf5 100%);">
+                <div class="canvas-content-wrapper">
+                    <span class="canvas-label">Revenue Streams (收入来源)</span>
+                    <div class="canvas-content">
+                        • <span class="highlight-num">40%</span> 农产品销售差价<br>
+                        • <span class="highlight-num">30%</span> 赛事赞助与报名费<br>
+                        • <span class="highlight-num">20%</span> 旅游与研学服务<br>
+                        • <span class="highlight-num">10%</span> 数据技术服务费
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 数据可视化图表区 -->
+    <section class="container section-padding" style="background: linear-gradient(180deg, #ffffff 0%, #fbfdff 100%); border-radius: 30px; margin-bottom: 80px; box-shadow: var(--shadow-soft); position: relative; overflow: hidden;">
+        <div style="position: absolute; top: 0; right: 0; width: 320px; height: 320px; background: radial-gradient(circle, rgba(34, 211, 238, 0.09) 0%, transparent 70%); pointer-events: none;"></div>
+        <div class="section-title reveal-up">
+            <h2>财务预测与增长模型</h2>
+            <p style="color: #64748b; margin-top: 15px;">基于保守估计的五年发展规划</p>
+        </div>
+
+        <div class="chart-row">
+            <div class="chart-box reveal-up delay-100">
+                <h3 style="margin-bottom: 25px; font-size: 1.3rem; font-weight: 900; color: var(--color-text-main); font-family: 'Orbitron', sans-serif;">五年营收与净利润预测</h3>
+                <div id="chart-revenue" class="chart-container"></div>
+            </div>
+
+            <div class="chart-box reveal-up delay-200">
+                <h3 style="margin-bottom: 25px; font-size: 1.3rem; font-weight: 900; color: var(--color-text-main); font-family: 'Orbitron', sans-serif;">成熟期收入构成比例</h3>
+                <div id="chart-pie" class="chart-container"></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 底部引导 -->
+    <section class="container section-padding" style="text-align: center; padding-bottom: 120px;">
+        <h3 class="reveal-up" style="font-size: 2rem; color: var(--color-text-main); margin-bottom: 20px; font-weight: 900;">谁在推动这个庞大的计划落地？</h3>
+        <p class="reveal-up delay-100" style="color: #64748b; margin: 20px 0 50px; font-size: 1.2rem; max-width: 600px; margin-left: auto; margin-right: auto;">介绍我们的跨学科核心团队与顾问阵容，汇聚顶尖智慧</p>
+        <a href="team.html" class="btn reveal-up delay-200">查看核心团队</a>
+    </section>
+
+    <!-- 脚本逻辑 -->
+    <script src="../assets/js/main.js"></script>
+    <script>
+        // 滚动动画监听
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('active');
+                }
+            });
+        }, { threshold: 0.1 });
+
+        document.querySelectorAll('.reveal-up, .reveal-scale').forEach(el => observer.observe(el));
+
+        document.addEventListener('DOMContentLoaded', function() {
+            // --- 图表 1: 营收与利润混合图 (增强版) ---
+            var chartRev = echarts.init(document.getElementById('chart-revenue'));
+            var optionRev = {
+                tooltip: { 
+                    trigger: 'axis', 
+                    axisPointer: { type: 'cross' },
+                    backgroundColor: 'rgba(255, 255, 255, 0.95)',
+                    borderColor: '#e2e8f0',
+                    borderWidth: 1,
+                    textStyle: { color: '#1e293b', fontWeight: 'bold' },
+                    extraCssText: 'box-shadow: 0 10px 30px rgba(0,0,0,0.15); border-radius: 12px;'
+                },
+                legend: { 
+                    data: ['营业收入', '净利润', '净利率'],
+                    bottom: 0,
+                    textStyle: { color: '#64748b', fontSize: 12, fontWeight: '600' },
+                    itemWidth: 20,
+                    itemHeight: 10
+                },
+                grid: {
+                    left: '3%',
+                    right: '4%',
+                    bottom: '12%',
+                    top: '10%',
+                    containLabel: true
+                },
+                xAxis: {
+                    type: 'category',
+                    data: ['2026', '2027', '2028', '2029', '2030'],
+                    axisLine: { lineStyle: { color: '#cbd5e1', width: 2 } },
+                    axisLabel: { color: '#64748b', fontWeight: 'bold', fontSize: 12, fontFamily: 'Orbitron' },
+                    axisTick: { show: false }
+                },
+                yAxis: [
+                    {
+                        type: 'value',
+                        name: '金额 (万元)',
+                        position: 'left',
+                        axisLine: { show: false },
+                        axisTick: { show: false },
+                        splitLine: { lineStyle: { color: '#f1f5f9', type: 'dashed', width: 2 } },
+                        axisLabel: { color: '#64748b', fontWeight: '600' }
+                    },
+                    {
+                        type: 'value',
+                        name: '利润率 (%)',
+                        position: 'right',
+                        max: 100,
+                        axisLine: { show: false },
+                        axisTick: { show: false },
+                        splitLine: { show: false },
+                        axisLabel: { formatter: '{value}%', color: '#64748b', fontWeight: '600' }
+                    }
+                ],
+                series: [
+                    {
+                        name: '营业收入',
+                        type: 'bar',
+                        data: [300, 650, 1200, 2100, 3500],
+                        itemStyle: { 
+                            color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+                                { offset: 0, color: '#60a5fa' },
+                                { offset: 1, color: '#2563eb' }
+                            ]),
+                            borderRadius: [8, 8, 0, 0],
+                            shadowColor: 'rgba(37, 99, 235, 0.4)',
+                            shadowBlur: 10,
+                            shadowOffsetY: 5
+                        },
+                        barWidth: '25%',
+                        z: 2
+                    },
+                    {
+                        name: '净利润',
+                        type: 'bar',
+                        data: [45, 130, 340, 630, 1050],
+                        itemStyle: { 
+                            color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+                                { offset: 0, color: '#34d399' },
+                                { offset: 1, color: '#059669' }
+                            ]),
+                            borderRadius: [8, 8, 0, 0],
+                            shadowColor: 'rgba(5, 150, 105, 0.4)',
+                            shadowBlur: 10,
+                            shadowOffsetY: 5
+                        },
+                        barWidth: '25%',
+                        z: 2
+                    },
+                    {
+                        name: '净利率',
+                        type: 'line',
+                        yAxisIndex: 1,
+                        data: [15, 20, 28.3, 30, 30],
+                        itemStyle: { color: '#f59e0b' },
+                        lineStyle: { width: 5, shadowColor: 'rgba(245, 158, 11, 0.45)', shadowBlur: 15, cap: 'round' },
+                        symbol: 'circle',
+                        symbolSize: 12,
+                        itemStyle: {
+                            borderWidth: 4,
+                            borderColor: '#fff',
+                            shadowColor: 'rgba(245, 158, 11, 0.55)',
+                            shadowBlur: 8
+                        },
+                        areaStyle: {
+                            color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+                                { offset: 0, color: 'rgba(245, 158, 11, 0.28)' },
+                                { offset: 1, color: 'rgba(245, 158, 11, 0)' }
+                            ])
+                        },
+                        z: 3
+                    }
+                ]
+            };
+            chartRev.setOption(optionRev);
+
+            // --- 图表 2: 收入构成玫瑰图 (增强版) ---
+            var chartPie = echarts.init(document.getElementById('chart-pie'));
+            var optionPie = {
+                tooltip: { 
+                    trigger: 'item', 
+                    formatter: '{b}: {c} ({d}%)',
+                    backgroundColor: 'rgba(255, 255, 255, 0.95)',
+                    borderColor: '#e2e8f0',
+                    textStyle: { color: '#1e293b', fontWeight: 'bold' },
+                    extraCssText: 'box-shadow: 0 10px 30px rgba(0,0,0,0.15); border-radius: 12px;'
+                },
+                legend: { 
+                    bottom: '5%', 
+                    left: 'center',
+                    textStyle: { color: '#64748b', fontSize: 13, fontWeight: '600' }
+                },
+                color: ['#f59e0b', '#3b82f6', '#22c55e', '#a855f7'],
+                series: [
+                    {
+                        name: '收入来源',
+                        type: 'pie',
+                        radius: ['30%', '75%'],
+                        center: ['50%', '45%'],
+                        roseType: 'area',
+                        itemStyle: {
+                            borderRadius: 10,
+                            borderColor: '#fff',
+                            borderWidth: 3,
+                            shadowColor: 'rgba(0,0,0,0.10)',
+                            shadowBlur: 10
+                        },
+                        label: { 
+                            show: true, 
+                            fontSize: 14, 
+                            fontWeight: 'bold',
+                            color: '#fff',
+                            formatter: '{b}\n{d}%',
+                            textShadowColor: 'rgba(0,0,0,0.25)',
+                            textShadowBlur: 5
+                        },
+                        emphasis: {
+                            label: { 
+                                show: true, 
+                                fontSize: 18, 
+                                fontWeight: 'bold',
+                                color: '#fff'
+                            },
+                            itemStyle: {
+                                shadowBlur: 20,
+                                shadowOffsetX: 0,
+                                shadowColor: 'rgba(0, 0, 0, 0.25)',
+                                scale: true
+                            }
+                        },
+                        data: [
+                            { value: 40, name: '农产品销售' },
+                            { value: 30, name: '赛事运营' },
+                            { value: 20, name: '文旅研学' },
+                            { value: 10, name: '数据服务' }
+                        ]
+                    }
+                ]
+            };
+            chartPie.setOption(optionPie);
+
+            // --- 图表 3: 成本结构雷达图 ---
+            var chartRadar = echarts.init(document.getElementById('chart-radar'));
+            var optionRadar = {
+                tooltip: {},
+                radar: {
+                    indicator: [
+                        { name: '平台研发', max: 40 },
+                        { name: '赛事执行', max: 40 },
+                        { name: '物流仓储', max: 40 },
+                        { name: '市场推广', max: 40 }
+                    ],
+                    shape: 'circle',
+                    splitNumber: 5,
+                    axisName: {
+                        color: '#64748b',
+                        fontWeight: 'bold',
+                        fontSize: 13,
+                        fontFamily: 'Orbitron'
+                    },
+                    splitLine: { lineStyle: { color: '#e2e8f0', width: 2 } },
+                    splitArea: {
+                        show: true,
+                        areaStyle: { color: ['rgba(241, 245, 249, 0.6)', 'rgba(241, 245, 249, 0.3)'] }
+                    },
+                    axisLine: { lineStyle: { color: '#cbd5e1', width: 2 } }
+                },
+                series: [
+                    {
+                        name: '成本分布',
+                        type: 'radar',
+                        data: [
+                            {
+                                value: [25, 35, 20, 20],
+                                name: '成本分布',
+                                itemStyle: { color: '#fb7185', shadowColor: 'rgba(251, 113, 133, 0.55)', shadowBlur: 10 },
+                                areaStyle: {
+                                    color: new echarts.graphic.RadialGradient(0.1, 0.6, 1, [
+                                        { color: 'rgba(251, 113, 133, 0.10)', offset: 0 },
+                                        { color: 'rgba(251, 113, 133, 0.55)', offset: 1 }
+                                    ])
+                                },
+                                lineStyle: { width: 4, color: '#fb7185', shadowColor: 'rgba(251, 113, 133, 0.45)', shadowBlur: 10 }
+                            }
+                        ]
+                    }
+                ]
+            };
+            chartRadar.setOption(optionRadar);
+
+            /* =========================
+               关键优化：桑基图“亮色化”
+               - 不改数据与连线关系
+               - 只增强颜色函数兼容性（避免返回 undefined 导致默认灰/黑）
+               - 统一明亮节点色 + 明亮连线渐变
+            ========================== */
+            const sankeyNodeColors = [
+                '#fbbf24', // 0 总收入
+                '#f59e0b', // 1 农产品销售
+                '#60a5fa', // 2 赛事运营
+                '#34d399', // 3 文旅研学
+                '#a78bfa', // 4 数据服务
+                '#fde68a', // 5 生产成本
+                '#93c5fd', // 6 运营成本
+                '#c4b5fd', // 7 研发投入
+                '#fb7185'  // 8 净利润
+            ];
+
+            // --- 图表 4: 资金流向桑基图（更明亮） ---
+            var chartSankey = echarts.init(document.getElementById('chart-sankey'));
+            var optionSankey = {
+                tooltip: {
+                    trigger: 'item',
+                    triggerOn: 'mousemove',
+                    backgroundColor: 'rgba(255, 255, 255, 0.95)',
+                    borderColor: '#e2e8f0',
+                    textStyle: { color: '#1e293b', fontWeight: 'bold' },
+                    extraCssText: 'box-shadow: 0 10px 30px rgba(0,0,0,0.15); border-radius: 12px;'
+                },
+                series: {
+                    type: 'sankey',
+                    layout: 'none',
+                    focusNodeAdjacency: 'allEdges',
+                    data: [
+                        { name: '总收入', itemStyle: { color: sankeyNodeColors[0] } },
+                        { name: '农产品销售', itemStyle: { color: sankeyNodeColors[1] } },
+                        { name: '赛事运营', itemStyle: { color: sankeyNodeColors[2] } },
+                        { name: '文旅研学', itemStyle: { color: sankeyNodeColors[3] } },
+                        { name: '数据服务', itemStyle: { color: sankeyNodeColors[4] } },
+                        { name: '生产成本', itemStyle: { color: sankeyNodeColors[5] } },
+                        { name: '运营成本', itemStyle: { color: sankeyNodeColors[6] } },
+                        { name: '研发投入', itemStyle: { color: sankeyNodeColors[7] } },
+                        { name: '净利润', itemStyle: { color: sankeyNodeColors[8] } }
+                    ],
+                    links: [
+                        { source: '总收入', target: '农产品销售', value: 40 },
+                        { source: '总收入', target: '赛事运营', value: 30 },
+                        { source: '总收入', target: '文旅研学', value: 20 },
+                        { source: '总收入', target: '数据服务', value: 10 },
+                        
+                        { source: '农产品销售', target: '生产成本', value: 25 },
+                        { source: '农产品销售', target: '运营成本', value: 10 },
+                        { source: '农产品销售', target: '净利润', value: 5 },
+                        
+                        { source: '赛事运营', target: '运营成本', value: 20 },
+                        { source: '赛事运营', target: '研发投入', value: 5 },
+                        { source: '赛事运营', target: '净利润', value: 5 },
+                        
+                        { source: '文旅研学', target: '运营成本', value: 15 },
+                        { source: '文旅研学', target: '净利润', value: 5 },
+                        
+                        { source: '数据服务', target: '研发投入', value: 8 },
+                        { source: '数据服务', target: '净利润', value: 2 }
+                    ],
+                    lineStyle: {
+                        /* 亮色关键：用 gradient 让连线不再偏暗 */
+                        color: 'gradient',
+                        curveness: 0.52,
+                        opacity: 0.55,
+                        width: 12
+                    },
+                    itemStyle: {
+                        borderWidth: 2,
+                        borderColor: 'rgba(255,255,255,0.95)',
+                        shadowColor: 'rgba(245, 158, 11, 0.18)',
+                        shadowBlur: 18
+                    },
+                    label: {
+                        position: 'right',
+                        formatter: '{b}',
+                        color: '#0f172a',
+                        fontWeight: 900,
+                        fontSize: 13
+                    },
+                    emphasis: {
+                        focus: 'adjacency',
+                        itemStyle: {
+                            shadowBlur: 26,
+                            shadowColor: 'rgba(34, 211, 238, 0.22)'
+                        },
+                        lineStyle: {
+                            opacity: 0.85
+                        }
+                    }
+                }
+            };
+            chartSankey.setOption(optionSankey);
+
+            // --- 图表 5: 盈利与农产品流向流程图（更明亮） ---
+            var chartFlow = echarts.init(document.getElementById('chart-flow'));
+            var optionFlow = {
+                tooltip: {
+                    trigger: 'item',
+                    triggerOn: 'mousemove',
+                    backgroundColor: 'rgba(255, 255, 255, 0.95)',
+                    borderColor: '#e2e8f0',
+                    textStyle: { color: '#1e293b', fontWeight: 'bold' },
+                    extraCssText: 'box-shadow: 0 10px 30px rgba(0,0,0,0.15); border-radius: 12px;'
+                },
+                series: {
+                    type: 'sankey',
+                    layout: 'none',
+                    focusNodeAdjacency: 'allEdges',
+                    data: [
+                        { name: '农户/合作社', itemStyle: { color: '#86efac' } },
+                        { name: '种植基地', itemStyle: { color: '#4ade80' } },
+
+                        { name: '金鹰供应链平台', itemStyle: { color: '#fcd34d' } },
+                        { name: '分拣/包装', itemStyle: { color: '#fde68a' } },
+                        { name: '冷链物流', itemStyle: { color: '#fbbf24' } },
+                        { name: '品牌营销', itemStyle: { color: '#93c5fd' } },
+
+                        { name: 'C端消费者', itemStyle: { color: '#60a5fa' } },
+                        { name: 'B端企业/食堂', itemStyle: { color: '#3b82f6' } },
+                        { name: '赛事/文旅游客', itemStyle: { color: '#a78bfa' } },
+
+                        { name: '销售收入', itemStyle: { color: '#fb7185' } },
+                        { name: '农户分红', itemStyle: { color: '#fda4af' } },
+                        { name: '平台利润', itemStyle: { color: '#f472b6' } },
+                        { name: '再生产投入', itemStyle: { color: '#c4b5fd' } }
+                    ],
+                    links: [
+                        { source: '农户/合作社', target: '金鹰供应链平台', value: 35 },
+                        { source: '种植基地', target: '金鹰供应链平台', value: 25 },
+                        
+                        { source: '金鹰供应链平台', target: '分拣/包装', value: 60 },
+                        { source: '分拣/包装', target: '冷链物流', value: 58 },
+                        { source: '冷链物流', target: '品牌营销', value: 55 },
+                        
+                        { source: '品牌营销', target: 'C端消费者', value: 25 },
+                        { source: '品牌营销', target: 'B端企业/食堂', value: 20 },
+                        { source: '品牌营销', target: '赛事/文旅游客', value: 10 },
+                        
+                        { source: 'C端消费者', target: '销售收入', value: 25 },
+                        { source: 'B端企业/食堂', target: '销售收入', value: 20 },
+                        { source: '赛事/文旅游客', target: '销售收入', value: 10 },
+                        
+                        { source: '销售收入', target: '农户分红', value: 30 },
+                        { source: '销售收入', target: '平台利润', value: 15 },
+                        { source: '销售收入', target: '再生产投入', value: 10 }
+                    ],
+                    lineStyle: {
+                        color: 'gradient',
+                        curveness: 0.52,
+                        opacity: 0.50,
+                        width: 14
+                    },
+                    itemStyle: {
+                        borderWidth: 2,
+                        borderColor: 'rgba(255,255,255,0.95)',
+                        shadowColor: 'rgba(15, 23, 42, 0.10)',
+                        shadowBlur: 14
+                    },
+                    label: {
+                        position: 'right',
+                        formatter: '{b}',
+                        color: '#0f172a',
+                        fontWeight: 900,
+                        fontSize: 12
+                    },
+                    emphasis: {
+                        focus: 'adjacency',
+                        lineStyle: { opacity: 0.85 },
+                        itemStyle: { shadowBlur: 24, shadowColor: 'rgba(34, 211, 238, 0.20)' }
+                    }
+                }
+            };
+            chartFlow.setOption(optionFlow);
+
+            // 响应式处理
+            window.addEventListener('resize', function() {
+                chartRev.resize();
+                chartPie.resize();
+                chartRadar.resize();
+                chartSankey.resize();
+                chartFlow.resize();
+            });
+        });
+    </script>
+
+    <!-- 彩色粒子交互特效代码（逻辑不动） -->
+    <script>
+        !(function () {
+          function n(n, e, t) {
+            return n.getAttribute(e) || t;
+          }
+          function e(n) {
+            return document.getElementsByTagName(n);
+          }
+          function t() {
+            var t = e("script"),
+              o = t.length,
+              i = t[o - 1];
+            return {
+              l: o,
+              z: n(i, "zIndex", -1),
+              o: n(i, "opacity", 0.6),
+              c: n(i, "color", "0,255,0"), 
+              n: n(i, "count", 400),
+            };
+          }
+
+          function o() {
+            (a = m.width =
+              window.innerWidth ||
+              document.documentElement.clientWidth ||
+              document.body.clientWidth),
+              (c = m.height =
+                window.innerHeight ||
+                document.documentElement.clientHeight ||
+                document.body.clientHeight);
+          }
+          function i() {
+            r.clearRect(0, 0, a, c);
+            var n, e, t, o, m, l;
+            s.forEach(function (particle, index) {
+              for (
+                particle.x += particle.xa,
+                particle.y += particle.ya,
+                particle.xa *= particle.x > a || particle.x < 0 ? -1 : 1,
+                particle.ya *= particle.y > c || particle.y < 0 ? -1 : 1,
+                r.fillStyle = particle.color,
+                r.fillRect(particle.x - 0.5, particle.y - 0.5, 1, 1),
+                e = index + 1;
+                e < u.length;
+                e++
+              ) {
+                (n = u[e]),
+                  null !== n.x &&
+                  null !== n.y &&
+                  ((o = particle.x - n.x),
+                    (m = particle.y - n.y),
+                    (l = o * o + m * m),
+                    l < n.max &&
+                    (n === y &&
+                    l >= n.max / 2 &&
+                    ((particle.x -= 0.03 * o), (particle.y -= 0.03 * m)),
+                      (t = (n.max - l) / n.max),
+                      r.beginPath(),
+                      (r.lineWidth = t / 2),
+                      r.strokeStyle = particle.color,
+                      r.moveTo(particle.x, particle.y),
+                      r.lineTo(n.x, n.y),
+                      r.stroke()));
+              }
+            }),
+              x(i);
+          }
+          var fixedColors = [
+            "rgba(255, 0, 0, 1.0)",
+            "rgba(0, 255, 0, 1.0)",
+            "rgba(0, 0, 255, 1.0)",
+            "rgba(255, 255, 0, 1.0)",
+            "rgba(0, 255, 255, 0.8)",
+            "rgba(255, 0, 255, 0.8)",
+            "rgba(255, 165, 0, 0.8)",
+            "rgba(127, 255, 212, 1.0)",
+            "rgba(0, 255, 127, 1.0)"
+          ];
+          var a,
+            c,
+            u,
+            m = document.createElement("canvas"),
+            d = t(),
+            l = "c_n" + d.l,
+            r = m.getContext("2d"),
+            x =
+              window.requestAnimationFrame ||
+              window.webkitRequestAnimationFrame ||
+              window.mozRequestAnimationFrame ||
+              window.oRequestAnimationFrame ||
+              window.msRequestAnimationFrame ||
+              function (n) {
+                window.setTimeout(n, 1e3 / 45);
+              },
+            w = Math.random,
+            y = { x: null, y: null, max: 2e4 };
+          (m.id = l),
+            (m.style.cssText =
+              "position:fixed;top:0;left:0;z-index:" + d.z + ";opacity:" + d.o),
+            e("body")[0].appendChild(m),
+            o(),
+            (window.onresize = o),
+            (window.onmousemove = function (n) {
+              (n = n || window.event), (y.x = n.clientX), (y.y = n.clientY);
+            }),
+            (window.onmouseout = function () {
+              (y.x = null), (y.y = null);
+            });
+
+          for (var s = [], f = 0; d.n > f; f++) {
+            var h = w() * a,
+              g = w() * c,
+              v = 2 * w() - 1,
+              p = 2 * w() - 1,
+              color = fixedColors[Math.floor(Math.random() * fixedColors.length)];
+            s.push({ x: h, y: g, xa: v, ya: p, max: 6e3, color: color });
+          }
+
+          (u = s.concat([y])),
+            setTimeout(function () {
+              i();
+            }, 100);
+        })();
+    </script>
+</body>
+</html>

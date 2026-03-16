@@ -1,0 +1,813 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>核心团队 - 兰州大学·金鹰</title>
+    <!-- 全局样式 -->
+    <link rel="stylesheet" href="../assets/css/global.css">
+    <!-- ECharts CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
+    <!-- 引入Font Awesome图标库 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --color-primary: #d97706;
+            --color-accent: #f59e0b;
+            --color-text-main: #1e293b;
+            --color-text-sub: #475569;
+            --shadow-soft: 0 10px 30px -10px rgba(0, 0, 0, 0.1);
+        }
+
+        /* 页面特有样式 */
+        .team-hero {
+            /* 替换为背景图 */
+            background: url('../images/hero/7.jpg') center/cover no-repeat;
+            padding: 120px 0 80px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            color: white;
+        }
+        /* 新增遮罩层确保文字清晰 */
+        .team-hero::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: linear-gradient(135deg, rgba(15, 23, 42, 0.85) 0%, rgba(30, 41, 59, 0.8) 100%);
+            z-index: 0;
+        }
+
+        /* 核心创始人区域 */
+        .founders-section {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            margin: 60px 0;
+            flex-wrap: wrap;
+        }
+
+        /* 成员卡片设计 */
+        .member-card {
+            background: white;
+            width: 300px;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: var(--shadow-soft);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            position: relative;
+            text-align: center;
+            border: 1px solid #f1f5f9;
+        }
+
+        .member-card:hover {
+            transform: translateY(-15px) scale(1.02);
+            box-shadow: 0 20px 40px rgba(59, 130, 246, 0.2);
+        }
+
+        .member-img-box {
+            height: 320px;
+            overflow: hidden;
+            position: relative;
+            background: #cbd5e1;
+        }
+
+        /* 视频样式 - 保持和图片一致的效果 */
+        .member-video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+            border: none;
+            outline: none;
+        }
+
+        .member-card:hover .member-video {
+            transform: scale(1.1);
+        }
+
+        .member-info {
+            padding: 25px;
+            position: relative;
+            z-index: 2;
+            background: white;
+        }
+
+        .member-name { font-size: 1.4rem; font-weight: 800; color: var(--color-text-main); margin-bottom: 5px; }
+        .member-role { color: var(--color-primary); font-weight: 600; font-size: 0.9rem; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 15px; display: block; }
+        .member-bio { font-size: 0.9rem; color: var(--color-text-sub); line-height: 1.6; margin-bottom: 20px; }
+
+        /* 技能标签 */
+        .skills-container {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+        .skill-tag {
+            background: #f1f5f9;
+            color: #64748b;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+        .member-card:hover .skill-tag {
+            background: var(--color-accent);
+            color: white;
+        }
+
+        /* 顾问无限轮播 */
+        .advisors-section {
+            background: #0f172a;
+            padding: 80px 0;
+            color: white;
+            overflow: hidden;
+        }
+        .advisors-track {
+            display: flex;
+            gap: 40px;
+            animation: scroll 20s linear infinite;
+            width: max-content;
+        }
+        .advisor-item {
+            text-align: center;
+            width: 200px;
+            flex-shrink: 0;
+        }
+        .advisor-img {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid var(--color-primary);
+            margin-bottom: 15px;
+            background: #334155;
+        }
+        .advisor-name { font-weight: bold; font-size: 1.1rem; }
+        .advisor-title { font-size: 0.85rem; color: #94a3b8; }
+
+        @keyframes scroll {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); } /* 假设内容复制了一份 */
+        }
+
+        /* 组织架构图容器 */
+        .org-chart-container {
+            width: 100%;
+            height: 500px;
+            background: white;
+            border-radius: 16px;
+            box-shadow: var(--shadow-soft);
+            margin-top: 40px;
+        }
+
+        /* 导航栏复用 */
+        header { 
+            position: fixed; 
+            top: 0; 
+            width: 100%; 
+            padding: 20px 50px; 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            z-index: 1000; 
+            background: rgba(255,255,255,0.95); 
+            backdrop-filter: blur(10px); 
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05); 
+        }
+        nav a { 
+            margin-left: 25px; 
+            text-decoration: none; 
+            color: #1e293b; 
+            font-weight: 600; 
+            transition: color 0.3s;
+        }
+        nav a:hover, nav a.active { color: #d97706; }
+        .back-link { 
+            position: absolute; 
+            left: 20px; 
+            color: #64748b; 
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+        .back-link:hover { color: #d97706; }
+
+        /* 通用容器样式 */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+            position: relative;
+            z-index: 2; /* 确保内容在遮罩层之上 */
+        }
+
+        /* 通用标题样式 */
+        .section-title {
+            text-align: center;
+            margin-bottom: 60px;
+            position: relative;
+        }
+        .section-title h2 {
+            font-size: 2.5rem;
+            color: var(--color-text-main);
+            margin-bottom: 15px;
+            font-weight: 800;
+        }
+        .section-title p {
+            font-size: 1.1rem;
+        }
+
+        /* 按钮样式 */
+        .btn {
+            display: inline-block;
+            padding: 12px 30px;
+            background: linear-gradient(135deg, #d97706, #f59e0b);
+            color: white;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 1rem;
+            box-shadow: 0 5px 15px rgba(217, 119, 6, 0.3);
+            transition: all 0.3s;
+            margin: 5px; /* 增加按钮间距 */
+        }
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(217, 119, 6, 0.4);
+        }
+        
+        /* 新增：次要按钮样式（可选，保持统一也可不用） */
+        .btn-secondary {
+            background: linear-gradient(135deg, #475569, #334155);
+            box-shadow: 0 5px 15px rgba(71, 85, 105, 0.3);
+        }
+        .btn-secondary:hover {
+            box-shadow: 0 8px 20px rgba(71, 85, 105, 0.4);
+        }
+
+        /* 动画类 */
+        .reveal-up { opacity: 0; transform: translateY(40px); transition: all 0.8s cubic-bezier(0.5, 0, 0, 1); }
+        .reveal-up.active { opacity: 1; transform: translateY(0); }
+        .reveal-scale { opacity: 0; transform: scale(0.95); transition: all 0.8s cubic-bezier(0.5, 0, 0, 1); }
+        .reveal-scale.active { opacity: 1; transform: scale(1); }
+        .delay-100 { transition-delay: 0.1s; }
+        .delay-200 { transition-delay: 0.2s; }
+        .delay-300 { transition-delay: 0.3s; }
+
+        /* 音乐播放器样式 - 仅新增此部分，无其他样式修改 */
+        .music-player {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 60px;
+            height: 60px;
+            background-color: var(--color-primary);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 15px rgba(217, 119, 6, 0.4);
+            cursor: pointer;
+            z-index: 9999;
+            transition: all 0.3s ease;
+        }
+        
+        .music-player:hover {
+            transform: scale(1.1);
+            box-shadow: 0 6px 20px rgba(217, 119, 6, 0.5);
+        }
+        
+        .music-icon {
+            color: white;
+            font-size: 24px;
+            animation: rotate 3s linear infinite;
+        }
+        
+        @keyframes rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        
+        .music-icon.paused {
+            animation-play-state: paused;
+        }
+
+        @media (max-width: 768px) {
+            .founders-section { flex-direction: column; align-items: center; }
+            .advisors-track { animation-duration: 10s; }
+            header { padding: 15px 20px; }
+            nav a { margin-left: 15px; font-size: 0.9rem; }
+            .team-hero h1 { font-size: 2.5rem; }
+            /* 音乐播放器移动端适配 - 仅新增此部分 */
+            .music-player {
+                width: 50px;
+                height: 50px;
+                bottom: 20px;
+                right: 20px;
+            }
+            .music-icon {
+                font-size: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- 顶部导航 -->
+    <header>
+        <a href="../index.html" class="back-link">
+            <span>←</span> 返回首页
+        </a>
+        <div class="logo" style="font-weight: 800; font-size: 1.3rem; color: #d97706;">
+              &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp<span style="color:#1e293b">兰州大学·金鹰</span>
+        </div>
+        <nav>
+            <a href="vision.html">愿景模式</a>
+            <a href="painpoints.html">痛点破局</a>
+            <a href="solution.html">解决方案</a>
+            <a href="market.html">市场分析</a>
+            <a href="business.html">商业模式</a>
+            <a href="team.html" class="active">核心团队</a>
+        </nav>
+    </header>
+
+    <!-- 首屏 -->
+    <section class="team-hero">
+        <div class="container reveal-up">
+            <h1 style="font-size: 3rem; margin-bottom: 20px; text-shadow: 0 2px 10px rgba(0,0,0,0.3);">兰州大学·金鹰</h1>
+            <p style="font-size: 1.2rem; color: #f1f5f9; max-width: 700px; margin: 0 auto; text-shadow: 0 2px 5px rgba(0,0,0,0.2);">
+                兰州大学<br>
+                以科技赋能土地，用青春振兴乡村
+            </p>
+        </div>
+    </section>
+
+    <!-- 核心创始人 -->
+    <section class="container section-padding">
+        <div class="section-title reveal-up">
+            <h2>核心创始团队</h2>
+            <p style="color: #64748b;">CEO + CTO + COO 铁三角架构</p>
+        </div>
+
+        <div class="founders-section">
+            <!-- 成员 1: 彭小溪 -->
+            <div class="member-card reveal-up delay-100">
+                <div class="member-img-box">
+                    <!-- 替换为视频标签，使用示例视频链接 -->
+                    <video class="member-video" autoplay loop muted playsinline>
+                        <source src="https://test-videos.co.uk/vids/bigbuckbunny/mp4/h264/720/Big_Buck_Bunny_720_10s_1MB.mp4" type="video/mp4">
+                        您的浏览器不支持HTML5视频播放
+                    </video>
+                </div>
+                <div class="member-info">
+                    <div class="member-name">彭小溪</div>
+                    <span class="member-role">萃英学院</span>
+                    <p class="member-bio">
+                        兰州大学CEO
+                    </p>
+                    <div class="skills-container">
+                        <span class="skill-tag">战略规划</span>
+                        <span class="skill-tag">资源对接</span>
+                        <span class="skill-tag">团队管理</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 成员 2: CTO -->
+            <div class="member-card reveal-up delay-200">
+                <div class="member-img-box">
+                    <video class="member-video" autoplay loop muted playsinline>
+                        <source src="https://test-videos.co.uk/vids/jellyfish/mp4/h264/720/Jellyfish_720_10s_1MB.mp4" type="video/mp4">
+                        您的浏览器不支持HTML5视频播放
+                    </video>
+                </div>
+                <div class="member-info">
+                    <div class="member-name">张华</div>
+                    <span class="member-role">CTO & 技术总监</span>
+                    <p class="member-bio">
+                        兰州大学大气科学博士。主攻农业气象大数据模型，曾参与国家级智慧农业课题，负责平台算法核心研发。
+                    </p>
+                    <div class="skills-container">
+                        <span class="skill-tag">大数据</span>
+                        <span class="skill-tag">算法模型</span>
+                        <span class="skill-tag">系统架构</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 成员 3: COO -->
+            <div class="member-card reveal-up delay-300">
+                <div class="member-img-box">
+                    <video class="member-video" autoplay loop muted playsinline>
+                        <source src="../assets/images/team/7.mp4" type="video/mp4">
+                        您的浏览器不支持HTML5视频播放
+                    </video>
+                </div>
+                <div class="member-info">
+                    <div class="member-name">王芳</div>
+                    <span class="member-role">COO & 运营总监</span>
+                    <p class="member-bio">
+                        兰州大学农学学士，MBA在读。深耕西北特色农产品供应链，拥有丰富的赛事策划与新媒体营销经验。
+                    </p>
+                    <div class="skills-container">
+                        <span class="skill-tag">供应链</span>
+                        <span class="skill-tag">赛事运营</span>
+                        <span class="skill-tag">品牌营销</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 组织架构图 -->
+    <section class="container section-padding" style="background: #f8fafc; border-radius: 20px;">
+        <div class="section-title reveal-up">
+            <h2>组织架构与分工</h2>
+            <p style="color: #64748b;">高效协同的扁平化管理结构</p>
+        </div>
+        <div id="org-chart" class="org-chart-container reveal-scale"></div>
+    </section>
+
+    <!-- 顾问团队 (无限轮播) -->
+    <section class="advisors-section">
+        <div class="container">
+            <div class="section-title reveal-up">
+                <h2 style="color: white;">专家顾问委员会</h2>
+                <p style="color: #94a3b8;">学术界与产业界的双重背书</p>
+            </div>
+            
+            <!-- 轮播轨道 (内容复制一份以实现无缝滚动) -->
+            <div class="advisors-track reveal-up">
+                <!-- 第一组 -->
+                <div class="advisor-item">
+                    <img src="../assets/images/team/2.jpg" class="advisor-img" alt="Advisor">
+                    <div class="advisor-name">彭小溪</div>
+                    <div class="advisor-title">兰州大学 萃英学院</div>
+                </div>
+                <div class="advisor-item">
+                    <img src="../assets/images/team/3.jpg" class="advisor-img" alt="Advisor">
+                    <div class="advisor-name">文年平</div>
+                    <div class="advisor-title">兰州大学 信息科学与工程学院</div>
+                </div>
+                <div class="advisor-item">
+                    <img src="../assets/images/team/6.jpg" class="advisor-img" alt="Advisor">
+                    <div class="advisor-name">李煜宸</div>
+                    <div class="advisor-title">兰州大学 管理学院</div>
+                </div>
+                <div class="advisor-item">
+                    <img src="../assets/images/team/5.jpg" class="advisor-img" alt="Advisor">
+                    <div class="advisor-name">许熠瑄</div>
+                    <div class="advisor-title">兰州大学 管理学院</div>
+                </div>
+                <div class="advisor-item">
+                    <img src="../assets/images/team/4.jpg" class="advisor-img" alt="Advisor">
+                    <div class="advisor-name">郝梦圆</div>
+                    <div class="advisor-title">兰州大学 管理学院</div>
+                </div>
+
+                <!-- 第二组 (重复以实现无缝) -->
+                <div class="advisor-item">
+                    <img src="../assets/images/team/2.jpg" class="advisor-img" alt="Advisor">
+                    <div class="advisor-name">彭小溪</div>
+                    <div class="advisor-title">兰州大学 萃英学院</div>
+                </div>
+                <div class="advisor-item">
+                    <img src="../assets/images/team/3.jpg" class="advisor-img" alt="Advisor">
+                    <div class="advisor-name">文年平</div>
+                    <div class="advisor-title">兰州大学 信息科学与工程学院</div>
+                </div>
+                <div class="advisor-item">
+                    <img src="../assets/images/team/6.jpg" class="advisor-img" alt="Advisor">
+                    <div class="advisor-name">李煜宸</div>
+                    <div class="advisor-title">兰州大学 管理学院</div>
+                </div>
+                <div class="advisor-item">
+                    <img src="../assets/images/team/5.jpg" class="advisor-img" alt="Advisor">
+                    <div class="advisor-name">许熠瑄</div>
+                    <div class="advisor-title">兰州大学 管理学院</div>
+                </div>
+                <div class="advisor-item">
+                    <img src="../assets/images/team/4.jpg" class="advisor-img" alt="Advisor">
+                    <div class="advisor-name">郝梦圆</div>
+                    <div class="advisor-title">兰州大学 管理学院</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 底部引导 (已修改) -->
+    <section class="container section-padding" style="text-align: center;">
+        <h3 class="reveal-up">我们已准备好，只缺您的支持！</h3>
+        <p class="reveal-up delay-100" style="color: #64748b; margin: 15px 0 30px;">点击下方按钮下载完整商业计划书</p>
+        
+        <!-- 按钮容器，使用 Flex 布局让按钮并排 -->
+        <div class="reveal-up delay-200" style="display: flex; justify-content: center; gap: 20px; flex-wrap: wrap;">
+            <!-- 新增：下载商业计划书按钮 -->
+            <!-- 注意：这里使用了相对路径 ../ 指向 index.html 同级目录。
+                 由于原文件是 .docx，这里暂时指向 .docx。
+                 【重要】建议您将文件重命名为 .pdf 后，将下方的 .docx 改为 .pdf -->
+            <a href="../实战赛_商业计划书.docx" class="btn btn-secondary" download="兰州大学金鹰_商业计划书">
+                📥 下载商业计划书 (PDF/Word)
+            </a>
+            
+            <!-- 原有：返回首页按钮 -->
+            <a href="../index.html" class="btn btn-primary">返回首页</a>
+        </div>
+    </section>
+
+    <!-- 音乐播放器 - 仅修改音频文件路径 -->
+    <div class="music-player" id="musicPlayer">
+        <i class="fas fa-music music-icon" id="musicIcon"></i>
+        <audio id="backgroundMusic" loop preload="auto">
+            <!-- 替换为相对路径，需确保音乐文件放在项目根目录的music文件夹下 -->
+            <source src="../music/1.mp3" type="audio/mpeg">
+            您的浏览器不支持音频播放
+        </audio>
+    </div>
+
+    <!-- 脚本逻辑 -->
+    <script src="../assets/js/main.js"></script>
+    <script>
+        // 滚动动画监听 - 原有代码完全保留
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('active');
+                }
+            });
+        }, { threshold: 0.1 });
+
+        document.querySelectorAll('.reveal-up, .reveal-scale').forEach(el => observer.observe(el));
+
+        document.addEventListener('DOMContentLoaded', function() {
+            // 初始化组织架构图 (ECharts Tree) - 原有代码完全保留
+            var chartDom = document.getElementById('org-chart');
+            var myChart = echarts.init(chartDom);
+            var option;
+
+            const data = {
+                "name": "总经理 (CEO)",
+                "children": [
+                    {
+                        "name": "技术部 (CTO)",
+                        "children": [
+                            { "name": "大数据组" },
+                            { "name": "平台开发组" },
+                            { "name": "硬件维护组" }
+                        ]
+                    },
+                    {
+                        "name": "运营部 (COO)",
+                        "children": [
+                            { "name": "赛事策划组" },
+                            { "name": "供应链管理组" },
+                            { "name": "新媒体营销组" }
+                        ]
+                    },
+                    {
+                        "name": "财务部",
+                        "children": [
+                            { "name": "会计核算" },
+                            { "name": "投融资管理" }
+                        ]
+                    },
+                    {
+                        "name": "综合办",
+                        "children": [
+                            { "name": "人力资源" },
+                            { "name": "政府关系" }
+                        ]
+                    }
+                ]
+            };
+
+            option = {
+                tooltip: { trigger: 'item', triggerOn: 'mousemove' },
+                series: [
+                    {
+                        type: 'tree',
+                        data: [data],
+                        top: '10%',
+                        left: '7%',
+                        bottom: '10%',
+                        right: '20%',
+                        symbolSize: 12,
+                        label: {
+                            position: 'left',
+                            verticalAlign: 'middle',
+                            align: 'right',
+                            fontSize: 14,
+                            fontWeight: 'bold',
+                            color: '#1e293b'
+                        },
+                        leaves: {
+                            label: {
+                                position: 'right',
+                                verticalAlign: 'middle',
+                                align: 'left',
+                                color: '#64748b',
+                                fontSize: 12
+                            }
+                        },
+                        emphasis: {
+                            focus: 'descendant'
+                        },
+                        expandAndCollapse: true,
+                        animationDuration: 550,
+                        animationDurationUpdate: 550,
+                        lineStyle: {
+                            color: '#cbd5e1',
+                            width: 2,
+                            curveness: 0.5
+                        }
+                    }
+                ]
+            };
+
+            myChart.setOption(option);
+            
+            window.addEventListener('resize', function() {
+                myChart.resize();
+            });
+
+            // ========== 仅新增音乐播放逻辑，不修改原有任何代码 ==========
+            // 音乐播放功能
+            const musicPlayer = document.getElementById('musicPlayer');
+            const musicIcon = document.getElementById('musicIcon');
+            const backgroundMusic = document.getElementById('backgroundMusic');
+            
+            // 设置音量为40%，避免声音过大
+            backgroundMusic.volume = 1.0;
+            let hasPlayed = false;
+
+            // 尝试自动播放音乐（浏览器要求必须有用户交互）
+            function tryPlayMusic() {
+                if (hasPlayed) return;
+                backgroundMusic.play().then(() => {
+                    hasPlayed = true;
+                    musicIcon.classList.remove('paused');
+                    console.log('音乐开始播放');
+                }).catch(error => {
+                    console.log('首次播放需要用户交互:', error);
+                });
+            }
+
+            // 监听页面首次点击，触发音乐播放
+            document.addEventListener('click', tryPlayMusic, { once: true });
+            
+            // 点击音乐图标手动控制播放/暂停
+            musicPlayer.addEventListener('click', function(e) {
+                e.stopPropagation(); // 防止触发页面点击事件
+                if (backgroundMusic.paused) {
+                    backgroundMusic.play();
+                    musicIcon.classList.remove('paused');
+                } else {
+                    backgroundMusic.pause();
+                    musicIcon.classList.add('paused');
+                }
+            });
+            
+            // 页面隐藏时暂停音乐，恢复时不自动播放（需用户手动点击）
+            document.addEventListener('visibilitychange', function() {
+                if (document.hidden) {
+                    backgroundMusic.pause();
+                    musicIcon.classList.add('paused');
+                }
+            });
+            // ========== 音乐播放逻辑结束 ==========
+        });
+    </script>
+
+    <!-- 彩色粒子交互特效代码 - 原有代码完全保留 -->
+    <script>
+        !(function () {
+          function n(n, e, t) {
+            return n.getAttribute(e) || t;
+          }
+          function e(n) {
+            return document.getElementsByTagName(n);
+          }
+          function t() {
+            var t = e("script"),
+              o = t.length,
+              i = t[o - 1];
+            return {
+              l: o,
+              z: n(i, "zIndex", -1),
+              o: n(i, "opacity", 0.6),
+              c: n(i, "color", "0,255,0"), 
+              n: n(i, "count", 400), // 粒子的数量
+            };
+          }
+
+          function o() {
+            (a = m.width =
+              window.innerWidth ||
+              document.documentElement.clientWidth ||
+              document.body.clientWidth),
+              (c = m.height =
+                window.innerHeight ||
+                document.documentElement.clientHeight ||
+                document.body.clientHeight);
+          }
+          function i() {
+            r.clearRect(0, 0, a, c);
+            var n, e, t, o, m, l;
+            s.forEach(function (particle, index) {
+              for (
+                particle.x += particle.xa,
+                particle.y += particle.ya,
+                particle.xa *= particle.x > a || particle.x < 0 ? -1 : 1,
+                particle.ya *= particle.y > c || particle.y < 0 ? -1 : 1,
+                // 使用粒子的颜色属性进行绘制
+                r.fillStyle = particle.color,
+                r.fillRect(particle.x - 0.5, particle.y - 0.5, 1, 1),
+                e = index + 1;
+                e < u.length;
+                e++
+              ) {
+                (n = u[e]),
+                  null !== n.x &&
+                  null !== n.y &&
+                  ((o = particle.x - n.x),
+                    (m = particle.y - n.y),
+                    (l = o * o + m * m),
+                    l < n.max &&
+                    (n === y &&
+                      l >= n.max / 2 &&
+                      ((particle.x -= 0.03 * o), (particle.y -= 0.03 * m)),
+                      (t = (n.max - l) / n.max),
+                      r.beginPath(),
+                      (r.lineWidth = t / 2),
+                      // 连线颜色和粒子颜色一致
+                      r.strokeStyle = particle.color,
+                      r.moveTo(particle.x, particle.y),
+                      r.lineTo(n.x, n.y),
+                      r.stroke()));
+              }
+            }),
+              x(i);
+          }
+          var fixedColors = [
+            "rgba(255, 0, 0, 1.0)",   // 红色
+            "rgba(0, 255, 0, 1.0)",   // 绿色
+            "rgba(0, 0, 255, 1.0)",   // 蓝色
+            "rgba(255, 255, 0, 1.0)", // 黄色
+            "rgba(0, 255, 255, 0.8)", // 青色
+            "rgba(255, 0, 255, 0.8)", // 紫色
+            "rgba(255, 165, 0, 0.8)", // 橙色
+            "rgba(127, 255, 212, 1.0)",
+              "rgba(0, 255, 127, 1.0)"
+          ];
+          var a,
+            c,
+            u,
+            m = document.createElement("canvas"),
+            d = t(),
+            l = "c_n" + d.l,
+            r = m.getContext("2d"),
+            x =
+              window.requestAnimationFrame ||
+              window.webkitRequestAnimationFrame ||
+              window.mozRequestAnimationFrame ||
+              window.oRequestAnimationFrame ||
+              window.msRequestAnimationFrame ||
+              function (n) {
+                window.setTimeout(n, 1e3 / 45);
+              },
+            w = Math.random,
+            y = { x: null, y: null, max: 2e4 };
+          (m.id = l),
+            (m.style.cssText =
+              "position:fixed;top:0;left:0;z-index:" + d.z + ";opacity:" + d.o),
+            e("body")[0].appendChild(m),
+            o(),
+            (window.onresize = o),
+            (window.onmousemove = function (n) {
+              (n = n || window.event), (y.x = n.clientX), (y.y = n.clientY);
+            }),
+            (window.onmouseout = function () {
+              (y.x = null), (y.y = null);
+            });
+
+            //固定颜色
+            for (var s = [], f = 0; d.n > f; f++) {
+            var h = w() * a,
+              g = w() * c,
+              v = 2 * w() - 1,
+              p = 2 * w() - 1,
+              // 从固定颜色数组中随机选择一个颜色
+              color = fixedColors[Math.floor(Math.random() * fixedColors.length)];
+            s.push({ x: h, y: g, xa: v, ya: p, max: 6e3, color: color }); // 使用选定的固定颜色
+          }
+
+          (u = s.concat([y])),
+            setTimeout(function () {
+              i();
+            }, 100);
+        })();
+    </script>
+</body>
+</html>

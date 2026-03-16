@@ -1,0 +1,1198 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>兰州大学·金鹰</title>
+    <!-- 引入全局样式 -->
+    <link rel="stylesheet" href="assets/css/global.css">
+    <style>
+        /* ========== 新增：登录弹窗样式 ========== */
+        .login-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 99999;
+        }
+        
+        .login-box {
+            background: white;
+            padding: 40px;
+            border-radius: 15px;
+            width: 90%;
+            max-width: 400px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            text-align: center;
+        }
+        
+        .login-box h2 {
+            margin-bottom: 30px;
+            color: #333;
+            font-size: 1.8rem;
+        }
+        
+        .login-input {
+            width: 100%;
+            padding: 12px 15px;
+            margin-bottom: 20px;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 1rem;
+            outline: none;
+        }
+        
+        .login-input:focus {
+            border-color: #007AFF;
+            box-shadow: 0 0 0 3px rgba(0, 122, 255, 0.1);
+        }
+        
+        .login-btn {
+            width: 100%;
+            padding: 12px;
+            background: linear-gradient(135deg, #007AFF 0%, #0056b3 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+        
+        .login-btn:hover {
+            transform: translateY(-2px);
+        }
+        
+        .error-tip {
+            color: #ff3b30;
+            margin-bottom: 15px;
+            font-size: 0.9rem;
+            display: none;
+        }
+
+        /* ========== 原有样式（保留不变） ========== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Microsoft Yahei", sans-serif;
+        }
+        
+        body {
+            padding-top: 88px;
+            padding-bottom: 80px;
+        }
+
+        header { 
+            position: fixed; 
+            top: 0; 
+            width: 100%; 
+            padding: 20px 50px; 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            z-index: 1000; 
+            background: rgba(255,255,255,0.9); 
+            backdrop-filter: blur(10px); 
+            height: 88px;
+        }
+        
+        nav a { 
+            margin-left: 20px; 
+            text-decoration: none; 
+            color: #333; 
+            font-weight: bold; 
+            transition: color 0.3s; 
+        }
+        
+        nav a:hover { 
+            color: #007AFF; 
+        }
+
+        .fade-in-up {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.8s ease, transform 0.8s ease;
+        }
+        
+        .fade-in-up.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .hero { 
+            height: calc(100vh - 88px); 
+            display: flex; 
+            flex-direction: column; 
+            justify-content: center; 
+            align-items: center; 
+            text-align: center; 
+            background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('images/hero/1.jpg'); 
+            background-size: cover;     
+            background-position: center;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+            color: white; 
+        }
+        
+        .hero h1 { 
+            font-size: 3rem; 
+            margin-bottom: 20px; 
+            line-height: 1.2;
+        }
+        
+        .btn { 
+            padding: 15px 40px; 
+            background: #007AFF; 
+            color: white; 
+            text-decoration: none; 
+            border-radius: 30px; 
+            font-size: 1.2rem; 
+            transition: transform 0.3s, background 0.3s; 
+            border: none;
+            cursor: pointer;
+        }
+        
+        .btn:hover { 
+            transform: scale(1.05); 
+            background: #0056b3; 
+        }
+        
+        .section { 
+            padding: 80px 20px; 
+            max-width: 1200px; 
+            margin: 0 auto; 
+        }
+
+        .section h2 {
+            text-align: center; 
+            margin-bottom: 40px;
+            font-size: 2rem;
+            color: #333;
+        }
+        
+        .section .data-container {
+            display: flex; 
+            justify-content: space-around; 
+            text-align: center;
+            flex-wrap: wrap;
+            gap: 40px;
+        }
+        
+        .section .data-item {
+            flex: 1;
+            min-width: 150px;
+        }
+        
+        .section .data-item h3 {
+            font-size: 2.5rem; 
+            color: #007AFF;
+            margin-bottom: 10px;
+        }
+        
+        .section .data-item p {
+            font-size: 1.1rem;
+            color: #666;
+        }
+
+        @media (max-width: 768px) {
+            header {
+                padding: 15px 20px;
+                flex-direction: column;
+                height: auto;
+                padding-bottom: 15px;
+            }
+            
+            nav {
+                margin-top: 10px;
+            }
+            
+            nav a {
+                margin-left: 10px;
+                margin-right: 10px;
+                font-size: 0.9rem;
+            }
+            
+            .hero h1 {
+                font-size: 2rem;
+            }
+            
+            body {
+                padding-top: 120px;
+                padding-bottom: 80px;
+            }
+            
+            .hero {
+                height: calc(100vh - 120px);
+                padding: 0 20px;
+            }
+        }
+
+        /* ========== 优化后的 AI 对话样式（底部灵动窗口） ========== */
+        .chat-container {
+            position: fixed;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 9999;
+            width: 90%;
+            max-width: 800px;
+            border-radius: 20px 20px 0 0;
+            overflow: hidden;
+            background: #ffffff;
+            box-shadow: 0 -5px 25px rgba(0, 0, 0, 0.15);
+            border: 1px solid #f0f0f0;
+            transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        .chat-header {
+            padding: 12px 20px;
+            background: linear-gradient(135deg, #007AFF 0%, #0056b3 100%);
+            color: white;
+            font-weight: bold;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            position: relative;
+        }
+        
+        .chat-header::before {
+            content: '';
+            position: absolute;
+            top: 8px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 40px;
+            height: 5px;
+            background: rgba(255, 255, 255, 0.5);
+            border-radius: 3px;
+        }
+        
+        .chat-header-title {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .chat-header-title i {
+            font-size: 18px;
+            animation: breathe 2s infinite ease-in-out;
+        }
+        
+        .chat-close {
+            cursor: pointer;
+            font-size: 20px;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(255, 255, 255, 0.2);
+            transition: background 0.3s;
+        }
+        
+        .chat-close:hover {
+            background: rgba(255, 255, 255, 0.4);
+        }
+
+        .chat-window {
+            height: 400px;
+            display: flex;
+            flex-direction: column;
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+        
+        .chat-window.expanded {
+            max-height: 400px;
+        }
+
+        .chat-messages {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+            background: #f8f9fa;
+            background-image: 
+                linear-gradient(rgba(0, 122, 255, 0.02) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 122, 255, 0.02) 1px, transparent 1px);
+            background-size: 20px 20px;
+        }
+        
+        .chat-messages::-webkit-scrollbar {
+            width: 6px;
+        }
+        
+        .chat-messages::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 3px;
+        }
+        
+        .chat-messages::-webkit-scrollbar-thumb {
+            background: #ddd;
+            border-radius: 3px;
+        }
+        
+        .chat-messages::-webkit-scrollbar-thumb:hover {
+            background: #007AFF;
+        }
+
+        .message {
+            margin-bottom: 18px;
+            max-width: 85%;
+            position: relative;
+        }
+        
+        .user-message {
+            margin-left: auto;
+        }
+        
+        .ai-message {
+            margin-right: auto;
+            display: flex;
+            align-items: flex-start;
+            gap: 8px;
+        }
+        
+        .ai-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #007AFF 0%, #00c6ff 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 14px;
+            flex-shrink: 0;
+            box-shadow: 0 2px 5px rgba(0, 122, 255, 0.2);
+        }
+        
+        .message-content {
+            padding: 12px 18px;
+            border-radius: 18px;
+            line-height: 1.5;
+            font-size: 14px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        }
+        
+        .user-message .message-content {
+            background: linear-gradient(135deg, #007AFF 0%, #0056b3 100%);
+            color: white;
+            border-bottom-right-radius: 4px;
+        }
+        
+        .ai-message .message-content {
+            background: white;
+            color: #333;
+            border-bottom-left-radius: 4px;
+            border: 1px solid #f0f0f0;
+        }
+
+        .chat-input-area {
+            padding: 15px;
+            background: white;
+            border-top: 1px solid #f0f0f0;
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+        
+        .chat-input-wrapper {
+            flex: 1;
+            position: relative;
+        }
+
+        #chat-input {
+            width: 100%;
+            padding: 12px 18px;
+            border: 1px solid #e0e0e0;
+            border-radius: 25px;
+            outline: none;
+            font-size: 14px;
+            background: #f9f9f9;
+            transition: all 0.3s;
+        }
+        
+        #chat-input:focus {
+            border-color: #007AFF;
+            background: white;
+            box-shadow: 0 0 0 3px rgba(0, 122, 255, 0.1);
+        }
+
+        #send-btn {
+            padding: 12px 22px;
+            background: linear-gradient(135deg, #007AFF 0%, #0056b3 100%);
+            color: white;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            transition: transform 0.2s, box-shadow 0.2s;
+            box-shadow: 0 2px 8px rgba(0, 122, 255, 0.2);
+        }
+        
+        #send-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(0, 122, 255, 0.3);
+        }
+        
+        #send-btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .loading {
+            display: flex;
+            gap: 6px;
+            padding: 8px 15px;
+            align-items: center;
+        }
+
+        .loading-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #007AFF;
+            animation: bounce 1.2s infinite alternate;
+        }
+        
+        .loading-dot:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+        
+        .loading-dot:nth-child(3) {
+            animation-delay: 0.4s;
+        }
+
+        @keyframes bounce {
+            from { transform: translateY(0); }
+            to { transform: translateY(-8px); }
+        }
+        
+        @keyframes breathe {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.7; transform: scale(1.05); }
+        }
+
+        @media (max-width: 480px) {
+            .chat-container {
+                width: 100%;
+                border-radius: 15px 15px 0 0;
+            }
+            
+            .chat-window {
+                height: 300px;
+            }
+            
+            .chat-window.expanded {
+                max-height: 300px;
+            }
+            
+            .message {
+                max-width: 90%;
+            }
+            
+            .login-box {
+                padding: 30px 20px;
+            }
+        }
+
+        /* ========================================= */
+        /* ========== 🌟 新增：小精灵专属样式 ========== */
+        /* ========================================= */
+        
+        /* 小精灵容器：固定在右下角，层级高于聊天窗口但低于登录弹窗 */
+        #elf-container {
+            position: fixed;
+            bottom: 20px;
+            right: 30px;
+            z-index: 9998; /* 略低于 chat-container (9999) */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 160px;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+
+        /* 鼠标悬停时轻微放大 */
+        #elf-container:hover {
+            transform: scale(1.05);
+        }
+
+        /* 小精灵气泡 */
+        #elf-bubble {
+            background: #ffffff;
+            color: #333;
+            padding: 12px 16px;
+            border-radius: 15px 15px 15px 5px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+            margin-bottom: 10px;
+            font-size: 14px;
+            line-height: 1.4;
+            text-align: left;
+            position: relative;
+            opacity: 0;
+            transform: translateY(10px) scale(0.9);
+            transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+            max-width: 220px;
+            border: 1px solid #f0f0f0;
+            pointer-events: none; /* 让点击穿透气泡 */
+        }
+
+        #elf-bubble.show {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+        }
+
+        /* 小精灵图片主体 */
+        #elf-image {
+            width: 130px;
+            height: auto;
+            filter: drop-shadow(0 8px 12px rgba(0,0,0,0.2));
+            animation: float 3s ease-in-out infinite;
+            transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), filter 0.3s ease;
+            transform-origin: bottom center;
+        }
+
+        /* 动作类：说话 */
+        #elf-image.state-talking {
+            animation: talk-vibrate 0.3s infinite alternate;
+            transform: scale(1.05);
+        }
+
+        /* 动作类：指向 */
+        #elf-image.state-pointing {
+            transform: rotate(-12deg) scaleX(1.1) translateY(-5px);
+            animation: none;
+        }
+
+        /* 动作类：开心 */
+        #elf-image.state-happy {
+            animation: happy-jump 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        /* 点击反馈 */
+        #elf-container:active #elf-image {
+            transform: scale(0.95) !important;
+            filter: drop-shadow(0 4px 4px rgba(0,0,0,0.2));
+            animation: none !important;
+        }
+
+        /* 动画定义 */
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-8px); }
+        }
+
+        @keyframes talk-vibrate {
+            from { transform: scale(1.05) translateY(0); }
+            to { transform: scale(1.08) translateY(-2px); }
+        }
+
+        @keyframes happy-jump {
+            0% { transform: translateY(0) scale(1); }
+            40% { transform: translateY(-35px) scale(1.1, 0.9); }
+            60% { transform: translateY(-35px) scale(0.9, 1.1); }
+            100% { transform: translateY(0) scale(1); }
+        }
+
+        /* 鼠标跟随微交互 */
+        body.mouse-left #elf-image:not(.state-pointing):not(.state-happy) {
+             transform: rotate(5deg) translateY(-8px);
+        }
+        body.mouse-right #elf-image:not(.state-pointing):not(.state-happy) {
+             transform: rotate(-5deg) translateY(-8px);
+        }
+
+        /* 移动端适配：小精灵稍微变小 */
+        @media (max-width: 768px) {
+            #elf-container {
+                bottom: 10px;
+                right: 10px;
+                width: 120px;
+            }
+            #elf-image {
+                width: 100px;
+            }
+            #elf-bubble {
+                font-size: 12px;
+                max-width: 180px;
+                padding: 10px;
+            }
+        }
+
+        /* ========== 🌤️ 新增：天气模块样式 ========== */
+        .weather-container {
+            text-align: center; 
+            padding: 30px; 
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); 
+            border-radius: 20px; 
+            color: white; 
+            max-width: 600px; 
+            margin: 0 auto;
+            transition: transform 0.3s ease;
+        }
+        .weather-container:hover {
+            transform: translateY(-5px);
+        }
+        #weather-display {
+            animation: fadeIn 0.5s ease;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.8); }
+            to { opacity: 1; transform: scale(1); }
+        }
+    </style>
+</head>
+<body>
+    <!-- ========== 登录弹窗 ========== -->
+    <div class="login-modal" id="loginModal">
+        <div class="login-box">
+            <h2>用户登录</h2>
+            <div class="error-tip" id="errorTip">账号或密码错误，请重新输入！</div>
+            <input type="text" class="login-input" id="username" placeholder="请输入账号">
+            <input type="password" class="login-input" id="password" placeholder="请输入密码">
+            <button class="login-btn" id="loginBtn">登录</button>
+        </div>
+    </div>
+
+    <!-- 顶部导航 -->
+    <header>
+        <div class="logo">兰州大学·金鹰</div>
+        <nav>
+            <a href="pages/vision.html">愿景模式</a>
+            <a href="pages/painpoints.html">痛点破局</a>
+            <a href="pages/solution.html">解决方案</a>
+            <a href="pages/market.html">市场分析</a>
+            <a href="pages/business.html">商业模式</a>
+            <a href="pages/team.html">核心团队</a>
+        </nav>
+    </header>
+
+    <!-- 首屏 Hero -->
+    <section class="hero">
+        <h1 class="fade-in-up">核心镇 + 协作县<br>体旅农融合新范式</h1>
+        <p class="fade-in-up" style="margin-bottom: 40px; font-size: 1.2rem;">数据驱动 · 平台联营 · 场景引爆</p>
+        <a href="pages/vision.html" class="btn fade-in-up">开启探索之旅</a>
+    </section>
+
+    <!-- 数据概览 -->
+    <section class="section">
+        <h2>项目核心数据</h2>
+        <div class="data-container">
+            <div class="data-item">
+                <h3 style="color: #007AFF;">100+</h3>
+                <p>辐射村落</p>
+            </div>
+            <div class="data-item">
+                <h3 style="color: #2ECC71;">30%</h3>
+                <p>物流成本降低</p>
+            </div>
+            <div class="data-item">
+                <h3 style="color: #D2B48C;">1 万+</h3>
+                <p>预计年营收</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- 🌤️ 新增：天气查询 -->
+    <section class="section fade-in-up">
+        <h2>当地天气</h2>
+        <div class="weather-container">
+            <div id="weather-display" style="display: none;">
+                <div style="font-size: 3rem; margin-bottom: 10px;" id="weather-icon">☀️</div>
+                <div style="font-size: 2.5rem; font-weight: bold; margin-bottom: 10px;" id="weather-temp">--°C</div>
+                <div style="font-size: 1.2rem; margin-bottom: 5px;" id="weather-text">加载中...</div>
+                <div style="font-size: 0.9rem; opacity: 0.9;" id="weather-location">📍 兰州大学榆中校区</div>
+                <div style="margin-top: 15px; font-size: 0.8rem; opacity: 0.8;">
+                    <span id="weather-wind">风向: --</span> | 
+                    <span id="weather-humidity">湿度: --%</span>
+                </div>
+            </div>
+            <button class="btn" id="weather-btn" style="background: white; color: #667eea; margin-top: 10px;">查看实时天气</button>
+            <div id="weather-error" style="color: #ffeb3b; margin-top: 10px; display: none;"></div>
+        </div>
+    </section>
+
+    <!-- 引入主逻辑脚本 -->
+    <script src="assets/js/main.js"></script>
+    <script>
+        // 简单的入场动画逻辑
+        document.addEventListener('DOMContentLoaded', () => {
+            const elements = document.querySelectorAll('.fade-in-up');
+            elements.forEach((el, index) => {
+                setTimeout(() => {
+                    el.classList.add('visible');
+                }, 100 + index * 200);
+            });
+        });
+    </script>
+
+    <!-- 彩色粒子交互特效代码 -->
+    <script>
+        !(function () {
+          function n(n, e, t) {
+            return n.getAttribute(e) || t;
+          }
+          function e(n) {
+            return document.getElementsByTagName(n);
+          }
+          function t() {
+            var t = e("script"),
+              o = t.length,
+              i = t[o - 1];
+            return {
+              l: o,
+              z: n(i, "zIndex", -1),
+              o: n(i, "opacity", 0.6),
+              c: n(i, "color", "0,255,0"), 
+              n: n(i, "count", 400),
+            };
+          }
+
+          function o() {
+            (a = m.width =
+              window.innerWidth ||
+              document.documentElement.clientWidth ||
+              document.body.clientWidth),
+              (c = m.height =
+                window.innerHeight ||
+                document.documentElement.clientHeight ||
+                document.body.clientHeight);
+          }
+          function i() {
+            r.clearRect(0, 0, a, c);
+            var n, e, t, o, m, l;
+            s.forEach(function (particle, index) {
+              for (
+                particle.x += particle.xa,
+                particle.y += particle.ya,
+                particle.xa *= particle.x > a || particle.x < 0 ? -1 : 1,
+                particle.ya *= particle.y > c || particle.y < 0 ? -1 : 1,
+                r.fillStyle = particle.color,
+                r.fillRect(particle.x - 0.5, particle.y - 0.5, 1, 1),
+                e = index + 1;
+                e < u.length;
+                e++
+              ) {
+                (n = u[e]),
+                  null !== n.x &&
+                  null !== n.y &&
+                  ((o = particle.x - n.x),
+                    (m = particle.y - n.y),
+                    (l = o * o + m * m),
+                    l < n.max &&
+                    (n === y &&
+                      l >= n.max / 2 &&
+                      ((particle.x -= 0.03 * o), (particle.y -= 0.03 * m)),
+                      (t = (n.max - l) / n.max),
+                      r.beginPath(),
+                      (r.lineWidth = t / 2),
+                      r.strokeStyle = particle.color,
+                      r.moveTo(particle.x, particle.y),
+                      r.lineTo(n.x, n.y),
+                      r.stroke()));
+              }
+            }),
+              x(i);
+          }
+          var fixedColors = [
+            "rgba(255, 0, 0, 1.0)",
+            "rgba(0, 255, 0, 1.0)",
+            "rgba(0, 0, 255, 1.0)",
+            "rgba(255, 255, 0, 1.0)",
+            "rgba(0, 255, 255, 0.8)",
+            "rgba(255, 0, 255, 0.8)",
+            "rgba(255, 165, 0, 0.8)",
+            "rgba(127, 255, 212, 1.0)",
+              "rgba(0, 255, 127, 1.0)"
+          ];
+          var a,
+            c,
+            u,
+            m = document.createElement("canvas"),
+            d = t(),
+            l = "c_n" + d.l,
+            r = m.getContext("2d"),
+            x =
+              window.requestAnimationFrame ||
+              window.webkitRequestAnimationFrame ||
+              window.mozRequestAnimationFrame ||
+              window.oRequestAnimationFrame ||
+              window.msRequestAnimationFrame ||
+              function (n) {
+                window.setTimeout(n, 1e3 / 45);
+              },
+            w = Math.random,
+            y = { x: null, y: null, max: 2e4 };
+          (m.id = l),
+            (m.style.cssText =
+              "position:fixed;top:0;left:0;z-index:" + d.z + ";opacity:" + d.o),
+            e("body")[0].appendChild(m),
+            o(),
+            (window.onresize = o),
+            (window.onmousemove = function (n) {
+              (n = n || window.event), (y.x = n.clientX), (y.y = n.clientY);
+            }),
+            (window.onmouseout = function () {
+              (y.x = null), (y.y = null);
+            });
+
+            for (var s = [], f = 0; d.n > f; f++) {
+            var h = w() * a,
+              g = w() * c,
+              v = 2 * w() - 1,
+              p = 2 * w() - 1,
+              color = fixedColors[Math.floor(Math.random() * fixedColors.length)];
+            s.push({ x: h, y: g, xa: v, ya: p, max: 6e3, color: color });
+          }
+
+          (u = s.concat([y])),
+            setTimeout(function () {
+              i();
+            }, 100);
+        })();
+    </script>
+
+    <!-- ========== AI 对话界面 ========== -->
+    <div class="chat-container">
+        <div class="chat-header" id="chat-header">
+            <div class="chat-header-title">
+                <i>🤖</i>
+                <span>金鹰智能助手</span>
+            </div>
+            <span class="chat-close" id="chat-close">×</span>
+        </div>
+        
+        <div class="chat-window" id="chat-window">
+            <div class="chat-messages" id="chat-messages">
+                <div class="message ai-message">
+                    <div class="ai-avatar">🤖</div>
+                    <div class="message-content">
+                        你好！我是金鹰智能助手，有什么想了解的都可以问我～
+                    </div>
+                </div>
+            </div>
+            
+            <div class="chat-input-area">
+                <div class="chat-input-wrapper">
+                    <input type="text" id="chat-input" placeholder="请输入你的问题...">
+                </div>
+                <button id="send-btn">发送</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 🌟 新增：小精灵 HTML 结构 (放在 body 结束前) -->
+    <div id="elf-container" onclick="nextStep()">
+        <div id="elf-bubble">你好！我是金鹰小向导，点击我了解更多吧！✨</div>
+        <!-- 注意：这里使用相对路径，确保 images/my-elf 文件夹存在 -->
+        <img id="elf-image" src="images/my-elf/elf-idle.png" alt="Guide Elf">
+    </div>
+
+    <!-- ========== 登录逻辑脚本 ========== -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const loginModal = document.getElementById('loginModal');
+            const usernameInput = document.getElementById('username');
+            const passwordInput = document.getElementById('password');
+            const loginBtn = document.getElementById('loginBtn');
+            const errorTip = document.getElementById('errorTip');
+
+            const correctUsername = 'lzu';
+            const correctPassword = '1';
+
+            function checkLogin() {
+                const inputUsername = usernameInput.value.trim();
+                const inputPassword = passwordInput.value.trim();
+
+                if (inputUsername === correctUsername && inputPassword === correctPassword) {
+                    loginModal.style.display = 'none';
+                    errorTip.style.display = 'none';
+                } else {
+                    errorTip.style.display = 'block';
+                    passwordInput.value = '';
+                }
+            }
+
+            loginBtn.addEventListener('click', checkLogin);
+            passwordInput.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') {
+                    checkLogin();
+                }
+            });
+        });
+    </script>
+
+    <!-- ========== AI 对话逻辑 ========== -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const chatHeader = document.getElementById('chat-header');
+            const chatWindow = document.getElementById('chat-window');
+            const chatClose = document.getElementById('chat-close');
+            const chatMessages = document.getElementById('chat-messages');
+            const chatInput = document.getElementById('chat-input');
+            const sendBtn = document.getElementById('send-btn');
+
+            chatHeader.addEventListener('click', (e) => {
+                if (e.target !== chatClose && !chatClose.contains(e.target)) {
+                    chatWindow.classList.toggle('expanded');
+                }
+            });
+
+            chatClose.addEventListener('click', () => {
+                chatWindow.classList.remove('expanded');
+            });
+
+            async function sendMessage() {
+                const message = chatInput.value.trim();
+                if (!message) return;
+
+                chatInput.value = '';
+                sendBtn.disabled = true;
+
+                const userMessageHTML = `
+                    <div class="message user-message">
+                        <div class="message-content">${message}</div>
+                    </div>
+                `;
+                chatMessages.insertAdjacentHTML('beforeend', userMessageHTML);
+
+                const loadingHTML = `
+                    <div class="message ai-message" id="loading">
+                        <div class="ai-avatar">🤖</div>
+                        <div class="loading">
+                            <div class="loading-dot"></div>
+                            <div class="loading-dot"></div>
+                            <div class="loading-dot"></div>
+                        </div>
+                    </div>
+                `;
+                chatMessages.insertAdjacentHTML('beforeend', loadingHTML);
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+
+                try {
+                    const response = await fetch('http://localhost:3001/api/chat', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ message: message })
+                    });
+
+                    const data = await response.json();
+                    document.getElementById('loading').remove();
+                    const aiMessageHTML = `
+                        <div class="message ai-message">
+                            <div class="ai-avatar">🤖</div>
+                            <div class="message-content">${data.reply}</div>
+                        </div>
+                    `;
+                    chatMessages.insertAdjacentHTML('beforeend', aiMessageHTML);
+                } catch (error) {
+                    document.getElementById('loading').remove();
+                    const errorHTML = `
+                        <div class="message ai-message">
+                            <div class="ai-avatar">🤖</div>
+                            <div class="message-content">抱歉，网络出错了，请稍后再试～</div>
+                        </div>
+                    `;
+                    chatMessages.insertAdjacentHTML('beforeend', errorHTML);
+                } finally {
+                    sendBtn.disabled = false;
+                    chatMessages.scrollTop = chatMessages.scrollHeight;
+                }
+            }
+
+            sendBtn.addEventListener('click', sendMessage);
+            chatInput.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') sendMessage();
+            });
+        });
+    </script>
+
+    <!-- 🌟 新增：小精灵交互逻辑 (放在所有脚本之后) -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // 配置图片路径 (相对路径)
+            const images = {
+                idle: 'images/my-elf/elf-idle.png',
+                talk: 'images/my-elf/elf-talk.png',
+                point: 'images/my-elf/elf-point.png',
+                happy: 'images/my-elf/elf-happy.png'
+            };
+
+            // 剧本配置
+            const steps = [
+                { 
+                    text: "你好！我是金鹰小向导，点击我了解更多吧！✨", 
+                    img: images.idle, 
+                    cssClass: '' 
+                },
+                { 
+                    text: "看这里！我们致力于体旅农融合新发展 👉", 
+                    img: images.talk, 
+                    cssClass: 'state-talking' 
+                },
+                { 
+                    text: "比如这个按钮，点击可以查看我们的愿景模式哦！", 
+                    img: images.point, 
+                    cssClass: 'state-pointing' 
+                },
+                { 
+                    text: "太棒了！让我们一起助力乡村振兴！💖", 
+                    img: images.happy, 
+                    cssClass: 'state-happy' 
+                }
+            ];
+
+            let currentStepIndex = 0;
+            const elfImg = document.getElementById('elf-image');
+            const elfBubble = document.getElementById('elf-bubble');
+            const elfContainer = document.getElementById('elf-container');
+
+            /* ✅ 新增（不改其他逻辑）：拿到聊天窗口元素，用于点击小精灵时自动展开 */
+            const chatWindow = document.getElementById('chat-window');
+
+            // 初始化显示气泡
+            setTimeout(() => {
+                elfBubble.classList.add('show');
+            }, 1000);
+
+            // 切换动作函数
+            function nextStep() {
+                /* ✅ 新增：点击小精灵时弹出（展开）金鹰智能助手对话框 */
+                if (chatWindow) chatWindow.classList.add('expanded');
+
+                currentStepIndex = (currentStepIndex + 1) % steps.length;
+                const step = steps[currentStepIndex];
+
+                // 隐藏气泡
+                elfBubble.classList.remove('show');
+
+                // 清除旧动作类
+                elfImg.classList.remove('state-talking', 'state-pointing', 'state-happy');
+                // 强制重绘以重置动画
+                void elfImg.offsetWidth; 
+
+                setTimeout(() => {
+                    elfImg.src = step.img;
+                    if (step.cssClass) {
+                        elfImg.classList.add(step.cssClass);
+                    }
+                    elfBubble.innerText = step.text;
+                    elfBubble.classList.add('show');
+                }, 250);
+            }
+
+            /* ✅ 新增（关键修复）：把 nextStep 暴露到全局，解决 onclick="nextStep()" 无法调用的问题 */
+            window.nextStep = nextStep;
+
+            // 鼠标跟随逻辑
+            document.addEventListener('mousemove', (e) => {
+                const width = window.innerWidth;
+                const mouseX = e.clientX;
+
+                document.body.classList.remove('mouse-left', 'mouse-right');
+
+                if (mouseX < width / 2) {
+                    document.body.classList.add('mouse-left');
+                } else {
+                    document.body.classList.add('mouse-right');
+                }
+                
+                // 如果正在做特定动作，暂停跟随
+                if (elfImg.classList.contains('state-pointing') || elfImg.classList.contains('state-happy')) {
+                    document.body.classList.remove('mouse-left', 'mouse-right');
+                }
+            });
+        });
+    </script>
+
+    <!-- ========== 🌤️ 修改版：通过本地后端请求天气 ========== -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const weatherBtn = document.getElementById('weather-btn');
+            const weatherDisplay = document.getElementById('weather-display');
+            const weatherError = document.getElementById('weather-error');
+            
+            // ✅ 关键配置：指向你的本地后端服务
+            // 无论 index.html 在哪里，只要 weather.js 在 localhost:3001 运行即可
+            const LOCAL_API_URL = 'http://localhost:3001/api/weather';
+            const YUZHONG_ADCODE = '620123';
+            
+            const weatherIcons = {
+                '晴': '☀️', '多云': '⛅', '阴': '☁️', '阵雨': '🌦️', '雷阵雨': '⛈️',
+                '雨夹雪': '🌨️', '小雨': '🌦️', '中雨': '🌧️', '大雨': '🌧️', '暴雨': '⛈️',
+                '小雪': '❄️', '中雪': '❄️', '大雪': '❄️', '雾': '🌫️', '霾': '😷', '无': '❓'
+            };
+
+            weatherBtn.addEventListener('click', async () => {
+                weatherBtn.disabled = true;
+                weatherBtn.textContent = '加载中...';
+                weatherError.style.display = 'none';
+                weatherDisplay.style.display = 'none';
+
+                try {
+                    // 发起请求到本地后端
+                    const response = await fetch(`${LOCAL_API_URL}?city=${YUZHONG_ADCODE}`);
+                    
+                    if (!response.ok) {
+                        const errText = await response.text();
+                        throw new Error(`服务响应错误 (${response.status}): ${errText}`);
+                    }
+
+                    const data = await response.json();
+                    
+                    if (data.status === '1' && data.info === 'OK' && data.lives && data.lives.length > 0) {
+                        renderWeather(data.lives[0]);
+                    } else {
+                        throw new Error(`数据异常: ${data.info} (代码:${data.infocode || '未知'})`);
+                    }
+
+                } catch (error) {
+                    console.error('天气查询失败:', error);
+                    let msg = error.message;
+                    if (msg.includes('Failed to fetch')) {
+                        msg = "无法连接到后端服务！\n请确认：\n1. 已运行 'node server/weather.js'\n2. 终端显示 '服务已启动'";
+                    }
+                    weatherError.textContent = msg;
+                    weatherError.style.display = 'block';
+                    weatherBtn.disabled = false;
+                    weatherBtn.textContent = '重新获取';
+                }
+            });
+
+            function renderWeather(live) {
+                const weather = live.weather;
+                document.getElementById('weather-icon').textContent = weatherIcons[weather] || '🌡️';
+                document.getElementById('weather-temp').textContent = `${live.temperature}°C`;
+                document.getElementById('weather-text').textContent = weather;
+                document.getElementById('weather-wind').textContent = `${live.winddirection}风 ${live.windpower}级`;
+                document.getElementById('weather-humidity').textContent = `湿度: ${live.humidity}%`;
+                
+                weatherDisplay.style.display = 'block';
+                weatherBtn.style.display = 'none';
+
+                const timeStr = new Date(live.reporttime).toLocaleString('zh-CN', {
+                    month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit'
+                });
+                document.getElementById('weather-location').innerHTML = 
+                    `📍 ${live.city} <span style="opacity:0.7;font-size:0.8em;">(${timeStr}更新)</span>`;
+            }
+        });
+    </script>
+
+</body>
+</html>

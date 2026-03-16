@@ -1,0 +1,1245 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+  <title>痛点破局 - 兰州大学·金鹰</title>
+
+  <!-- 保留你的原有全局样式 -->
+  <link rel="stylesheet" href="../assets/css/global.css" />
+
+  <!-- 网络精美资源（CDN） -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <!-- 高级字体：Inter + Noto Sans SC（更现代、更“高端”） -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Noto+Sans+SC:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <!-- 图标库 -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.5.2/css/all.min.css">
+  <!-- 动效库（可选，但很显“精致”） -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.css">
+
+  <!-- ECharts：保留你的逻辑依赖 -->
+  <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
+
+  <style>
+    /* =========================
+      1) 设计系统（更高级的视觉）
+    ========================= */
+    :root{
+      --shadow-soft: 0 10px 30px rgba(2,6,23,.08);
+      --shadow-hover: 0 18px 55px rgba(2,6,23,.14);
+      --shadow-glow: 0 20px 70px rgba(245,158,11,.22);
+
+      --primary-red: #ef4444;
+      --primary-blue: #3b82f6;
+      --primary-purple: #8b5cf6;
+      --primary-yellow: #f59e0b;
+      --primary-green: #10b981;
+
+      --ink: #0b1220;
+      --slate-900: #0f172a;
+      --slate-800: #1e293b;
+      --slate-700: #334155;
+      --slate-600: #475569;
+      --slate-500: #64748b;
+      --slate-200: #e2e8f0;
+      --slate-100: #f1f5f9;
+      --slate-50: #f8fafc;
+
+      --radius-xl: 20px;
+      --radius-lg: 16px;
+      --radius-md: 12px;
+
+      --glass: rgba(255,255,255,.65);
+      --glass-border: rgba(255,255,255,.55);
+
+      --grad-hero: radial-gradient(1200px 500px at 50% 0%, rgba(245,158,11,.22), transparent 60%),
+                   radial-gradient(900px 450px at 15% 20%, rgba(59,130,246,.18), transparent 55%),
+                   radial-gradient(900px 450px at 85% 15%, rgba(139,92,246,.14), transparent 55%);
+
+      --ease-out: cubic-bezier(.2,.8,.2,1);
+    }
+
+    *{ box-sizing:border-box; }
+    html{ scroll-behavior:smooth; }
+    body{
+      margin:0;
+      padding:0;
+      font-family: "Inter","Noto Sans SC","Microsoft Yahei",system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+      color: var(--slate-800);
+      background:
+        var(--grad-hero),
+        linear-gradient(180deg, #ffffff 0%, #fbfdff 20%, #f7fafc 100%);
+      overflow-x:hidden;
+      padding-top: 84px; /* 原固定导航高度 + 更舒服的间距 */
+    }
+
+    /* 细腻的噪点层（高级感） */
+    body::before{
+      content:"";
+      position:fixed;
+      inset:0;
+      pointer-events:none;
+      background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='180' height='180' filter='url(%23n)' opacity='.18'/%3E%3C/svg%3E");
+      mix-blend-mode: multiply;
+      opacity:.12;
+      z-index:0;
+    }
+
+    /* 页面滚动进度条 */
+    .scroll-progress{
+      position:fixed;
+      top:0; left:0;
+      height:3px;
+      width:0%;
+      background: linear-gradient(90deg, var(--primary-yellow), var(--primary-purple), var(--primary-blue));
+      z-index:2001;
+      box-shadow: 0 0 18px rgba(245,158,11,.35);
+    }
+
+    .container{
+      width: 92%;
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 0 15px;
+      position:relative;
+      z-index:1;
+    }
+
+    .section-padding{ padding: 70px 0; }
+
+    /* =========================
+      2) 你的 reveal-up 逻辑保留 + 更细腻
+    ========================= */
+    .reveal-up{
+      opacity:0;
+      transform: translateY(18px);
+      transition: all .7s var(--ease-out);
+      will-change: transform, opacity;
+    }
+    .reveal-up.active{
+      opacity:1;
+      transform: translateY(0);
+    }
+    .delay-100{ transition-delay:.10s; }
+    .delay-200{ transition-delay:.20s; }
+    .delay-300{ transition-delay:.30s; }
+    .delay-400{ transition-delay:.40s; }
+    .delay-500{ transition-delay:.50s; }
+
+    /* =========================
+      3) 顶部导航：玻璃拟态 + 高级动效
+    ========================= */
+    header{
+      position:fixed;
+      top:0;
+      width:100%;
+      padding: 14px 50px;
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      z-index:2000;
+      background: rgba(255,255,255,.78);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      border-bottom: 1px solid rgba(226,232,240,.7);
+      box-shadow: 0 8px 30px rgba(2,6,23,.05);
+      transition: padding .35s var(--ease-out), background .35s var(--ease-out);
+    }
+    header.compact{
+      padding: 10px 50px;
+      background: rgba(255,255,255,.9);
+    }
+
+    .back-link{
+      position:absolute;
+      left: 22px;
+      color: var(--slate-600);
+      text-decoration:none;
+      font-weight:700;
+      display:flex;
+      align-items:center;
+      gap:10px;
+      transition: color .25s var(--ease-out), transform .25s var(--ease-out);
+    }
+    .back-link span{
+      width:30px; height:30px;
+      border-radius: 999px;
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      background: rgba(245,158,11,.10);
+      color: #b45309;
+      font-weight:800;
+      box-shadow: 0 6px 18px rgba(245,158,11,.15);
+    }
+    .back-link:hover{
+      color:#b45309;
+      transform: translateY(-1px);
+    }
+
+    .logo{
+      font-weight: 900;
+      font-size: 1.25rem;
+      letter-spacing: .2px;
+      color:#b45309;
+      display:flex;
+      align-items:center;
+      gap:10px;
+      margin-left: 80px; /* 避免被 back-link 覆盖 */
+    }
+    .logo::before{
+      content:"";
+      width: 11px; height: 11px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 30% 30%, #fff, var(--primary-yellow));
+      box-shadow: 0 0 0 6px rgba(245,158,11,.16);
+    }
+    .logo span{ color: var(--slate-900); font-weight:900; }
+
+    nav{
+      display:flex;
+      align-items:center;
+      gap: 18px;
+      position:relative;
+    }
+    nav a{
+      margin-left: 0;
+      text-decoration:none;
+      color: var(--slate-800);
+      font-weight:700;
+      font-size: .98rem;
+      padding: 10px 12px;
+      border-radius: 999px;
+      transition: color .25s var(--ease-out), background .25s var(--ease-out), transform .25s var(--ease-out);
+      position:relative;
+    }
+    nav a:hover{
+      color:#b45309;
+      background: rgba(245,158,11,.10);
+      transform: translateY(-1px);
+    }
+    nav a.active{
+      color:#111827;
+      background: rgba(245,158,11,.16);
+      box-shadow: 0 8px 22px rgba(245,158,11,.18);
+    }
+
+    /* =========================
+      4) Hero：更强层次 + 装饰性元素（保留你背景图素材）
+    ========================= */
+    .pain-hero{
+      background: url('../images/hero/3.jpg') center/cover no-repeat;
+      color:white;
+      padding: 90px 0;
+      text-align:center;
+      border-radius: var(--radius-xl);
+      margin: 22px auto;
+      width: 95%;
+      box-shadow: var(--shadow-soft);
+      position:relative;
+      overflow:hidden;
+      isolation:isolate;
+    }
+    .pain-hero::before{
+      content:'';
+      position:absolute;
+      inset:0;
+      background:
+        linear-gradient(180deg, rgba(0,0,0,.55) 0%, rgba(0,0,0,.30) 55%, rgba(0,0,0,.55) 100%),
+        radial-gradient(600px 220px at 50% 15%, rgba(245,158,11,.35), transparent 60%),
+        radial-gradient(540px 240px at 15% 10%, rgba(59,130,246,.25), transparent 62%),
+        radial-gradient(540px 240px at 85% 12%, rgba(139,92,246,.22), transparent 62%);
+      border-radius: var(--radius-xl);
+      z-index:1;
+    }
+    .pain-hero::after{
+      content:"";
+      position:absolute;
+      inset:-2px;
+      border-radius: var(--radius-xl);
+      border: 1px solid rgba(255,255,255,.18);
+      z-index:2;
+      pointer-events:none;
+    }
+    .pain-hero .container{
+      position:relative;
+      z-index:3;
+    }
+    .pain-hero h1{
+      font-size: clamp(2.1rem, 3.2vw, 3rem);
+      margin: 0 0 12px 0;
+      font-weight: 900;
+      letter-spacing: .2px;
+      text-shadow: 0 10px 40px rgba(0,0,0,.35);
+    }
+    .pain-hero p{
+      font-size: 1.08rem;
+      opacity: .95;
+      max-width: 760px;
+      margin: 0 auto;
+      line-height: 1.8;
+      text-shadow: 0 8px 26px rgba(0,0,0,.28);
+    }
+
+    /* Hero 内部“浮光”装饰 */
+    .hero-orb{
+      position:absolute;
+      width: 520px;
+      height: 520px;
+      border-radius: 50%;
+      filter: blur(40px);
+      opacity:.22;
+      z-index:2;
+      pointer-events:none;
+      mix-blend-mode: screen;
+      background: radial-gradient(circle at 30% 30%, rgba(245,158,11,.95), rgba(245,158,11,.00) 62%);
+      top:-220px;
+      right:-180px;
+    }
+    .hero-orb.orb2{
+      width: 420px;
+      height: 420px;
+      opacity:.18;
+      background: radial-gradient(circle at 30% 30%, rgba(59,130,246,.95), rgba(59,130,246,.00) 62%);
+      left:-180px;
+      top:-180px;
+    }
+
+    /* =========================
+      5) 痛点卡片：更“产品级”卡片质感 + 结构优化
+    ========================= */
+    .pain-grid{
+      display:grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 26px;
+      margin-top: 42px;
+    }
+
+    .pain-card{
+      background: rgba(255,255,255,.92);
+      border-radius: var(--radius-xl);
+      padding: 30px;
+      position:relative;
+      overflow:hidden;
+      box-shadow: var(--shadow-soft);
+      border: 1px solid rgba(226,232,240,.7);
+      border-top: 5px solid;
+      transition: transform .45s var(--ease-out), box-shadow .45s var(--ease-out);
+    }
+    .pain-card::before{
+      content:"";
+      position:absolute;
+      inset:0;
+      background: radial-gradient(700px 180px at 20% 0%, rgba(245,158,11,.10), transparent 55%);
+      opacity:.9;
+      pointer-events:none;
+    }
+    .pain-card:hover{
+      transform: translateY(-7px);
+      box-shadow: var(--shadow-hover);
+    }
+
+    .pain-card:nth-child(1){ border-top-color: var(--primary-red); }
+    .pain-card:nth-child(2){ border-top-color: var(--primary-blue); }
+    .pain-card:nth-child(3){ border-top-color: var(--primary-purple); }
+    .pain-card:nth-child(4){ border-top-color: var(--primary-yellow); }
+
+    .pain-icon{
+      font-size: 2.8rem;
+      margin-bottom: 14px;
+      display:inline-block;
+      transform: translateZ(0);
+    }
+
+    .pain-title{
+      font-size: 1.28rem;
+      font-weight: 900;
+      margin-bottom: 10px;
+      color: var(--slate-900);
+      padding-bottom: 10px;
+      border-bottom: 1px solid rgba(241,245,249,.9);
+      display:flex;
+      align-items:center;
+      justify-content: space-between;
+      gap:12px;
+    }
+    .pain-title .mini-chip{
+      font-size:.82rem;
+      font-weight:800;
+      padding: 6px 10px;
+      border-radius: 999px;
+      background: rgba(15,23,42,.06);
+      color: var(--slate-700);
+      border: 1px solid rgba(226,232,240,.8);
+      white-space:nowrap;
+    }
+
+    .pain-desc{
+      color: var(--slate-600);
+      line-height: 1.8;
+      font-size: .98rem;
+      margin-bottom: 18px;
+      position:relative;
+      z-index:1;
+    }
+
+    .pain-stat{
+      margin-top: 12px;
+      font-size: 1.85rem;
+      font-weight: 900;
+      display:flex;
+      align-items: baseline;
+      gap: 10px;
+      position:relative;
+      z-index:1;
+    }
+    .pain-stat span{
+      font-size: .95rem;
+      color: var(--slate-500);
+      font-weight: 600;
+    }
+    .pain-card:nth-child(1) .pain-stat{ color: var(--primary-red); }
+    .pain-card:nth-child(2) .pain-stat{ color: var(--primary-blue); }
+    .pain-card:nth-child(3) .pain-stat{ color: var(--primary-purple); }
+    .pain-card:nth-child(4) .pain-stat{ color: var(--primary-yellow); }
+
+    /* 图表容器：更干净 + 内边框 */
+    .chart-container{
+      height: 210px;
+      margin-top: 18px;
+      border-radius: 14px;
+      overflow:hidden;
+      background: linear-gradient(180deg, #f8fafc, #ffffff);
+      padding: 10px;
+      border: 1px solid rgba(226,232,240,.9);
+      position:relative;
+      z-index:1;
+    }
+
+    /* =========================
+      6) 数据总览：增强“看板感”
+    ========================= */
+    .data-overview{
+      margin: 56px auto 0;
+      padding: 40px;
+      background: rgba(255,255,255,.92);
+      border-radius: var(--radius-xl);
+      box-shadow: var(--shadow-soft);
+      border: 1px solid rgba(226,232,240,.7);
+      position:relative;
+      overflow:hidden;
+    }
+    .data-overview::before{
+      content:"";
+      position:absolute;
+      inset:0;
+      background: radial-gradient(900px 220px at 50% 0%, rgba(59,130,246,.10), transparent 60%),
+                  radial-gradient(900px 220px at 10% 10%, rgba(139,92,246,.08), transparent 60%);
+      pointer-events:none;
+    }
+    .data-overview h3{
+      text-align:center;
+      font-size: 1.55rem;
+      color: var(--slate-900);
+      margin: 0 0 28px 0;
+      font-weight: 900;
+      letter-spacing:.2px;
+      position:relative;
+      z-index:1;
+    }
+    .overview-grid{
+      display:grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 18px;
+      position:relative;
+      z-index:1;
+    }
+    .overview-item{
+      text-align:center;
+      padding: 22px 18px;
+      background: rgba(248,250,252,.95);
+      border-radius: 16px;
+      border: 1px solid rgba(226,232,240,.9);
+      box-shadow: 0 10px 30px rgba(2,6,23,.04);
+      transition: transform .35s var(--ease-out), box-shadow .35s var(--ease-out);
+    }
+    .overview-item:hover{
+      transform: translateY(-4px);
+      box-shadow: 0 16px 42px rgba(2,6,23,.08);
+    }
+    .overview-number{
+      font-size: 2.15rem;
+      font-weight: 950;
+      margin-bottom: 8px;
+      color: var(--slate-900);
+      letter-spacing: .2px;
+    }
+    .overview-label{
+      font-size: 1rem;
+      color: var(--slate-600);
+      font-weight:600;
+    }
+
+    /* =========================
+      7) 对比区域：更像品牌展示页
+    ========================= */
+    .comparison-section{
+      background: linear-gradient(180deg, rgba(248,250,252,1), rgba(255,255,255,1));
+      padding: 78px 0;
+      margin-top: 60px;
+      border-radius: var(--radius-xl);
+      margin: 66px auto;
+      width: 95%;
+      position:relative;
+      overflow:hidden;
+      border: 1px solid rgba(226,232,240,.7);
+      box-shadow: var(--shadow-soft);
+    }
+    .comparison-section::before{
+      content:"";
+      position:absolute;
+      inset:0;
+      background: radial-gradient(900px 260px at 15% 0%, rgba(245,158,11,.12), transparent 55%),
+                  radial-gradient(900px 260px at 85% 0%, rgba(16,185,129,.10), transparent 55%);
+      pointer-events:none;
+    }
+
+    .section-title{
+      text-align:center;
+      margin-bottom: 44px;
+      position:relative;
+      z-index:1;
+    }
+    .section-title h2{
+      font-size: 2rem;
+      color: var(--slate-900);
+      margin: 0;
+      position:relative;
+      display:inline-block;
+      padding-bottom: 12px;
+      font-weight: 950;
+      letter-spacing:.2px;
+    }
+    .section-title h2::after{
+      content:'';
+      position:absolute;
+      bottom:0;
+      left:50%;
+      transform: translateX(-50%);
+      width: 72px;
+      height: 4px;
+      background: linear-gradient(90deg, var(--primary-yellow), var(--primary-purple));
+      border-radius: 999px;
+    }
+
+    .compare-container{
+      display:flex;
+      gap: 26px;
+      flex-wrap:wrap;
+      justify-content:center;
+      margin-top: 28px;
+      position:relative;
+      z-index:1;
+    }
+    .compare-box{
+      flex:1;
+      min-width: 300px;
+      max-width: 520px;
+      padding: 34px;
+      border-radius: var(--radius-xl);
+      transition: transform .45s var(--ease-out), box-shadow .45s var(--ease-out);
+      position:relative;
+      overflow:hidden;
+      box-shadow: 0 14px 40px rgba(2,6,23,.06);
+    }
+    .compare-box:hover{
+      transform: translateY(-7px);
+      box-shadow: 0 18px 55px rgba(2,6,23,.10);
+    }
+    .box-bad{
+      background: linear-gradient(180deg, rgba(254,226,226,.9), rgba(255,255,255,.8));
+      border: 2px dashed rgba(239,68,68,.85);
+    }
+    .box-good{
+      background: linear-gradient(180deg, rgba(220,252,231,.92), rgba(255,255,255,.86));
+      border: 2px solid rgba(16,185,129,.85);
+    }
+
+    .badge{
+      display:inline-flex;
+      align-items:center;
+      gap:10px;
+      padding: 7px 16px;
+      border-radius: 999px;
+      font-weight: 900;
+      margin-bottom: 18px;
+      font-size: 1rem;
+      letter-spacing:.2px;
+    }
+    .badge-bad{ background: var(--primary-red); color:white; }
+    .badge-good{ background: var(--primary-green); color:white; }
+    .badge i{ opacity:.95; }
+
+    .compare-box h3{
+      font-size: 1.45rem;
+      margin: 0 0 18px 0;
+      font-weight: 950;
+    }
+    .box-bad h3{ color: #7f1d1d; }
+    .box-good h3{ color: #064e3b; }
+
+    .check-list{
+      list-style:none;
+      padding:0;
+      margin:0;
+    }
+    .check-list li{
+      margin-bottom: 14px;
+      display:flex;
+      align-items:flex-start;
+      gap: 12px;
+      font-size: 1rem;
+      line-height: 1.75;
+      color: rgba(15,23,42,.86);
+    }
+    .icon-check, .icon-cross{
+      font-weight: 900;
+      font-size: 1.15rem;
+      margin-top: 2px;
+      width: 20px;
+      text-align:center;
+      flex: 0 0 20px;
+    }
+    .icon-check{ color: var(--primary-green); }
+    .icon-cross{ color: var(--primary-red); }
+
+    /* 雷达图容器更大更稳 */
+    #radarChart{
+      background: rgba(255,255,255,.92);
+      border-radius: var(--radius-xl);
+      border: 1px solid rgba(226,232,240,.7);
+      box-shadow: 0 16px 45px rgba(2,6,23,.06);
+    }
+
+    /* =========================
+      8) CTA：更“按钮级”高级
+    ========================= */
+    .btn{
+      display:inline-flex;
+      align-items:center;
+      gap:10px;
+      padding: 12px 30px;
+      border-radius: 999px;
+      text-decoration:none;
+      font-weight: 900;
+      transition: transform .25s var(--ease-out), box-shadow .25s var(--ease-out), background .25s var(--ease-out);
+      font-size: 1rem;
+      border:none;
+      cursor:pointer;
+    }
+    .btn-primary{
+      background: linear-gradient(135deg, #f59e0b, #fbbf24);
+      color:white;
+      box-shadow: 0 16px 40px rgba(245,158,11,.22);
+    }
+    .btn-primary:hover{
+      background: linear-gradient(135deg, #d97706, #f59e0b);
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-glow);
+    }
+    .cta-section{
+      text-align:center;
+      padding: 48px 0 66px;
+    }
+    .cta-section h3{
+      font-size: 1.55rem;
+      color: var(--slate-900);
+      margin-bottom: 22px;
+      font-weight: 950;
+    }
+
+    /* =========================
+      9) 响应式细节
+    ========================= */
+    @media (max-width: 960px){
+      header{ padding: 12px 18px; }
+      header.compact{ padding: 10px 18px; }
+      .logo{ margin-left: 92px; font-size: 1.12rem; }
+      nav{ gap: 10px; flex-wrap: wrap; justify-content:flex-end; }
+      nav a{ padding: 8px 10px; }
+    }
+    @media (max-width: 640px){
+      .back-link{ display:none; }
+      .logo{ margin-left: 0; }
+      .pain-hero{ padding: 78px 0; }
+      .data-overview{ padding: 28px; }
+      .compare-box{ padding: 26px; }
+    }
+  </style>
+</head>
+
+<body>
+  <!-- 滚动进度条（新增，不影响原逻辑） -->
+  <div class="scroll-progress" id="scrollProgress"></div>
+
+  <!-- 顶部导航（保留你的结构与链接） -->
+  <header id="topHeader">
+    <a href="../index.html" class="back-link">
+      <span>←</span> 返回首页
+    </a>
+    <div class="logo">
+      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>兰州大学·金鹰</span>
+    </div>
+    <nav>
+      <a href="vision.html">愿景模式</a>
+      <a href="painpoints.html" class="active">痛点破局</a>
+      <a href="solution.html">解决方案</a>
+      <a href="market.html">市场分析</a>
+      <a href="business.html">商业模式</a>
+      <a href="team.html">核心团队</a>
+    </nav>
+  </header>
+
+  <!-- Hero（保留你的素材背景图 + 新增装饰） -->
+  <section class="pain-hero">
+    <div class="hero-orb"></div>
+    <div class="hero-orb orb2"></div>
+
+    <div class="container reveal-up" data-aos="fade-up" data-aos-duration="900">
+      <h1>四大顽疾 · 亟待破局</h1>
+      <p>传统农业模式的困境，正是我们数字化转型的机遇</p>
+    </div>
+  </section>
+
+  <section class="container section-padding">
+    <div class="pain-grid">
+      <!-- 痛点 1（保留内容与 id） -->
+      <div class="pain-card reveal-up delay-100" data-aos="fade-up" data-aos-delay="50">
+        <div class="pain-icon">📉</div>
+        <div class="pain-title">
+          产销信息不对称
+          <span class="mini-chip"><i class="fa-solid fa-signal"></i> 数据断链</span>
+        </div>
+        <div class="pain-desc">农户盲目种植，丰产不丰收。中间环节多，利润被层层盘剥，终端价格高但农民收入低。</div>
+        <div class="pain-stat"><span class="count-up" data-target="30">30</span>% <span>农产品滞销率</span></div>
+        <div class="chart-container" id="chart1"></div>
+      </div>
+
+      <!-- 痛点 2 -->
+      <div class="pain-card reveal-up delay-200" data-aos="fade-up" data-aos-delay="120">
+        <div class="pain-icon">🌪️</div>
+        <div class="pain-title">
+          抗风险能力弱
+          <span class="mini-chip"><i class="fa-solid fa-cloud-bolt"></i> 预警滞后</span>
+        </div>
+        <div class="pain-desc">靠天吃饭，缺乏精准气象指导。灾害预警滞后，保险理赔难，一次灾害可能让农户一年白干。</div>
+        <!-- 保留你原有展示：¥ 0 -->
+        <div class="pain-stat">¥ <span class="count-up" data-target="0">0</span> <span>精准防灾投入</span></div>
+        <div class="chart-container" id="chart2"></div>
+      </div>
+
+      <!-- 痛点 3 -->
+      <div class="pain-card reveal-up delay-300" data-aos="fade-up" data-aos-delay="190">
+        <div class="pain-icon">🔗</div>
+        <div class="pain-title">
+          产业链条断裂
+          <span class="mini-chip"><i class="fa-solid fa-link-slash"></i> 无品牌</span>
+        </div>
+        <div class="pain-desc">只卖原料，无深加工。有产品无品牌，有产量无销量。赛事、旅游与农业互不相通，资源浪费。</div>
+        <div class="pain-stat"><span class="count-up" data-target="12">1.2</span> <span>倍 附加值 (远低于平均3.5倍)</span></div>
+        <div class="chart-container" id="chart3"></div>
+      </div>
+
+      <!-- 痛点 4 -->
+      <div class="pain-card reveal-up delay-400" data-aos="fade-up" data-aos-delay="260">
+        <div class="pain-icon">👵</div>
+        <div class="pain-title">
+          空心化与人才流失
+          <span class="mini-chip"><i class="fa-solid fa-person-walking-arrow-right"></i> 外流</span>
+        </div>
+        <div class="pain-desc">年轻人不愿回乡，留守老人无力耕种。缺乏懂技术、懂运营的新农人，乡村发展缺乏内生动力。</div>
+        <div class="pain-stat"><span class="count-up" data-target="65">65</span>% <span>从业人员年龄&gt;55岁</span></div>
+        <div class="chart-container" id="chart4"></div>
+      </div>
+    </div>
+
+    <!-- 数据总览（保留内容 + 新增计数动画，不删除原逻辑） -->
+    <div class="data-overview reveal-up delay-500" data-aos="fade-up" data-aos-delay="280">
+      <h3>夏官营农业痛点数据总览</h3>
+      <div class="overview-grid">
+        <div class="overview-item">
+          <div class="overview-number"><span class="count-up" data-target="30">30</span>%</div>
+          <div class="overview-label">农产品年均滞销率</div>
+        </div>
+        <div class="overview-item">
+          <div class="overview-number"><span class="count-up" data-target="85">85</span>%</div>
+          <div class="overview-label">农户靠天吃饭比例</div>
+        </div>
+        <div class="overview-item">
+          <div class="overview-number"><span class="count-up-decimal" data-target="1.2">1.2</span>x</div>
+          <div class="overview-label">农产品平均附加值</div>
+        </div>
+        <div class="overview-item">
+          <div class="overview-number"><span class="count-up" data-target="65">65</span>%</div>
+          <div class="overview-label">55岁以上从业占比</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 对比区域（保留内容 + 强化视觉） -->
+  <section class="comparison-section">
+    <div class="container">
+      <div class="section-title reveal-up" data-aos="fade-up">
+        <h2>传统模式 vs 夏官营新模式</h2>
+      </div>
+
+      <div class="compare-container">
+        <div class="compare-box box-bad reveal-up" data-aos="fade-up" data-aos-delay="60">
+          <span class="badge badge-bad"><i class="fa-solid fa-triangle-exclamation"></i> 传统模式</span>
+          <h3>分散、低效、被动</h3>
+          <ul class="check-list">
+            <li><span class="icon-cross">✕</span> 单户作战，议价能力弱</li>
+            <li><span class="icon-cross">✕</span> 经验种植，灾害损失大</li>
+            <li><span class="icon-cross">✕</span> 等待收购，销售渠道窄</li>
+            <li><span class="icon-cross">✕</span> 品牌缺失，产品同质化</li>
+          </ul>
+        </div>
+
+        <div class="compare-box box-good reveal-up delay-200" data-aos="fade-up" data-aos-delay="120">
+          <span class="badge badge-good"><i class="fa-solid fa-rocket"></i> 夏官营模式</span>
+          <h3>联营、智能、主动</h3>
+          <ul class="check-list">
+            <li><span class="icon-check">✓</span> 组织共建，统一议价</li>
+            <li><span class="icon-check">✓</span> 数据驱动，精准防灾</li>
+            <li><span class="icon-check">✓</span> 平台直销，赛事引流</li>
+            <li><span class="icon-check">✓</span> 品牌赋能，三产融合</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- 模式对比雷达图（保留 id，保留你原逻辑 initCharts 渲染） -->
+      <div class="chart-container" style="height: 360px; margin-top: 40px; max-width: 860px; margin-left: auto; margin-right: auto;" id="radarChart"></div>
+    </div>
+  </section>
+
+  <section class="container cta-section">
+    <h3 class="reveal-up" data-aos="fade-up">面对这些痛点，我们的解法是？</h3>
+    <a href="solution.html" class="btn btn-primary reveal-up delay-100" data-aos="fade-up" data-aos-delay="100">
+      查看解决方案 <i class="fa-solid fa-arrow-right"></i>
+    </a>
+  </section>
+
+  <!-- 保留你的原有 main.js -->
+  <script src="../assets/js/main.js"></script>
+
+  <!-- AOS 动画库（新增，不影响原逻辑） -->
+  <script src="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.js"></script>
+
+  <!-- =========================
+      原有滚动动画逻辑：保留（不删除）
+      + 增强：AOS 初始化 / 计数动画 / 顶部进度条 / header 收缩
+  ========================= -->
+  <script>
+    // 你的原有逻辑（保留）
+    document.addEventListener('DOMContentLoaded', function() {
+      const revealElements = document.querySelectorAll('.reveal-up');
+
+      function checkReveal() {
+        revealElements.forEach(element => {
+          const elementTop = element.getBoundingClientRect().top;
+          const windowHeight = window.innerHeight;
+
+          if (elementTop < windowHeight * 0.9) {
+            element.classList.add('active');
+          }
+        });
+      }
+
+      // 初始化检查
+      checkReveal();
+
+      // 滚动时检查
+      window.addEventListener('scroll', checkReveal);
+
+      // 初始化ECharts图表（保留）
+      initCharts();
+
+      // ======= 新增增强（不删除原逻辑） =======
+
+      // 1) AOS 初始化
+      try {
+        AOS.init({
+          once: true,
+          offset: 90,
+          duration: 800,
+          easing: 'ease-out-cubic'
+        });
+      } catch(e) {}
+
+      // 2) Header 滚动收缩
+      const header = document.getElementById('topHeader');
+      function handleHeader() {
+        if (window.scrollY > 12) header.classList.add('compact');
+        else header.classList.remove('compact');
+      }
+      handleHeader();
+      window.addEventListener('scroll', handleHeader);
+
+      // 3) 顶部滚动进度条
+      const progress = document.getElementById('scrollProgress');
+      function updateProgress() {
+        const doc = document.documentElement;
+        const scrollTop = doc.scrollTop || document.body.scrollTop;
+        const scrollHeight = doc.scrollHeight - doc.clientHeight;
+        const p = scrollHeight ? (scrollTop / scrollHeight) * 100 : 0;
+        progress.style.width = p.toFixed(2) + '%';
+      }
+      updateProgress();
+      window.addEventListener('scroll', updateProgress);
+
+      // 4) 计数动画（看板质感：进入视口才开始）
+      const countersInt = document.querySelectorAll('.count-up');
+      const countersDec = document.querySelectorAll('.count-up-decimal');
+
+      function animateNumber(el, target, isDecimal=false) {
+        const duration = 900;
+        const start = performance.now();
+        const from = isDecimal ? parseFloat(el.textContent) : parseInt(el.textContent, 10);
+
+        function tick(now) {
+          const t = Math.min(1, (now - start) / duration);
+          const eased = 1 - Math.pow(1 - t, 3); // easeOutCubic
+          const val = from + (target - from) * eased;
+
+          if (isDecimal) el.textContent = val.toFixed(1);
+          else el.textContent = Math.round(val);
+
+          if (t < 1) requestAnimationFrame(tick);
+        }
+        requestAnimationFrame(tick);
+      }
+
+      const io = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (!entry.isIntersecting) return;
+
+          const el = entry.target;
+          if (el.dataset.animated) return;
+
+          el.dataset.animated = '1';
+
+          if (el.classList.contains('count-up-decimal')) {
+            const target = parseFloat(el.getAttribute('data-target'));
+            animateNumber(el, target, true);
+          } else {
+            // 注意：你有一个 1.2 放在 count-up 上（痛点3）——这里做兼容
+            const raw = el.getAttribute('data-target');
+            const target = raw && raw.includes('.') ? parseFloat(raw) : parseInt(raw, 10);
+            if (String(raw).includes('.')) animateNumber(el, target, true);
+            else animateNumber(el, target, false);
+          }
+
+          io.unobserve(el);
+        });
+      }, { threshold: 0.5 });
+
+      [...countersInt, ...countersDec].forEach(el => io.observe(el));
+    });
+
+    // 初始化所有图表（你的原逻辑：保留不删）
+    function initCharts() {
+      // 图表1：农产品滞销率
+      const chart1 = echarts.init(document.getElementById('chart1'));
+      chart1.setOption({
+        title: { text: '农产品滞销率分析', left: 'center', textStyle: { fontSize: 12, color: '#64748b' } },
+        tooltip: { trigger: 'axis' },
+        grid: { left: '5%', right: '5%', bottom: '10%', containLabel: true },
+        xAxis: {
+          type: 'category',
+          data: ['春季', '夏季', '秋季', '冬季'],
+          axisLine: { lineStyle: { color: '#e2e8f0' } }
+        },
+        yAxis: {
+          type: 'value',
+          max: 40,
+          axisLine: { lineStyle: { color: '#e2e8f0' } },
+          splitLine: { lineStyle: { color: '#f1f5f9' } }
+        },
+        series: [{
+          data: [25, 18, 35, 28],
+          type: 'bar',
+          itemStyle: { color: '#ef4444' }
+        }]
+      });
+
+      // 图表2：灾害损失分析
+      const chart2 = echarts.init(document.getElementById('chart2'));
+      chart2.setOption({
+        title: { text: '灾害损失占比', left: 'center', textStyle: { fontSize: 12, color: '#64748b' } },
+        tooltip: { trigger: 'item' },
+        series: [{
+          name: '灾害类型',
+          type: 'pie',
+          radius: ['40%', '70%'],
+          data: [
+            { value: 45, name: '干旱' },
+            { value: 25, name: '洪涝' },
+            { value: 15, name: '冰雹' },
+            { value: 10, name: '病虫害' },
+            { value: 5, name: '其他' }
+          ],
+          itemStyle: {
+            color: function(params) {
+              const colorList = ['#3b82f6', '#60a5fa', '#93c5fd', '#bfdbfe', '#dbeafe'];
+              return colorList[params.dataIndex];
+            }
+          },
+          label: {
+            show: true,
+            position: 'outside',
+            fontSize: 10,
+            color: '#64748b'
+          }
+        }]
+      });
+
+      // 图表3：农产品附加值对比
+      const chart3 = echarts.init(document.getElementById('chart3'));
+      chart3.setOption({
+        title: { text: '农产品附加值对比', left: 'center', textStyle: { fontSize: 12, color: '#64748b' } },
+        tooltip: { trigger: 'axis' },
+        grid: { left: '5%', right: '5%', bottom: '10%', containLabel: true },
+        xAxis: {
+          type: 'category',
+          data: ['夏官营', '全国平均', '发达地区'],
+          axisLine: { lineStyle: { color: '#e2e8f0' } }
+        },
+        yAxis: {
+          type: 'value',
+          axisLine: { lineStyle: { color: '#e2e8f0' } },
+          splitLine: { lineStyle: { color: '#f1f5f9' } }
+        },
+        series: [{
+          data: [1.2, 3.5, 5.8],
+          type: 'bar',
+          itemStyle: { color: '#8b5cf6' }
+        }]
+      });
+
+      // 图表4：从业人员年龄分布
+      const chart4 = echarts.init(document.getElementById('chart4'));
+      chart4.setOption({
+        title: { text: '从业人员年龄分布', left: 'center', textStyle: { fontSize: 12, color: '#64748b' } },
+        tooltip: { trigger: 'item' },
+        series: [{
+          name: '年龄分布',
+          type: 'pie',
+          radius: ['40%', '70%'],
+          data: [
+            { value: 65, name: '55岁以上' },
+            { value: 20, name: '40-55岁' },
+            { value: 10, name: '25-40岁' },
+            { value: 5, name: '25岁以下' }
+          ],
+          itemStyle: {
+            color: function(params) {
+              const colorList = ['#f59e0b', '#fbbf24', '#fcd34d', '#fde68a'];
+              return colorList[params.dataIndex];
+            }
+          },
+          label: {
+            show: true,
+            position: 'outside',
+            fontSize: 10,
+            color: '#64748b'
+          }
+        }]
+      });
+
+      // 雷达图：模式对比
+      const radarChart = echarts.init(document.getElementById('radarChart'));
+      radarChart.setOption({
+        title: {
+          text: '模式能力对比',
+          left: 'center',
+          textStyle: { fontSize: 14, color: '#1e293b' }
+        },
+        tooltip: { trigger: 'item' },
+        radar: {
+          indicator: [
+            { name: '抗风险能力', max: 100 },
+            { name: '盈利能力', max: 100 },
+            { name: '品牌价值', max: 100 },
+            { name: '渠道能力', max: 100 },
+            { name: '人才储备', max: 100 },
+            { name: '数字化水平', max: 100 }
+          ],
+          shape: 'polygon',
+          splitNumber: 4,
+          name: { textStyle: { color: '#64748b', fontSize: 10 } },
+          splitLine: { lineStyle: { color: '#e2e8f0' } },
+          splitArea: { areaStyle: { color: ['#f8fafc', '#f1f5f9'] } },
+          axisLine: { lineStyle: { color: '#cbd5e1' } }
+        },
+        series: [{
+          type: 'radar',
+          data: [
+            {
+              value: [30, 40, 20, 25, 15, 10],
+              name: '传统模式',
+              areaStyle: { color: 'rgba(239, 68, 68, 0.2)' },
+              lineStyle: { color: '#ef4444', width: 2 },
+            },
+            {
+              value: [85, 80, 90, 88, 75, 95],
+              name: '夏官营新模式',
+              areaStyle: { color: 'rgba(16, 185, 129, 0.2)' },
+              lineStyle: { color: '#10b981', width: 2 },
+            }
+          ]
+        }]
+      });
+
+      // 响应窗口大小变化（保留）
+      window.addEventListener('resize', function() {
+        chart1.resize();
+        chart2.resize();
+        chart3.resize();
+        chart4.resize();
+        radarChart.resize();
+      });
+    }
+  </script>
+
+  <!-- =========================
+      原版粒子特效：完全保留（不删任何逻辑）
+      （仅建议：如果你想让粒子更“高级”，可把 fixedColors 调成更柔和的品牌色）
+  ========================= -->
+  <script>
+    !(function () {
+      function n(n, e, t) {
+        return n.getAttribute(e) || t;
+      }
+      function e(n) {
+        return document.getElementsByTagName(n);
+      }
+      function t() {
+        var t = e("script"),
+          o = t.length,
+          i = t[o - 1];
+        return {
+          l: o,
+          z: n(i, "zIndex", -1),
+          o: n(i, "opacity", 0.6),
+          c: n(i, "color", "0,255,0"),
+          n: n(i, "count", 400),
+        };
+      }
+
+      function o() {
+        (a = m.width =
+          window.innerWidth ||
+          document.documentElement.clientWidth ||
+          document.body.clientWidth),
+          (c = m.height =
+            window.innerHeight ||
+            document.documentElement.clientHeight ||
+            document.body.clientHeight);
+      }
+      function i() {
+        r.clearRect(0, 0, a, c);
+        var n, e, t, o, m, l;
+        s.forEach(function (particle, index) {
+          for (
+            particle.x += particle.xa,
+            particle.y += particle.ya,
+            particle.xa *= particle.x > a || particle.x < 0 ? -1 : 1,
+            particle.ya *= particle.y > c || particle.y < 0 ? -1 : 1,
+            r.fillStyle = particle.color,
+            r.fillRect(particle.x - 0.5, particle.y - 0.5, 1, 1),
+            e = index + 1;
+            e < u.length;
+            e++
+          ) {
+            (n = u[e]),
+              null !== n.x &&
+              null !== n.y &&
+              ((o = particle.x - n.x),
+                (m = particle.y - n.y),
+                (l = o * o + m * m),
+                l < n.max &&
+                (n === y &&
+                  l >= n.max / 2 &&
+                  ((particle.x -= 0.03 * o), (particle.y -= 0.03 * m)),
+                  (t = (n.max - l) / n.max),
+                  r.beginPath(),
+                  (r.lineWidth = t / 2),
+                  r.strokeStyle = particle.color,
+                  r.moveTo(particle.x, particle.y),
+                  r.lineTo(n.x, n.y),
+                  r.stroke()));
+          }
+        }),
+          x(i);
+      }
+      var fixedColors = [
+        "rgba(255, 0, 0, 1.0)",   // 红色
+        "rgba(0, 255, 0, 1.0)",   // 绿色
+        "rgba(0, 0, 255, 1.0)",   // 蓝色
+        "rgba(255, 255, 0, 1.0)", // 黄色
+        "rgba(0, 255, 255, 0.8)", // 青色
+        "rgba(255, 0, 255, 0.8)", // 紫色
+        "rgba(255, 165, 0, 0.8)", // 橙色
+        "rgba(127, 255, 212, 1.0)",
+        "rgba(0, 255, 127, 1.0)"
+      ];
+      var a,
+        c,
+        u,
+        m = document.createElement("canvas"),
+        d = t(),
+        l = "c_n" + d.l,
+        r = m.getContext("2d"),
+        x =
+          window.requestAnimationFrame ||
+          window.webkitRequestAnimationFrame ||
+          window.mozRequestAnimationFrame ||
+          window.oRequestAnimationFrame ||
+          window.msRequestAnimationFrame ||
+          function (n) {
+            window.setTimeout(n, 1e3 / 45);
+          },
+        w = Math.random,
+        y = { x: null, y: null, max: 2e4 };
+      (m.id = l),
+        (m.style.cssText =
+          "position:fixed;top:0;left:0;z-index:" + d.z + ";opacity:" + d.o),
+        e("body")[0].appendChild(m),
+        o(),
+        (window.onresize = o),
+        (window.onmousemove = function (n) {
+          (n = n || window.event), (y.x = n.clientX), (y.y = n.clientY);
+        }),
+        (window.onmouseout = function () {
+          (y.x = null), (y.y = null);
+        });
+
+      for (var s = [], f = 0; d.n > f; f++) {
+        var h = w() * a,
+          g = w() * c,
+          v = 2 * w() - 1,
+          p = 2 * w() - 1,
+          color = fixedColors[Math.floor(Math.random() * fixedColors.length)];
+        s.push({ x: h, y: g, xa: v, ya: p, max: 6e3, color: color });
+      }
+
+      (u = s.concat([y])),
+        setTimeout(function () {
+          i();
+        }, 100);
+    })();
+  </script>
+</body>
+</html>
