@@ -985,7 +985,8 @@
                 chatMessages.scrollTop = chatMessages.scrollHeight;
 
                 try {
-                    const response = await fetch('http://localhost:3001/api/chat', {
+                    // 替换为你的 Vercel 后端域名
+                    const response = await fetch('https://ai-weather-qy5448qc5-pxx05247258-1489s-projects.vercel.app/api/weather', {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify({ message: message })
@@ -1120,16 +1121,15 @@
         });
     </script>
 
-    <!-- ========== 🌤️ 修改版：通过本地后端请求天气 ========== -->
+    <!-- ========== 🌤️ 修改版：通过 Vercel 后端请求天气 ========== -->
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             const weatherBtn = document.getElementById('weather-btn');
             const weatherDisplay = document.getElementById('weather-display');
             const weatherError = document.getElementById('weather-error');
             
-            // ✅ 关键配置：指向你的本地后端服务
-            // 无论 index.html 在哪里，只要 weather.js 在 localhost:3001 运行即可
-            const LOCAL_API_URL = 'http://localhost:3001/api/weather';
+            // ✅ 替换为你的 Vercel 后端域名
+            const LOCAL_API_URL = 'https://ai-weather-api-pxx05247258-1489.vercel.app/api/weather';
             const YUZHONG_ADCODE = '620123';
             
             const weatherIcons = {
@@ -1145,7 +1145,7 @@
                 weatherDisplay.style.display = 'none';
 
                 try {
-                    // 发起请求到本地后端
+                    // 发起请求到 Vercel 后端
                     const response = await fetch(`${LOCAL_API_URL}?city=${YUZHONG_ADCODE}`);
                     
                     if (!response.ok) {
@@ -1165,7 +1165,7 @@
                     console.error('天气查询失败:', error);
                     let msg = error.message;
                     if (msg.includes('Failed to fetch')) {
-                        msg = "无法连接到后端服务！\n请确认：\n1. 已运行 'node server/weather.js'\n2. 终端显示 '服务已启动'";
+                        msg = "无法连接到后端服务！请确认Vercel后端已正常部署";
                     }
                     weatherError.textContent = msg;
                     weatherError.style.display = 'block';
