@@ -985,12 +985,17 @@
                 chatMessages.scrollTop = chatMessages.scrollHeight;
 
                 try {
-                    // 替换为你的 Vercel 后端域名
                     const response = await fetch('https://ai-weather-api.vercel.app/api/chat', {
                         method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
                         body: JSON.stringify({ message: message })
-                    });fe
+                    });
+
+                    if (!response.ok) {
+                        throw new Error(`服务器返回错误：${response.status}`);
+                    }
 
                     const data = await response.json();
                     document.getElementById('loading').remove();
@@ -1002,11 +1007,12 @@
                     `;
                     chatMessages.insertAdjacentHTML('beforeend', aiMessageHTML);
                 } catch (error) {
+                    console.error('详细错误：', error);
                     document.getElementById('loading').remove();
                     const errorHTML = `
                         <div class="message ai-message">
                             <div class="ai-avatar">🤖</div>
-                            <div class="message-content">抱歉，网络出错了，请稍后再试～</div>
+                            <div class="message-content">${error.message || '网络出错了，请稍后再试～'}</div>
                         </div>
                     `;
                     chatMessages.insertAdjacentHTML('beforeend', errorHTML);
