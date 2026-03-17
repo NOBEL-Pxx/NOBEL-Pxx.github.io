@@ -11,11 +11,11 @@
   <!-- 网络精美资源（CDN） -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <!-- 高级字体：Inter + Noto Sans SC（更现代、更“高端”） -->
+  <!-- 高级字体：Inter + Noto Sans SC（更现代、更"高端"） -->
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Noto+Sans+SC:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <!-- 图标库 -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.5.2/css/all.min.css">
-  <!-- 动效库（可选，但很显“精致”） -->
+  <!-- 动效库（可选，但很显"精致"） -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.css">
 
   <!-- ECharts：保留你的逻辑依赖 -->
@@ -282,7 +282,7 @@
       text-shadow: 0 8px 26px rgba(0,0,0,.28);
     }
 
-    /* Hero 内部“浮光”装饰 */
+    /* Hero 内部"浮光"装饰 */
     .hero-orb{
       position:absolute;
       width: 520px;
@@ -307,7 +307,7 @@
     }
 
     /* =========================
-      5) 痛点卡片：更“产品级”卡片质感 + 结构优化
+      5) 痛点卡片：更"产品级"卡片质感 + 结构优化
     ========================= */
     .pain-grid{
       display:grid;
@@ -418,7 +418,7 @@
     }
 
     /* =========================
-      6) 数据总览：增强“看板感”
+      6) 数据总览：增强"看板感"
     ========================= */
     .data-overview{
       margin: 56px auto 0;
@@ -623,7 +623,7 @@
     }
 
     /* =========================
-      8) CTA：更“按钮级”高级
+      8) CTA：更"按钮级"高级
     ========================= */
     .btn{
       display:inline-flex;
@@ -675,6 +675,430 @@
       .pain-hero{ padding: 78px 0; }
       .data-overview{ padding: 28px; }
       .compare-box{ padding: 26px; }
+    }
+
+    /* =========================
+      丰收保卫战 - 嵌入背景样式（已协调颜色风格）
+    ========================= */
+    .harvest-game-section {
+      position: relative;
+      width: 100%;
+      padding: 40px 0;
+      margin: 40px 0;
+      z-index: 1;
+    }
+    
+    .harvest-game-container {
+      width: 95%;
+      max-width: 1200px;
+      margin: 0 auto;
+      background: linear-gradient(180deg, rgba(248,250,252,0.95) 0%, rgba(255,255,255,0.95) 100%);
+      border-radius: var(--radius-xl);
+      border: 1px solid rgba(226,232,240,.7);
+      box-shadow: var(--shadow-soft);
+      overflow: hidden;
+      position: relative;
+    }
+    
+    .harvest-game-container::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(900px 260px at 15% 0%, rgba(245,158,11,.08), transparent 55%),
+                  radial-gradient(900px 260px at 85% 0%, rgba(16,185,129,.06), transparent 55%);
+      pointer-events: none;
+    }
+    
+    .harvest-game-header {
+      background: linear-gradient(90deg, rgba(245,158,11,0.9), rgba(217,119,6,0.9));
+      padding: 16px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 2px solid rgba(255,255,255,0.1);
+      position: relative;
+      z-index: 2;
+    }
+    
+    .harvest-game-title {
+      color: white;
+      font-weight: 900;
+      font-size: 1.25rem;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    }
+    
+    .harvest-game-controls {
+      display: flex;
+      gap: 10px;
+    }
+    
+    .harvest-game-btn {
+      background: rgba(255,255,255,0.2);
+      border: none;
+      color: white;
+      width: 36px;
+      height: 36px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 14px;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    .harvest-game-btn:hover {
+      background: rgba(255,255,255,0.3);
+      transform: scale(1.1);
+    }
+    
+    .harvest-game-content {
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      position: relative;
+      z-index: 2;
+    }
+    
+    .harvest-game-stats {
+      display: flex;
+      justify-content: space-around;
+      background: rgba(248,250,252,0.95);
+      padding: 16px;
+      border-radius: 12px;
+      border: 1px solid rgba(226,232,240,.9);
+      box-shadow: 0 4px 15px rgba(2,6,23,.04);
+    }
+    
+    .harvest-stat-item {
+      text-align: center;
+    }
+    
+    .harvest-stat-value {
+      font-size: 1.75rem;
+      font-weight: 950;
+      color: var(--primary-yellow);
+      text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    
+    .harvest-stat-label {
+      font-size: 0.875rem;
+      color: var(--slate-600);
+      margin-top: 4px;
+      font-weight: 600;
+    }
+    
+    #harvestCanvas {
+      width: 100%;
+      height: 400px;
+      background: linear-gradient(180deg, #87CEEB 0%, #E0F6FF 50%, #90EE90 50%, #7CFC00 100%);
+      border-radius: 12px;
+      border: 3px solid rgba(226,232,240,.9);
+      cursor: crosshair;
+      display: block;
+    }
+    
+    .harvest-plant-selector {
+      display: flex;
+      gap: 12px;
+      justify-content: center;
+      flex-wrap: wrap;
+      padding: 16px;
+      background: rgba(248,250,252,0.95);
+      border-radius: 12px;
+      border: 1px solid rgba(226,232,240,.9);
+    }
+    
+    .harvest-plant-card {
+      width: 80px;
+      height: 90px;
+      background: linear-gradient(180deg, rgba(255,255,255,0.95), rgba(255,255,255,0.8));
+      border-radius: 12px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.2s;
+      border: 2px solid transparent;
+      box-shadow: 0 4px 15px rgba(2,6,23,.06);
+    }
+    
+    .harvest-plant-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 25px rgba(2,6,23,.1);
+    }
+    
+    .harvest-plant-card.selected {
+      border-color: var(--primary-yellow);
+      box-shadow: 0 0 0 3px rgba(245,158,11,0.2), 0 8px 25px rgba(2,6,23,.1);
+    }
+    
+    .harvest-plant-card.disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+    
+    .harvest-plant-icon {
+      font-size: 32px;
+      line-height: 1;
+    }
+    
+    .harvest-plant-cost {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--primary-yellow);
+      margin-top: 4px;
+    }
+    
+    .harvest-plant-name {
+      font-size: 11px;
+      color: var(--slate-700);
+      margin-top: 2px;
+      font-weight: 600;
+    }
+    
+    .harvest-game-overlay {
+      position: absolute;
+      inset: 0;
+      background: rgba(15,23,42,0.9);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      text-align: center;
+      padding: 40px;
+      border-radius: var(--radius-xl);
+      z-index: 10;
+      backdrop-filter: blur(10px);
+    }
+    
+    .harvest-game-overlay h3 {
+      font-size: 2rem;
+      margin-bottom: 16px;
+      color: var(--primary-yellow);
+      font-weight: 950;
+    }
+    
+    .harvest-game-overlay p {
+      font-size: 1rem;
+      line-height: 1.8;
+      opacity: 0.9;
+      margin-bottom: 24px;
+      max-width: 600px;
+    }
+    
+    .harvest-start-btn {
+      background: linear-gradient(135deg, var(--primary-yellow), #d97706);
+      color: white;
+      border: none;
+      padding: 16px 48px;
+      border-radius: 999px;
+      font-size: 1.125rem;
+      font-weight: 900;
+      cursor: pointer;
+      transition: all 0.3s;
+      box-shadow: 0 8px 30px rgba(245,158,11,0.3);
+    }
+    
+    .harvest-start-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 12px 40px rgba(245,158,11,0.4);
+    }
+    
+    @media (max-width: 768px) {
+      .harvest-game-content {
+        padding: 16px;
+      }
+      
+      #harvestCanvas {
+        height: 300px;
+      }
+      
+      .harvest-plant-card {
+        width: 70px;
+        height: 80px;
+      }
+      
+      .harvest-plant-icon {
+        font-size: 28px;
+      }
+    }
+
+    /* =========================
+      乡村种菜小游戏样式（保留并协调颜色）
+    ========================= */
+    .farm-game-section {
+      position: relative;
+      width: 100%;
+      padding: 40px 0;
+      margin: 40px 0;
+      z-index: 1;
+    }
+    
+    .farm-game-container {
+      width: 95%;
+      max-width: 800px;
+      margin: 0 auto;
+      background: linear-gradient(180deg, rgba(248,250,252,0.95) 0%, rgba(255,255,255,0.95) 100%);
+      border-radius: var(--radius-xl);
+      border: 1px solid rgba(226,232,240,.7);
+      box-shadow: var(--shadow-soft);
+      overflow: hidden;
+      position: relative;
+    }
+    
+    .farm-game-container::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(900px 260px at 50% 0%, rgba(16,185,129,.08), transparent 55%);
+      pointer-events: none;
+    }
+    
+    .farm-game-header {
+      background: linear-gradient(90deg, rgba(16,185,129,0.9), rgba(5,150,105,0.9));
+      padding: 16px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 2px solid rgba(255,255,255,0.1);
+      position: relative;
+      z-index: 2;
+    }
+    
+    .farm-game-title {
+      color: white;
+      font-weight: 900;
+      font-size: 1.25rem;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    }
+    
+    .farm-game-content {
+      padding: 24px;
+      position: relative;
+      z-index: 2;
+    }
+    
+    .farm-game-fields {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 15px;
+      margin-bottom: 20px;
+      max-width: 400px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    
+    .farm-field {
+      aspect-ratio: 1/1;
+      border-radius: 12px;
+      background: linear-gradient(135deg, #dcfce7, #bbf7d0);
+      border: 2px solid var(--primary-green);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 4px 15px rgba(16,185,129,0.1);
+    }
+    
+    .farm-field:hover {
+      transform: scale(1.03);
+      box-shadow: 0 8px 25px rgba(16,185,129,0.2);
+    }
+    
+    .farm-field.planted {
+      background: linear-gradient(135deg, #f0fdf4, #dcfce7);
+    }
+    
+    .farm-field img {
+      width: 70%;
+      height: 70%;
+      object-fit: contain;
+      display: none;
+      border-radius: 8px;
+    }
+    
+    .farm-field.planted img {
+      display: block;
+    }
+    
+    .farm-game-tools {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+    
+    .farm-tool-btn {
+      flex: 1;
+      min-width: 100px;
+      max-width: 120px;
+      padding: 12px 8px;
+      border-radius: 10px;
+      border: 1px solid var(--slate-200);
+      background: var(--slate-50);
+      color: var(--slate-800);
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: all 0.2s ease;
+      box-shadow: 0 4px 15px rgba(2,6,23,.04);
+    }
+    
+    .farm-tool-btn:hover {
+      background: var(--primary-green);
+      color: white;
+      border-color: var(--primary-green);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(16,185,129,0.2);
+    }
+    
+    .farm-game-status {
+      font-size: 16px;
+      color: var(--slate-700);
+      text-align: center;
+      padding: 12px;
+      border-radius: 10px;
+      background: rgba(248,250,252,0.95);
+      border: 1px solid rgba(226,232,240,.9);
+      margin-bottom: 12px;
+      font-weight: 500;
+    }
+    
+    .farm-game-hint {
+      font-size: 13px;
+      color: var(--slate-500);
+      text-align: center;
+      line-height: 1.6;
+    }
+    
+    @media (max-width: 640px) {
+      .farm-game-fields {
+        gap: 10px;
+      }
+      
+      .farm-tool-btn {
+        min-width: 80px;
+        font-size: 12px;
+        padding: 10px 5px;
+      }
     }
   </style>
 </head>
@@ -788,6 +1212,68 @@
     </div>
   </section>
 
+  <!-- =========================
+      丰收保卫战 - 嵌入背景的游戏区域（第一个游戏）
+  ========================= -->
+  <section class="harvest-game-section">
+    <div class="harvest-game-container reveal-up" data-aos="fade-up">
+      <div class="harvest-game-header">
+        <div class="harvest-game-title">🌾 丰收保卫战</div>
+        <div class="harvest-game-controls">
+          <button class="harvest-game-btn" onclick="resetHarvestGame()" title="重新开始">↻</button>
+        </div>
+      </div>
+      
+      <div class="harvest-game-content">
+        <div class="harvest-game-stats">
+          <div class="harvest-stat-item">
+            <div class="harvest-stat-value" id="sunScore">150</div>
+            <div class="harvest-stat-label">☀️ 阳光值</div>
+          </div>
+          <div class="harvest-stat-item">
+            <div class="harvest-stat-value" id="waveNum">1</div>
+            <div class="harvest-stat-label">🌊 波次</div>
+          </div>
+          <div class="harvest-stat-item">
+            <div class="harvest-stat-value" id="healthPoints">20</div>
+            <div class="harvest-stat-label">❤️ 农田生命</div>
+          </div>
+        </div>
+        
+        <canvas id="harvestCanvas" width="1140" height="400"></canvas>
+        
+        <div class="harvest-plant-selector">
+          <div class="harvest-plant-card selected" data-plant="sunflower" onclick="selectHarvestPlant('sunflower')">
+            <div class="harvest-plant-icon">🌻</div>
+            <div class="harvest-plant-cost">50☀️</div>
+            <div class="harvest-plant-name">向日葵</div>
+          </div>
+          <div class="harvest-plant-card" data-plant="corn" onclick="selectHarvestPlant('corn')">
+            <div class="harvest-plant-icon">🌽</div>
+            <div class="harvest-plant-cost">100☀️</div>
+            <div class="harvest-plant-name">玉米炮</div>
+          </div>
+          <div class="harvest-plant-card" data-plant="rice" onclick="selectHarvestPlant('rice')">
+            <div class="harvest-plant-icon">🌾</div>
+            <div class="harvest-plant-cost">150☀️</div>
+            <div class="harvest-plant-name">水稻墙</div>
+          </div>
+          <div class="harvest-plant-card" data-plant="tomato" onclick="selectHarvestPlant('tomato')">
+            <div class="harvest-plant-icon">🍅</div>
+            <div class="harvest-plant-cost">200☀️</div>
+            <div class="harvest-plant-name">番茄投手</div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="harvest-game-overlay" id="harvestGameOverlay">
+        <h3>🌾 丰收保卫战</h3>
+        <p>害虫和灾害正在侵袭农田！<br>种植作物抵御入侵，保卫乡村振兴成果<br><br>🌻 向日葵产生阳光<br>🌽 玉米发射子弹<br>🌾 水稻阻挡敌人<br>🍅 番茄范围攻击</p>
+        <button class="harvest-start-btn" onclick="startHarvestGame()">开始游戏</button>
+      </div>
+    </div>
+  </section>
+
   <!-- 对比区域（保留内容 + 强化视觉） -->
   <section class="comparison-section">
     <div class="container">
@@ -821,6 +1307,69 @@
 
       <!-- 模式对比雷达图（保留 id，保留你原逻辑 initCharts 渲染） -->
       <div class="chart-container" style="height: 360px; margin-top: 40px; max-width: 860px; margin-left: auto; margin-right: auto;" id="radarChart"></div>
+    </div>
+  </section>
+
+  <!-- =========================
+      乡村种菜小游戏（第二个游戏，保留原逻辑）
+  ========================= -->
+  <section class="farm-game-section">
+    <div class="farm-game-container reveal-up" data-aos="fade-up">
+      <div class="farm-game-header">
+        <div class="farm-game-title"><i class="fa-solid fa-tractor"></i> 乡村振兴小农场</div>
+      </div>
+      <div class="farm-game-content">
+        <div class="farm-game-fields" id="farmFields">
+          <!-- 9块菜地 -->
+          <div class="farm-field" data-field="1">
+            <img src="https://picsum.photos/seed/vegetable1/100/100" alt="蔬菜1">
+          </div>
+          <div class="farm-field" data-field="2">
+            <img src="https://picsum.photos/seed/vegetable2/100/100" alt="蔬菜2">
+          </div>
+          <div class="farm-field" data-field="3">
+            <img src="https://picsum.photos/seed/vegetable3/100/100" alt="蔬菜3">
+          </div>
+          <div class="farm-field" data-field="4">
+            <img src="https://picsum.photos/seed/vegetable4/100/100" alt="蔬菜4">
+          </div>
+          <div class="farm-field" data-field="5">
+            <img src="https://picsum.photos/seed/vegetable5/100/100" alt="蔬菜5">
+          </div>
+          <div class="farm-field" data-field="6">
+            <img src="https://picsum.photos/seed/vegetable6/100/100" alt="蔬菜6">
+          </div>
+          <div class="farm-field" data-field="7">
+            <img src="https://picsum.photos/seed/vegetable7/100/100" alt="蔬菜7">
+          </div>
+          <div class="farm-field" data-field="8">
+            <img src="https://picsum.photos/seed/vegetable8/100/100" alt="蔬菜8">
+          </div>
+          <div class="farm-field" data-field="9">
+            <img src="https://picsum.photos/seed/vegetable9/100/100" alt="蔬菜9">
+          </div>
+        </div>
+        <div class="farm-game-tools">
+          <button class="farm-tool-btn" id="plantBtn">
+            <i class="fa-solid fa-seedling"></i> 种植
+          </button>
+          <button class="farm-tool-btn" id="waterBtn">
+            <i class="fa-solid fa-droplet"></i> 浇水
+          </button>
+          <button class="farm-tool-btn" id="harvestBtn">
+            <i class="fa-solid fa-wheat-awn"></i> 收获
+          </button>
+          <button class="farm-tool-btn" id="clearBtn">
+            <i class="fa-solid fa-broom"></i> 清空
+          </button>
+        </div>
+        <div class="farm-game-status" id="farmStatus">
+          欢迎来到乡村小农场！点击「种植」开始种菜吧～
+        </div>
+        <div class="farm-game-hint">
+          🌱 玩法：先种植→浇水→收获，体验乡村种植的乐趣
+        </div>
+      </div>
     </div>
   </section>
 
@@ -1115,7 +1664,6 @@
 
   <!-- =========================
       原版粒子特效：完全保留（不删任何逻辑）
-      （仅建议：如果你想让粒子更“高级”，可把 fixedColors 调成更柔和的品牌色）
   ========================= -->
   <script>
     !(function () {
@@ -1240,6 +1788,637 @@
           i();
         }, 100);
     })();
+  </script>
+
+  <!-- =========================
+      丰收保卫战游戏逻辑（第一个游戏）
+  ========================= -->
+  <script>
+    (function() {
+      // 游戏状态
+      const harvestGame = {
+        canvas: null,
+        ctx: null,
+        running: false,
+        sun: 150,
+        wave: 1,
+        health: 20,
+        selectedPlant: 'sunflower',
+        plants: [],
+        enemies: [],
+        projectiles: [],
+        particles: [],
+        sunDrops: [],
+        gridSize: 76,
+        cols: 15,
+        rows: 5,
+        lastTime: 0,
+        enemySpawnTimer: 0,
+        sunTimer: 0,
+        animationId: null
+      };
+      
+      // 植物配置
+      const harvestPlantTypes = {
+        sunflower: { cost: 50, health: 100, damage: 0, cooldown: 5000, emoji: '🌻', color: '#FFD700' },
+        corn: { cost: 100, health: 150, damage: 25, cooldown: 1500, emoji: '🌽', color: '#FFA500' },
+        rice: { cost: 150, health: 400, damage: 0, cooldown: 0, emoji: '🌾', color: '#F5F5DC' },
+        tomato: { cost: 200, health: 120, damage: 40, cooldown: 2000, emoji: '🍅', color: '#FF6347' }
+      };
+      
+      // 敌人类型
+      const harvestEnemyTypes = [
+        { emoji: '🐛', health: 60, speed: 0.3, damage: 1, reward: 25 },
+        { emoji: '🦗', health: 40, speed: 0.5, damage: 1, reward: 20 },
+        { emoji: '🐌', health: 120, speed: 0.15, damage: 2, reward: 35 },
+        { emoji: '🦅', health: 80, speed: 0.4, damage: 2, reward: 40 }
+      ];
+      
+      // 初始化
+      function initHarvestGame() {
+        harvestGame.canvas = document.getElementById('harvestCanvas');
+        harvestGame.ctx = harvestGame.canvas.getContext('2d');
+        
+        // 响应式画布大小
+        function resizeCanvas() {
+          const container = harvestGame.canvas.parentElement;
+          const rect = container.getBoundingClientRect();
+          harvestGame.canvas.width = rect.width - 48;
+          harvestGame.canvas.height = 400;
+          harvestGame.gridSize = harvestGame.canvas.width / harvestGame.cols;
+        }
+        
+        resizeCanvas();
+        window.addEventListener('resize', resizeCanvas);
+        
+        // 点击种植
+        harvestGame.canvas.addEventListener('click', handleHarvestCanvasClick);
+        
+        // 收集阳光（点击掉落）
+        harvestGame.canvas.addEventListener('click', collectHarvestSun);
+      }
+      
+      window.startHarvestGame = function() {
+        document.getElementById('harvestGameOverlay').style.display = 'none';
+        harvestGame.running = true;
+        harvestGame.sun = 150;
+        harvestGame.wave = 1;
+        harvestGame.health = 20;
+        harvestGame.plants = [];
+        harvestGame.enemies = [];
+        harvestGame.projectiles = [];
+        harvestGame.particles = [];
+        harvestGame.sunDrops = [];
+        updateHarvestUI();
+        harvestGameLoop(0);
+      };
+      
+      window.resetHarvestGame = function() {
+        harvestGame.running = false;
+        cancelAnimationFrame(harvestGame.animationId);
+        document.getElementById('harvestGameOverlay').style.display = 'flex';
+        document.getElementById('harvestGameOverlay').querySelector('h3').textContent = '游戏暂停';
+        document.getElementById('harvestGameOverlay').querySelector('p').innerHTML = 
+          '当前波次: ' + harvestGame.wave + '<br>剩余生命: ' + harvestGame.health + '<br>收集阳光: ' + harvestGame.sun;
+        document.getElementById('harvestGameOverlay').querySelector('.harvest-start-btn').textContent = '继续游戏';
+      };
+      
+      window.selectHarvestPlant = function(type) {
+        harvestGame.selectedPlant = type;
+        document.querySelectorAll('.harvest-plant-card').forEach(card => {
+          card.classList.remove('selected');
+          if (card.dataset.plant === type) card.classList.add('selected');
+        });
+      };
+      
+      function handleHarvestCanvasClick(e) {
+        if (!harvestGame.running) return;
+        
+        const rect = harvestGame.canvas.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+        
+        const col = Math.floor(x / harvestGame.gridSize);
+        const row = Math.floor(y / harvestGame.gridSize);
+        
+        if (col < 0 || col >= harvestGame.cols || row < 0 || row >= harvestGame.rows) return;
+        
+        // 检查是否已有植物
+        const existing = harvestGame.plants.find(p => p.col === col && p.row === row);
+        if (existing) return;
+        
+        const plantType = harvestPlantTypes[harvestGame.selectedPlant];
+        if (harvestGame.sun < plantType.cost) return;
+        
+        // 种植
+        harvestGame.sun -= plantType.cost;
+        harvestGame.plants.push({
+          type: harvestGame.selectedPlant,
+          col: col,
+          row: row,
+          x: col * harvestGame.gridSize + harvestGame.gridSize / 2,
+          y: row * harvestGame.gridSize + harvestGame.gridSize / 2,
+          health: plantType.health,
+          maxHealth: plantType.health,
+          lastAttack: 0,
+          emoji: plantType.emoji
+        });
+        
+        // 种植特效
+        createHarvestParticles(col * harvestGame.gridSize + harvestGame.gridSize / 2, row * harvestGame.gridSize + harvestGame.gridSize / 2, '#90EE90');
+        updateHarvestUI();
+      }
+      
+      function collectHarvestSun(e) {
+        const rect = harvestGame.canvas.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+        
+        harvestGame.sunDrops = harvestGame.sunDrops.filter(sun => {
+          const dx = x - sun.x;
+          const dy = y - sun.y;
+          if (Math.sqrt(dx * dx + dy * dy) < 25) {
+            harvestGame.sun += 25;
+            updateHarvestUI();
+            createHarvestParticles(sun.x, sun.y, '#FFD700');
+            return false;
+          }
+          return true;
+        });
+      }
+      
+      function spawnHarvestEnemy() {
+        const types = harvestEnemyTypes.slice(0, Math.min(harvestGame.wave, harvestEnemyTypes.length));
+        const type = types[Math.floor(Math.random() * types.length)];
+        const row = Math.floor(Math.random() * harvestGame.rows);
+        
+        harvestGame.enemies.push({
+          ...type,
+          x: harvestGame.canvas.width + 30,
+          y: row * harvestGame.gridSize + harvestGame.gridSize / 2,
+          row: row,
+          maxHealth: type.health,
+          frozen: 0
+        });
+      }
+      
+      function createHarvestParticles(x, y, color) {
+        for (let i = 0; i < 8; i++) {
+          harvestGame.particles.push({
+            x: x,
+            y: y,
+            vx: (Math.random() - 0.5) * 4,
+            vy: (Math.random() - 0.5) * 4,
+            life: 30,
+            color: color
+          });
+        }
+      }
+      
+      function updateHarvest(dt) {
+        // 生成阳光
+        harvestGame.sunTimer += dt;
+        if (harvestGame.sunTimer > 8000) {
+          harvestGame.sunDrops.push({
+            x: Math.random() * (harvestGame.canvas.width - 40) + 20,
+            y: -20,
+            vy: 1
+          });
+          harvestGame.sunTimer = 0;
+        }
+        
+        // 更新阳光掉落
+        harvestGame.sunDrops.forEach(sun => {
+          sun.y += sun.vy;
+        });
+        harvestGame.sunDrops = harvestGame.sunDrops.filter(sun => sun.y < harvestGame.canvas.height + 20);
+        
+        // 生成敌人
+        harvestGame.enemySpawnTimer += dt;
+        const spawnRate = Math.max(2000 - harvestGame.wave * 200, 800);
+        if (harvestGame.enemySpawnTimer > spawnRate) {
+          spawnHarvestEnemy();
+          harvestGame.enemySpawnTimer = 0;
+        }
+        
+        // 更新植物
+        harvestGame.plants.forEach(plant => {
+          const type = harvestPlantTypes[plant.type];
+          
+          // 向日葵产生阳光
+          if (plant.type === 'sunflower') {
+            plant.lastAttack += dt;
+            if (plant.lastAttack > type.cooldown) {
+              harvestGame.sunDrops.push({
+                x: plant.x + (Math.random() - 0.5) * 30,
+                y: plant.y - 20,
+                vy: 0.5
+              });
+              plant.lastAttack = 0;
+            }
+          }
+          
+          // 攻击型植物
+          if (type.damage > 0 && type.cooldown > 0) {
+            plant.lastAttack += dt;
+            if (plant.lastAttack > type.cooldown) {
+              // 寻找同排敌人
+              const target = harvestGame.enemies.find(e => e.row === plant.row && e.x > plant.x);
+              if (target) {
+                harvestGame.projectiles.push({
+                  x: plant.x,
+                  y: plant.y,
+                  targetX: target.x,
+                  targetY: target.y,
+                  damage: type.damage,
+                  type: plant.type,
+                  emoji: plant.type === 'corn' ? '🌽' : '🍅'
+                });
+                plant.lastAttack = 0;
+              }
+            }
+          }
+        });
+        
+        // 更新子弹
+        harvestGame.projectiles.forEach((proj, i) => {
+          const dx = proj.targetX - proj.x;
+          const dy = proj.targetY - proj.y;
+          const dist = Math.sqrt(dx * dx + dy * dy);
+          
+          if (dist < 10) {
+            // 命中
+            const enemy = harvestGame.enemies.find(e => 
+              Math.abs(e.x - proj.targetX) < 30 && Math.abs(e.y - proj.targetY) < 30
+            );
+            if (enemy) {
+              enemy.health -= proj.damage;
+              createHarvestParticles(enemy.x, enemy.y, '#FF6347');
+              if (proj.type === 'tomato') {
+                // 范围伤害
+                harvestGame.enemies.forEach(e => {
+                  const d = Math.sqrt((e.x - enemy.x) ** 2 + (e.y - enemy.y) ** 2);
+                  if (d < 60 && e !== enemy) {
+                    e.health -= proj.damage * 0.5;
+                  }
+                });
+              }
+            }
+            harvestGame.projectiles.splice(i, 1);
+          } else {
+            proj.x += (dx / dist) * 8;
+            proj.y += (dy / dist) * 8;
+          }
+        });
+        
+        // 更新敌人
+        harvestGame.enemies.forEach((enemy, i) => {
+          // 检查前方是否有植物
+          const frontPlant = harvestGame.plants.find(p => 
+            p.row === enemy.row && p.col * harvestGame.gridSize < enemy.x && 
+            enemy.x - (p.col * harvestGame.gridSize + harvestGame.gridSize / 2) < 40
+          );
+          
+          if (frontPlant) {
+            // 攻击植物
+            frontPlant.health -= enemy.damage;
+            if (frontPlant.health <= 0) {
+              createHarvestParticles(frontPlant.x, frontPlant.y, '#8B4513');
+              harvestGame.plants = harvestGame.plants.filter(p => p !== frontPlant);
+            }
+          } else {
+            enemy.x -= enemy.speed;
+          }
+          
+          // 敌人死亡
+          if (enemy.health <= 0) {
+            harvestGame.sun += enemy.reward;
+            createHarvestParticles(enemy.x, enemy.y, '#90EE90');
+            harvestGame.enemies.splice(i, 1);
+          }
+          
+          // 到达终点
+          if (enemy.x < 20) {
+            harvestGame.health -= 1;
+            harvestGame.enemies.splice(i, 1);
+            updateHarvestUI();
+            if (harvestGame.health <= 0) {
+              harvestGameOver();
+            }
+          }
+        });
+        
+        // 更新粒子
+        harvestGame.particles.forEach(p => {
+          p.x += p.vx;
+          p.y += p.vy;
+          p.life--;
+        });
+        harvestGame.particles = harvestGame.particles.filter(p => p.life > 0);
+        
+        // 波次进度
+        if (harvestGame.sun > harvestGame.wave * 200) {
+          harvestGame.wave++;
+          updateHarvestUI();
+        }
+      }
+      
+      function drawHarvest() {
+        const ctx = harvestGame.ctx;
+        ctx.clearRect(0, 0, harvestGame.canvas.width, harvestGame.canvas.height);
+        
+        // 绘制草地网格
+        for (let row = 0; row < harvestGame.rows; row++) {
+          for (let col = 0; col < harvestGame.cols; col++) {
+            const x = col * harvestGame.gridSize;
+            const y = row * harvestGame.gridSize;
+            ctx.fillStyle = (row + col) % 2 === 0 ? '#90EE90' : '#7CFC00';
+            ctx.fillRect(x, y, harvestGame.gridSize, harvestGame.gridSize);
+            ctx.strokeStyle = 'rgba(255,255,255,0.3)';
+            ctx.strokeRect(x, y, harvestGame.gridSize, harvestGame.gridSize);
+          }
+        }
+        
+        // 绘制阳光
+        harvestGame.sunDrops.forEach(sun => {
+          ctx.font = '24px Arial';
+          ctx.textAlign = 'center';
+          ctx.textBaseline = 'middle';
+          ctx.fillText('☀️', sun.x, sun.y);
+          ctx.fillStyle = 'rgba(255, 215, 0, 0.3)';
+          ctx.beginPath();
+          ctx.arc(sun.x, sun.y, 20, 0, Math.PI * 2);
+          ctx.fill();
+        });
+        
+        // 绘制植物
+        harvestGame.plants.forEach(plant => {
+          // 绘制植物底座
+          ctx.fillStyle = 'rgba(139, 69, 19, 0.3)';
+          ctx.beginPath();
+          ctx.ellipse(plant.x, plant.y + 15, 20, 8, 0, 0, Math.PI * 2);
+          ctx.fill();
+          
+          // 绘制植物
+          ctx.font = '32px Arial';
+          ctx.textAlign = 'center';
+          ctx.textBaseline = 'middle';
+          ctx.fillText(plant.emoji, plant.x, plant.y);
+          
+          // 血条
+          if (plant.health < plant.maxHealth) {
+            ctx.fillStyle = '#ff4444';
+            ctx.fillRect(plant.x - 20, plant.y - 25, 40, 4);
+            ctx.fillStyle = '#44ff44';
+            ctx.fillRect(plant.x - 20, plant.y - 25, 40 * (plant.health / plant.maxHealth), 4);
+          }
+        });
+        
+        // 绘制敌人
+        harvestGame.enemies.forEach(enemy => {
+          ctx.font = '28px Arial';
+          ctx.textAlign = 'center';
+          ctx.textBaseline = 'middle';
+          
+          // 阴影
+          ctx.fillStyle = 'rgba(0,0,0,0.2)';
+          ctx.beginPath();
+          ctx.ellipse(enemy.x, enemy.y + 18, 15, 5, 0, 0, Math.PI * 2);
+          ctx.fill();
+          
+          ctx.fillText(enemy.emoji, enemy.x, enemy.y);
+          
+          // 血条背景
+          ctx.fillStyle = '#ff4444';
+          ctx.fillRect(enemy.x - 18, enemy.y - 22, 36, 4);
+          ctx.fillStyle = '#44ff44';
+          ctx.fillRect(enemy.x - 18, enemy.y - 22, 36 * (enemy.health / enemy.maxHealth), 4);
+        });
+        
+        // 绘制子弹
+        harvestGame.projectiles.forEach(proj => {
+          ctx.font = '20px Arial';
+          ctx.textAlign = 'center';
+          ctx.textBaseline = 'middle';
+          ctx.fillText(proj.emoji, proj.x, proj.y);
+        });
+        
+        // 绘制粒子
+        harvestGame.particles.forEach(p => {
+          ctx.fillStyle = p.color;
+          ctx.globalAlpha = p.life / 30;
+          ctx.beginPath();
+          ctx.arc(p.x, p.y, 3, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.globalAlpha = 1;
+        });
+      }
+      
+      function updateHarvestUI() {
+        document.getElementById('sunScore').textContent = harvestGame.sun;
+        document.getElementById('waveNum').textContent = harvestGame.wave;
+        document.getElementById('healthPoints').textContent = harvestGame.health;
+        
+        // 更新植物卡片可用状态
+        document.querySelectorAll('.harvest-plant-card').forEach(card => {
+          const type = card.dataset.plant;
+          const cost = harvestPlantTypes[type].cost;
+          if (harvestGame.sun < cost) {
+            card.classList.add('disabled');
+          } else {
+            card.classList.remove('disabled');
+          }
+        });
+      }
+      
+      function harvestGameOver() {
+        harvestGame.running = false;
+        cancelAnimationFrame(harvestGame.animationId);
+        document.getElementById('harvestGameOverlay').style.display = 'flex';
+        document.getElementById('harvestGameOverlay').querySelector('h3').textContent = '游戏结束';
+        document.getElementById('harvestGameOverlay').querySelector('p').innerHTML = 
+          '农田被破坏了！<br>你坚持了 ' + harvestGame.wave + ' 波<br>收集阳光: ' + harvestGame.sun;
+        document.getElementById('harvestGameOverlay').querySelector('.harvest-start-btn').textContent = '重新开始';
+      }
+      
+      function harvestGameLoop(timestamp) {
+        if (!harvestGame.running) return;
+        
+        const dt = timestamp - harvestGame.lastTime;
+        harvestGame.lastTime = timestamp;
+        
+        updateHarvest(dt);
+        drawHarvest();
+        updateHarvestUI();
+        
+        harvestGame.animationId = requestAnimationFrame(harvestGameLoop);
+      }
+      
+      // 初始化
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initHarvestGame);
+      } else {
+        initHarvestGame();
+      }
+    })();
+  </script>
+
+  <!-- =========================
+      乡村种菜小游戏逻辑（第二个游戏，保留原逻辑）
+  ========================= -->
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      // 游戏元素获取
+      const farmFields = document.querySelectorAll('.farm-field');
+      const plantBtn = document.getElementById('plantBtn');
+      const waterBtn = document.getElementById('waterBtn');
+      const harvestBtn = document.getElementById('harvestBtn');
+      const clearBtn = document.getElementById('clearBtn');
+      const farmStatus = document.getElementById('farmStatus');
+
+      // 游戏状态管理
+      let gameState = {
+        selectedField: null,
+        plantedFields: new Set(),
+        wateredFields: new Set(),
+        harvestedFields: new Set()
+      };
+
+      // 选择菜地
+      farmFields.forEach(field => {
+        field.addEventListener('click', () => {
+          // 移除所有选中状态
+          farmFields.forEach(f => f.style.borderColor = 'var(--primary-green)');
+          // 设置当前选中
+          field.style.borderColor = '#f59e0b';
+          gameState.selectedField = field.dataset.field;
+          updateStatus(`已选中 ${field.dataset.field} 号菜地`);
+        });
+      });
+
+      // 种植功能
+      plantBtn.addEventListener('click', () => {
+        if (!gameState.selectedField) {
+          updateStatus('请先选择一块菜地！', 'warning');
+          return;
+        }
+        if (gameState.plantedFields.has(gameState.selectedField)) {
+          updateStatus(`${gameState.selectedField} 号菜地已经种过啦！`, 'warning');
+          return;
+        }
+        // 标记为已种植
+        const field = document.querySelector(`.farm-field[data-field="${gameState.selectedField}"]`);
+        field.classList.add('planted');
+        gameState.plantedFields.add(gameState.selectedField);
+        updateStatus(`成功在 ${gameState.selectedField} 号菜地种下蔬菜！`);
+      });
+
+      // 浇水功能
+      waterBtn.addEventListener('click', () => {
+        if (!gameState.selectedField) {
+          updateStatus('请先选择一块菜地！', 'warning');
+          return;
+        }
+        if (!gameState.plantedFields.has(gameState.selectedField)) {
+          updateStatus(`${gameState.selectedField} 号菜地还没种植，无法浇水！`, 'warning');
+          return;
+        }
+        if (gameState.wateredFields.has(gameState.selectedField)) {
+          updateStatus(`${gameState.selectedField} 号菜地已经浇过水啦！`, 'warning');
+          return;
+        }
+        // 标记为已浇水
+        gameState.wateredFields.add(gameState.selectedField);
+        updateStatus(`成功给 ${gameState.selectedField} 号菜地浇水，蔬菜正在生长～`);
+        
+        // 浇水动画效果
+        const field = document.querySelector(`.farm-field[data-field="${gameState.selectedField}"]`);
+        field.style.transform = 'scale(1.05)';
+        setTimeout(() => {
+          field.style.transform = 'scale(1)';
+        }, 300);
+      });
+
+      // 收获功能
+      harvestBtn.addEventListener('click', () => {
+        if (!gameState.selectedField) {
+          updateStatus('请先选择一块菜地！', 'warning');
+          return;
+        }
+        if (!gameState.plantedFields.has(gameState.selectedField)) {
+          updateStatus(`${gameState.selectedField} 号菜地还没种植，无法收获！`, 'warning');
+          return;
+        }
+        if (!gameState.wateredFields.has(gameState.selectedField)) {
+          updateStatus(`${gameState.selectedField} 号菜地还没浇水，蔬菜还没成熟！`, 'warning');
+          return;
+        }
+        if (gameState.harvestedFields.has(gameState.selectedField)) {
+          updateStatus(`${gameState.selectedField} 号菜地已经收获过啦！`, 'warning');
+          return;
+        }
+        // 标记为已收获
+        gameState.harvestedFields.add(gameState.selectedField);
+        updateStatus(`🎉 成功收获 ${gameState.selectedField} 号菜地的蔬菜！助力乡村振兴～`, 'success');
+        
+        // 收获动画效果
+        const field = document.querySelector(`.farm-field[data-field="${gameState.selectedField}"]`);
+        field.style.animation = 'shake 0.5s ease';
+        setTimeout(() => {
+          field.style.animation = '';
+        }, 500);
+      });
+
+      // 清空菜地
+      clearBtn.addEventListener('click', () => {
+        if (!gameState.selectedField) {
+          updateStatus('请先选择一块菜地！', 'warning');
+          return;
+        }
+        // 重置该菜地状态
+        const field = document.querySelector(`.farm-field[data-field="${gameState.selectedField}"]`);
+        field.classList.remove('planted');
+        field.style.borderColor = 'var(--primary-green)';
+        field.style.animation = '';
+        
+        // 清除状态记录
+        gameState.plantedFields.delete(gameState.selectedField);
+        gameState.wateredFields.delete(gameState.selectedField);
+        gameState.harvestedFields.delete(gameState.selectedField);
+        gameState.selectedField = null;
+        
+        updateStatus(`已清空菜地，可以重新种植啦！`);
+      });
+
+      // 更新状态提示
+      function updateStatus(text, type = 'normal') {
+        farmStatus.textContent = text;
+        // 状态样式区分
+        if (type === 'warning') {
+          farmStatus.style.color = 'var(--primary-yellow)';
+          farmStatus.style.fontWeight = '600';
+        } else if (type === 'success') {
+          farmStatus.style.color = 'var(--primary-green)';
+          farmStatus.style.fontWeight = '600';
+        } else {
+          farmStatus.style.color = 'var(--slate-700)';
+          farmStatus.style.fontWeight = '500';
+        }
+      }
+
+      // 新增收获动画样式
+      const style = document.createElement('style');
+      style.textContent = `
+        @keyframes shake {
+          0% { transform: rotate(0deg); }
+          25% { transform: rotate(5deg); }
+          50% { transform: rotate(0deg); }
+          75% { transform: rotate(-5deg); }
+          100% { transform: rotate(0deg); }
+        }
+      `;
+      document.head.appendChild(style);
+    });
   </script>
 </body>
 </html>

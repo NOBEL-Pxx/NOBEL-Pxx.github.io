@@ -427,14 +427,14 @@
 <body>
     <div class="bg-grid"></div>
 
-    <!-- CCTV直播悬浮小电视 -->
+    <!-- 悬浮小电视：现在显示兰州大学B站视频 -->
     <div class="cctv-float-tv" id="cctvFloatTv">
         <!-- 按钮图标改为放大/缩小符号 -->
         <div class="cctv-close-btn" id="cctvToggleBtn">⛶</div>
         <div class="cctv-live-wrapper">
-            <iframe class="cctv-live-iframe" src="https://tv.cctv.com/live/cctv13/" frameborder="0" allowfullscreen></iframe>
+            <iframe class="cctv-live-iframe" src="https://player.bilibili.com/player.html?bvid=BV1sCw5zTEpG&high_quality=1&danmaku=0" frameborder="0" allowfullscreen></iframe>
         </div>
-        <div class="cctv-tv-title">CCTV-13 新闻直播</div>
+        <div class="cctv-tv-title">兰州大学 · 乡村振兴实践</div>
     </div>
 
     <header>
@@ -501,17 +501,17 @@
         </div>
     </section>
 
-<!-- 新增：兰州大学官方B站视频区块（放在政策时间轴和市场图表之间） -->
+<!-- 原B站视频区块：现在显示CCTV13直播 -->
 <section class="container lanzhou-univ-video" style="opacity:1 !important; transform:none !important; visibility:visible !important; display:block !important;">
     <div class="section-title">
-        <h2>兰州大学 · 乡村振兴实践</h2>
-        <p style="color: #aaa;">兰大在西北乡村振兴领域的探索与成果</p>
+        <h2>实时资讯 · 政策动态</h2>
+        <p style="color: #aaa;">CCTV13新闻直播，掌握最新乡村振兴政策风向</p>
     </div>
     <div class="video-card" style="opacity:1 !important; visibility:visible !important;">
         <div class="video-wrapper">
-            <!-- 绝对可用、国内无跨域、加载最快的兰大官方视频 -->
+            <!-- CCTV13直播 iframe -->
             <iframe 
-                src="https://player.bilibili.com/player.html?bvid=BV1sCw5zTEpG&high_quality=1&danmaku=0" 
+                src="https://tv.cctv.com/live/cctv13/" 
                 width="100%" 
                 height="450"
                 scrolling="no" 
@@ -522,7 +522,7 @@
                 style="opacity:1 !important; display:block !important; visibility:visible !important;">
             </iframe>
         </div>
-        <p class="video-desc">兰州大学扎根西北，聚焦乡村振兴与数字农业发展，为西北特色农产品产业升级提供智力支持与技术保障。</p>
+        <p class="video-desc">实时关注国家乡村振兴政策导向，把握市场发展趋势与机遇。</p>
     </div>
 </section>
     <section class="container section-padding">
