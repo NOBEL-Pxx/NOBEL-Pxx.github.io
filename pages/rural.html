@@ -1,0 +1,1083 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>多域协同·百村共振 | 乡村振兴电商联营范式</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;700;900&family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #0a0a0a;
+            color: #fff;
+            overflow-x: hidden;
+        }
+        
+        .serif {
+            font-family: 'Noto Serif SC', serif;
+        }
+        
+        /* 自定义滚动条 */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0a0a0a;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: linear-gradient(180deg, #10b981, #059669);
+            border-radius: 3px;
+        }
+        
+        /* 玻璃拟态基础 */
+        .glass {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .glass-strong {
+            background: rgba(20, 20, 20, 0.7);
+            backdrop-filter: blur(30px);
+            -webkit-backdrop-filter: blur(30px);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+        }
+        
+        /* 霓虹光效 */
+        .neon-glow {
+            box-shadow: 0 0 20px rgba(16, 185, 129, 0.3),
+                        0 0 40px rgba(16, 185, 129, 0.2),
+                        0 0 60px rgba(16, 185, 129, 0.1);
+        }
+        
+        .text-glow {
+            text-shadow: 0 0 20px rgba(16, 185, 129, 0.5);
+        }
+        
+        /* 3D 透视容器 */
+        .perspective-container {
+            perspective: 2000px;
+            transform-style: preserve-3d;
+        }
+        
+        /* 卡片3D效果 */
+        .card-3d {
+            transform-style: preserve-3d;
+            transition: transform 0.6s cubic-bezier(0.23, 1, 0.32, 1);
+        }
+        
+        .card-3d:hover {
+            transform: rotateY(5deg) rotateX(5deg) translateZ(20px);
+        }
+        
+        /* 流体渐变背景 */
+        .fluid-bg {
+            background: linear-gradient(-45deg, #0a0a0a, #1a1a2e, #0f3460, #16213e);
+            background-size: 400% 400%;
+            animation: fluidMove 15s ease infinite;
+        }
+        
+        @keyframes fluidMove {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        
+        /* 网格背景 */
+        .grid-bg {
+            background-image: 
+                linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+            background-size: 50px 50px;
+        }
+        
+        /* 文字遮罩效果 */
+        .text-mask {
+            background-clip: text;
+            -webkit-background-clip: text;
+            color: transparent;
+            background-image: linear-gradient(135deg, #fff 0%, #10b981 100%);
+        }
+        
+        /* 故障艺术效果 */
+        .glitch {
+            position: relative;
+        }
+        .glitch::before,
+        .glitch::after {
+            content: attr(data-text);
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+        .glitch::before {
+            left: 2px;
+            text-shadow: -2px 0 #ff00c1;
+            clip: rect(44px, 450px, 56px, 0);
+            animation: glitch-anim 5s infinite linear alternate-reverse;
+        }
+        .glitch::after {
+            left: -2px;
+            text-shadow: -2px 0 #00fff9;
+            clip: rect(44px, 450px, 56px, 0);
+            animation: glitch-anim2 5s infinite linear alternate-reverse;
+        }
+        
+        @keyframes glitch-anim {
+            0% { clip: rect(31px, 9999px, 94px, 0); }
+            20% { clip: rect(78px, 9999px, 20px, 0); }
+            40% { clip: rect(12px, 9999px, 6px, 0); }
+            60% { clip: rect(65px, 9999px, 89px, 0); }
+            80% { clip: rect(89px, 9999px, 12px, 0); }
+            100% { clip: rect(45px, 9999px, 67px, 0); }
+        }
+        
+        @keyframes glitch-anim2 {
+            0% { clip: rect(65px, 9999px, 99px, 0); }
+            20% { clip: rect(12px, 9999px, 45px, 0); }
+            40% { clip: rect(78px, 9999px, 23px, 0); }
+            60% { clip: rect(34px, 9999px, 56px, 0); }
+            80% { clip: rect(23px, 9999px, 78px, 0); }
+            100% { clip: rect(67px, 9999px, 34px, 0); }
+        }
+        
+        /* 粒子画布 */
+        #particle-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+        }
+        
+        /* 视差层 */
+        .parallax-layer {
+            will-change: transform;
+        }
+        
+        /* 自定义光标 */
+        .custom-cursor {
+            width: 20px;
+            height: 20px;
+            border: 2px solid #10b981;
+            border-radius: 50%;
+            position: fixed;
+            pointer-events: none;
+            z-index: 9999;
+            transition: transform 0.2s, opacity 0.2s;
+            mix-blend-mode: difference;
+        }
+        
+        .cursor-dot {
+            width: 4px;
+            height: 4px;
+            background: #10b981;
+            border-radius: 50%;
+            position: fixed;
+            pointer-events: none;
+            z-index: 9999;
+        }
+        
+        /* 加载动画 */
+        .loader {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #0a0a0a;
+            z-index: 10000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+        }
+        
+        .loader-text {
+            font-size: 3rem;
+            font-weight: 900;
+            background: linear-gradient(90deg, #10b981, #059669, #10b981);
+            background-size: 200% auto;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: shine 3s linear infinite;
+        }
+        
+        @keyframes shine {
+            to { background-position: 200% center; }
+        }
+        
+        /* 时间轴样式 */
+        .timeline-line {
+            background: linear-gradient(180deg, #10b981 0%, transparent 100%);
+        }
+        
+        /* 不对称布局 */
+        .asymmetric-grid {
+            display: grid;
+            grid-template-columns: 1.5fr 1fr 1.2fr;
+            grid-template-rows: auto auto;
+            gap: 2rem;
+        }
+        
+        /* 磁性按钮 */
+        .magnetic-btn {
+            transition: transform 0.3s cubic-bezier(0.23, 1, 0.32, 1);
+        }
+        
+        /* 隐藏滚动触发元素初始状态 */
+        .reveal-up {
+            opacity: 0;
+            transform: translateY(50px);
+        }
+        
+        .reveal-left {
+            opacity: 0;
+            transform: translateX(-50px);
+        }
+        
+        .reveal-scale {
+            opacity: 0;
+            transform: scale(0.8);
+        }
+    </style>
+</head>
+<body class="fluid-bg grid-bg">
+
+    <!-- 加载画面 -->
+    <div class="loader" id="loader">
+        <div class="loader-text serif mb-4">多域协同</div>
+        <div class="w-48 h-1 bg-gray-800 rounded overflow-hidden">
+            <div class="h-full bg-emerald-500 animate-pulse" style="width: 0%" id="loader-bar"></div>
+        </div>
+        <div class="mt-4 text-gray-500 text-sm tracking-widest">INITIALIZING RURAL REVITALIZATION</div>
+    </div>
+
+    <!-- 粒子背景 -->
+    <canvas id="particle-canvas"></canvas>
+    
+    <!-- 自定义光标 -->
+    <div class="custom-cursor hidden md:block" id="cursor"></div>
+    <div class="cursor-dot hidden md:block" id="cursor-dot"></div>
+
+    <!-- 导航 -->
+    <nav class="fixed top-0 w-full z-50 glass-strong px-8 py-4 transform -translate-y-full transition-transform duration-500" id="navbar">
+        <div class="max-w-7xl mx-auto flex justify-between items-center">
+            <div class="text-2xl font-bold serif text-emerald-400 tracking-wider">夏官营模式</div>
+            <div class="hidden md:flex space-x-8 text-sm tracking-widest">
+                <a href="#vision" class="hover:text-emerald-400 transition-colors">愿景</a>
+                <a href="#solution" class="hover:text-emerald-400 transition-colors">方案</a>
+                <a href="#market" class="hover:text-emerald-400 transition-colors">市场</a>
+                <a href="#team" class="hover:text-emerald-400 transition-colors">团队</a>
+            </div>
+            <button class="magnetic-btn px-6 py-2 border border-emerald-500 text-emerald-400 rounded-full hover:bg-emerald-500 hover:text-black transition-all duration-300 text-sm tracking-wider">
+                联系我们
+            </button>
+        </div>
+    </nav>
+
+    <!-- 主视觉区 - 3D视差轮播 -->
+    <section class="relative min-h-screen flex items-center justify-center overflow-hidden perspective-container" id="hero">
+        <!-- 背景层 -->
+        <div class="absolute inset-0 z-0">
+            <div class="absolute inset-0 bg-gradient-to-b from-transparent via-black/50 to-black z-10"></div>
+            <div id="hero-bg" class="w-full h-full transform scale-110 parallax-layer">
+                <div class="w-full h-full bg-[url('https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=1920&q=80')] bg-cover bg-center opacity-40"></div>
+            </div>
+        </div>
+
+        <!-- 3D旋转卡片容器 -->
+        <div class="relative z-20 w-full max-w-7xl mx-auto px-8 py-20">
+            <div class="grid lg:grid-cols-2 gap-12 items-center">
+                <!-- 左侧文字 - 故障艺术标题 -->
+                <div class="space-y-8 reveal-up">
+                    <div class="inline-block px-4 py-1 rounded-full glass text-emerald-400 text-xs tracking-[0.3em] border-emerald-500/30">
+                        乡村振兴 · 数字赋能 · 体农融合
+                    </div>
+                    <h1 class="text-6xl md:text-8xl font-black serif leading-tight glitch" data-text="多域协同">
+                        多域协同<br>
+                        <span class="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-cyan-400">百村共振</span>
+                    </h1>
+                    <p class="text-xl text-gray-300 leading-relaxed max-w-lg font-light">
+                        以夏官营为核心节点，打破"单村孤岛"困局，构建"核心镇+协作县"跨区域电商联营新范式。
+                    </p>
+                    <div class="flex gap-4 pt-4">
+                        <button class="magnetic-btn px-8 py-4 bg-emerald-500 text-black font-bold rounded-full hover:scale-105 transition-transform neon-glow flex items-center gap-2 group">
+                            <span>探索方案</span>
+                            <svg class="w-5 h-5 transform group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path></svg>
+                        </button>
+                        <button class="magnetic-btn px-8 py-4 glass text-white rounded-full hover:bg-white/10 transition-all border-white/20">
+                            观看视频
+                        </button>
+                    </div>
+                </div>
+
+                <!-- 右侧3D卡片堆叠 -->
+                <div class="relative h-[600px] perspective-container hidden lg:block" id="card-stack">
+                    <!-- 卡片1 -->
+                    <div class="card-3d absolute top-0 right-0 w-80 h-96 glass-strong rounded-2xl p-6 transform rotate-y-12 translate-z-50 hover:scale-105 transition-all duration-500 cursor-pointer group" style="transform: rotateY(-15deg) rotateX(5deg) translateZ(100px);">
+                        <div class="h-full flex flex-col justify-between">
+                            <div class="w-12 h-12 rounded-full bg-emerald-500/20 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                                <svg class="w-6 h-6 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0121 18.382V7.618a1 1 0 01-.806-.984A1 1 0 0118 5.618l-4.553 2.276A1 1 0 0113 9.382v9.236a1 1 0 01-.447.894z"></path></svg>
+                            </div>
+                            <div>
+                                <h3 class="text-2xl font-bold serif mb-2">1+N 联营模式</h3>
+                                <p class="text-gray-400 text-sm leading-relaxed">夏官营核心枢纽辐射周边协作县域，构建虚拟产业集群，实现资源互通、品牌共塑。</p>
+                            </div>
+                            <div class="text-5xl font-black text-emerald-500/20">01</div>
+                        </div>
+                    </div>
+
+                    <!-- 卡片2 -->
+                    <div class="card-3d absolute top-20 right-20 w-80 h-96 glass-strong rounded-2xl p-6 transform rotate-y-12 translate-z-30 hover:scale-105 transition-all duration-500 cursor-pointer group" style="transform: rotateY(-5deg) rotateX(-5deg) translateZ(50px);">
+                        <div class="h-full flex flex-col justify-between">
+                            <div class="w-12 h-12 rounded-full bg-cyan-500/20 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                                <svg class="w-6 h-6 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+                            </div>
+                            <div>
+                                <h3 class="text-2xl font-bold serif mb-2">赛事场景引爆</h3>
+                                <p class="text-gray-400 text-sm leading-relaxed">绑定马拉松、"村超"等体育IP，将赛道转化为渠道，选手转化为用户，实现沉浸式消费。</p>
+                            </div>
+                            <div class="text-5xl font-black text-cyan-500/20">02</div>
+                        </div>
+                    </div>
+
+                    <!-- 卡片3 -->
+                    <div class="card-3d absolute top-40 right-40 w-80 h-96 glass-strong rounded-2xl p-6 transform rotate-y-12 translate-z-10 hover:scale-105 transition-all duration-500 cursor-pointer group" style="transform: rotateY(5deg) rotateX(5deg) translateZ(0px);">
+                        <div class="h-full flex flex-col justify-between">
+                            <div class="w-12 h-12 rounded-full bg-purple-500/20 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                                <svg class="w-6 h-6 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>
+                            </div>
+                            <div>
+                                <h3 class="text-2xl font-bold serif mb-2">数据驱动决策</h3>
+                                <p class="text-gray-400 text-sm leading-relaxed">C2M反向定制，基于大数据精准锚定市场需求，指导产前规划与产后营销。</p>
+                            </div>
+                            <div class="text-5xl font-black text-purple-500/20">03</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 滚动指示器 -->
+        <div class="absolute bottom-10 left-1/2 transform -translate-x-1/2 animate-bounce">
+            <div class="w-6 h-10 border-2 border-white/30 rounded-full flex justify-center pt-2">
+                <div class="w-1 h-2 bg-emerald-400 rounded-full animate-pulse"></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 痛点剖析 - 不对称错位布局 -->
+    <section class="relative py-32 overflow-hidden" id="pain-points">
+        <div class="max-w-7xl mx-auto px-8">
+            <div class="mb-20 reveal-up">
+                <h2 class="text-5xl md:text-7xl font-black serif mb-6">破解<span class="text-emerald-400">四大顽疾</span></h2>
+                <p class="text-xl text-gray-400 max-w-2xl">传统乡村电商面临结构性失衡，我们提供系统性解决方案</p>
+            </div>
+
+            <div class="asymmetric-grid relative">
+                <!-- 痛点1：规模不经济 -->
+                <div class="glass-strong rounded-3xl p-8 transform rotate-[-2deg] hover:rotate-0 transition-transform duration-500 reveal-left group">
+                    <div class="text-6xl font-black text-emerald-500/20 mb-4">01</div>
+                    <h3 class="text-2xl font-bold mb-4 serif">规模不经济</h3>
+                    <p class="text-gray-400 leading-relaxed mb-6">小农分散经营，缺乏规模化集聚效应，议价能力极低，陷入"丰产不丰收"怪圈。</p>
+                    <div class="h-48 rounded-xl overflow-hidden relative">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent z-10"></div>
+                        <img src="https://images.unsplash.com/photo-1625246333195-78d9c38ad449?w=800&q=80" class="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-700" alt="分散经营">
+                    </div>
+                </div>
+
+                <!-- 痛点2：品牌空心化 -->
+                <div class="glass-strong rounded-3xl p-8 transform translate-y-12 hover:translate-y-8 transition-transform duration-500 reveal-scale group">
+                    <div class="text-6xl font-black text-cyan-500/20 mb-4">02</div>
+                    <h3 class="text-2xl font-bold mb-4 serif">品牌空心化</h3>
+                    <p class="text-gray-400 leading-relaxed mb-6">"有品无牌、有质无名"，地域生态优势无法转化为品牌溢价。</p>
+                    <div class="h-48 rounded-xl overflow-hidden relative">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent z-10"></div>
+                        <img src="https://images.unsplash.com/photo-1595855709915-fa457bd60e5a?w=800&q=80" class="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-700" alt="品牌缺失">
+                    </div>
+                </div>
+
+                <!-- 痛点3：供需错配 -->
+                <div class="glass-strong rounded-3xl p-8 transform rotate-[3deg] hover:rotate-0 transition-transform duration-500 reveal-up group">
+                    <div class="text-6xl font-black text-purple-500/20 mb-4">03</div>
+                    <h3 class="text-2xl font-bold mb-4 serif">供需错配</h3>
+                    <p class="text-gray-400 leading-relaxed mb-6">城市人群对绿色有机需求激增，供给侧仍沿用传统粗放式生产。</p>
+                    <div class="h-48 rounded-xl overflow-hidden relative">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent z-10"></div>
+                        <img src="https://images.unsplash.com/photo-1550989460-0adf9ea622e2?w=800&q=80" class="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-700" alt="供需错配">
+                    </div>
+                </div>
+
+                <!-- 痛点4：物流高企 -->
+                <div class="glass-strong rounded-3xl p-8 col-span-2 transform translate-y-8 hover:translate-y-4 transition-transform duration-500 reveal-left group">
+                    <div class="flex items-start gap-8">
+                        <div class="flex-1">
+                            <div class="text-6xl font-black text-orange-500/20 mb-4">04</div>
+                            <h3 class="text-3xl font-bold mb-4 serif">物流成本高企</h3>
+                            <p class="text-gray-400 leading-relaxed text-lg">单点发货链路冗长，冷链覆盖率低，物流成本占终端售价30%以上，严重压缩农户利润空间。</p>
+                        </div>
+                        <div class="w-1/2 h-64 rounded-xl overflow-hidden relative">
+                            <div class="absolute inset-0 bg-gradient-to-l from-black/80 to-transparent z-10"></div>
+                            <img src="https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?w=800&q=80" class="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-700" alt="物流成本">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 解决方案 - 时间轴沉浸式 -->
+    <section class="relative py-32 bg-black/50" id="solution">
+        <div class="max-w-6xl mx-auto px-8">
+            <div class="text-center mb-20 reveal-up">
+                <h2 class="text-5xl md:text-7xl font-black serif mb-6">四位一体<span class="text-emerald-400">闭环生态</span></h2>
+                <p class="text-xl text-gray-400">数据驱动 + 平台联营 + 场景引爆 + 智能迭代</p>
+            </div>
+
+            <div class="relative">
+                <!-- 时间轴线 -->
+                <div class="absolute left-1/2 transform -translate-x-1/2 w-1 h-full timeline-line rounded-full"></div>
+
+                <!-- 节点1 -->
+                <div class="relative flex items-center justify-between mb-20 reveal-up">
+                    <div class="w-5/12 text-right pr-8">
+                        <div class="glass-strong rounded-2xl p-6 inline-block text-left transform hover:scale-105 transition-transform">
+                            <div class="text-emerald-400 text-sm tracking-widest mb-2">STEP 01</div>
+                            <h3 class="text-2xl font-bold serif mb-3">精确调研锚定</h3>
+                            <p class="text-gray-400 text-sm leading-relaxed">深入田间地头与城市社区，开展大规模精准调研，利用大数据精准锁定爆款单品。</p>
+                        </div>
+                    </div>
+                    <div class="absolute left-1/2 transform -translate-x-1/2 w-4 h-4 bg-emerald-500 rounded-full border-4 border-black z-10"></div>
+                    <div class="w-5/12 pl-8">
+                        <div class="w-full h-48 rounded-2xl overflow-hidden glass">
+                            <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=600&q=80" class="w-full h-full object-cover opacity-60 hover:opacity-100 transition-opacity" alt="数据分析">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 节点2 -->
+                <div class="relative flex items-center justify-between mb-20 reveal-up">
+                    <div class="w-5/12 pr-8">
+                        <div class="w-full h-48 rounded-2xl overflow-hidden glass">
+                            <img src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=600&q=80" class="w-full h-full object-cover opacity-60 hover:opacity-100 transition-opacity" alt="平台联营">
+                        </div>
+                    </div>
+                    <div class="absolute left-1/2 transform -translate-x-1/2 w-4 h-4 bg-cyan-500 rounded-full border-4 border-black z-10"></div>
+                    <div class="w-5/12 text-left pl-8">
+                        <div class="glass-strong rounded-2xl p-6 inline-block transform hover:scale-105 transition-transform">
+                            <div class="text-cyan-400 text-sm tracking-widest mb-2">STEP 02</div>
+                            <h3 class="text-2xl font-bold serif mb-3">自研平台联营</h3>
+                            <p class="text-gray-400 text-sm leading-relaxed">自主研发小程序及可视化网页，打破地域壁垒，实现百村特产标准化上架与智能化分销。</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 节点3 -->
+                <div class="relative flex items-center justify-between mb-20 reveal-up">
+                    <div class="w-5/12 text-right pr-8">
+                        <div class="glass-strong rounded-2xl p-6 inline-block text-left transform hover:scale-105 transition-transform">
+                            <div class="text-purple-400 text-sm tracking-widest mb-2">STEP 03</div>
+                            <h3 class="text-2xl font-bold serif mb-3">场景营销引爆</h3>
+                            <p class="text-gray-400 text-sm leading-relaxed">绑定马拉松等体育赛事IP，打造"运动+助农"沉浸式消费场景，让农产品"卖出品牌、卖出故事"。</p>
+                        </div>
+                    </div>
+                    <div class="absolute left-1/2 transform -translate-x-1/2 w-4 h-4 bg-purple-500 rounded-full border-4 border-black z-10"></div>
+                    <div class="w-5/12 pl-8">
+                        <div class="w-full h-48 rounded-2xl overflow-hidden glass">
+                            <img src="https://images.unsplash.com/photo-1552674605-db6ffd4facb5?w=600&q=80" class="w-full h-full object-cover opacity-60 hover:opacity-100 transition-opacity" alt="赛事营销">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 节点4 -->
+                <div class="relative flex items-center justify-between reveal-up">
+                    <div class="w-5/12 pr-8">
+                        <div class="w-full h-48 rounded-2xl overflow-hidden glass">
+                            <img src="https://images.unsplash.com/photo-1518770660439-4636190af475?w=600&q=80" class="w-full h-full object-cover opacity-60 hover:opacity-100 transition-opacity" alt="智能迭代">
+                        </div>
+                    </div>
+                    <div class="absolute left-1/2 transform -translate-x-1/2 w-4 h-4 bg-orange-500 rounded-full border-4 border-black z-10"></div>
+                    <div class="w-5/12 text-left pl-8">
+                        <div class="glass-strong rounded-2xl p-6 inline-block transform hover:scale-105 transition-transform">
+                            <div class="text-orange-400 text-sm tracking-widest mb-2">STEP 04</div>
+                            <h3 class="text-2xl font-bold serif mb-3">大数据动态优化</h3>
+                            <p class="text-gray-400 text-sm leading-relaxed">AI算法动态调整选品策略、库存预警及营销投放，构建自我进化的闭环系统。</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 核心优势 - 视差深度层 -->
+    <section class="relative py-32 overflow-hidden" id="advantages">
+        <div class="max-w-7xl mx-auto px-8">
+            <div class="grid lg:grid-cols-2 gap-16 items-center">
+                <div class="space-y-8 reveal-left">
+                    <h2 class="text-5xl md:text-6xl font-black serif leading-tight">
+                        夏官营<br>
+                        <span class="text-emerald-400">核心节点</span><br>
+                        辐射效应
+                    </h2>
+                    <p class="text-lg text-gray-300 leading-relaxed">
+                        不同于分散式发展的单村模式，我们将夏官营定位为"区域中央厨房"与"品牌发射塔"，利用其成熟的集散能力，对周边百村的非标农产品进行标准化分拣、统一化包装与品牌化重塑。
+                    </p>
+                    
+                    <div class="space-y-4">
+                        <div class="flex items-center gap-4 glass p-4 rounded-xl hover:bg-white/5 transition-colors cursor-pointer group">
+                            <div class="w-12 h-12 rounded-full bg-emerald-500/20 flex items-center justify-center group-hover:scale-110 transition-transform">
+                                <span class="text-emerald-400 font-bold">01</span>
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-lg">规模效应</h4>
+                                <p class="text-sm text-gray-400">众星拱月架构，整合碎片化供给</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-4 glass p-4 rounded-xl hover:bg-white/5 transition-colors cursor-pointer group">
+                            <div class="w-12 h-12 rounded-full bg-cyan-500/20 flex items-center justify-center group-hover:scale-110 transition-transform">
+                                <span class="text-cyan-400 font-bold">02</span>
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-lg">要素流动</h4>
+                                <p class="text-sm text-gray-400">资源下沉、产品上行双向循环</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-4 glass p-4 rounded-xl hover:bg-white/5 transition-colors cursor-pointer group">
+                            <div class="w-12 h-12 rounded-full bg-purple-500/20 flex items-center justify-center group-hover:scale-110 transition-transform">
+                                <span class="text-purple-400 font-bold">03</span>
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-lg">网络效应</h4>
+                                <p class="text-sm text-gray-400">边际成本递减，品牌势能累积</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="relative h-[600px] perspective-container reveal-scale">
+                    <!-- 视差层1 - 背景 -->
+                    <div class="absolute inset-0 parallax-layer" data-speed="0.2">
+                        <div class="w-full h-full rounded-3xl overflow-hidden opacity-30">
+                            <img src="https://images.unsplash.com/photo-1523741543316-beb7fc7023d8?w=800&q=80" class="w-full h-full object-cover" alt="农田">
+                        </div>
+                    </div>
+                    
+                    <!-- 视差层2 - 中景 -->
+                    <div class="absolute top-20 left-10 right-10 bottom-20 parallax-layer" data-speed="0.5">
+                        <div class="w-full h-full glass-strong rounded-2xl p-8 flex items-center justify-center">
+                            <div class="text-center">
+                                <div class="text-6xl font-black text-emerald-400 mb-2">150+</div>
+                                <div class="text-gray-400">调研问卷回收</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- 视差层3 - 前景 -->
+                    <div class="absolute top-40 left-20 right-20 bottom-10 parallax-layer" data-speed="0.8">
+                        <div class="w-full h-full bg-emerald-500/10 backdrop-blur-xl rounded-2xl border border-emerald-500/30 p-6 flex flex-col justify-end">
+                            <div class="text-4xl font-black mb-2">3-5类</div>
+                            <div class="text-emerald-400">核心潜力单品识别</div>
+                            <div class="mt-4 text-sm text-gray-300">百合 · 高原夏菜 · 榆中大白菜</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 团队介绍 - 网格聚合效果 -->
+    <section class="relative py-32 bg-black/30" id="team">
+        <div class="max-w-7xl mx-auto px-8">
+            <div class="text-center mb-20 reveal-up">
+                <h2 class="text-5xl md:text-6xl font-black serif mb-6">跨学科<span class="text-emerald-400">融合团队</span></h2>
+                <p class="text-xl text-gray-400">技术 + 数据 + 运营 + 治理 四维驱动</p>
+            </div>
+
+            <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <!-- 技术 -->
+                <div class="glass-strong rounded-2xl p-6 group hover:bg-white/5 transition-all duration-500 cursor-pointer reveal-up" style="transition-delay: 0ms;">
+                    <div class="w-16 h-16 rounded-2xl bg-emerald-500/20 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+                        <svg class="w-8 h-8 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"></path></svg>
+                    </div>
+                    <h3 class="text-xl font-bold serif mb-3">计算机科学</h3>
+                    <p class="text-gray-400 text-sm leading-relaxed">数字生态搭建者，负责小程序与数据管理系统开发，引入算法思维实现智能调度。</p>
+                    <div class="mt-4 flex gap-2">
+                        <span class="px-3 py-1 rounded-full bg-emerald-500/10 text-emerald-400 text-xs">前端开发</span>
+                        <span class="px-3 py-1 rounded-full bg-emerald-500/10 text-emerald-400 text-xs">算法</span>
+                    </div>
+                </div>
+
+                <!-- 气象 -->
+                <div class="glass-strong rounded-2xl p-6 group hover:bg-white/5 transition-all duration-500 cursor-pointer reveal-up" style="transition-delay: 100ms;">
+                    <div class="w-16 h-16 rounded-2xl bg-cyan-500/20 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+                        <svg class="w-8 h-8 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 15a4 4 0 004 4h9a5 5 0 10-.1-9.999 5.002 5.002 0 10-9.78 2.096A4.001 4.001 0 003 15z"></path></svg>
+                    </div>
+                    <h3 class="text-xl font-bold serif mb-3">大气科学</h3>
+                    <p class="text-gray-400 text-sm leading-relaxed">气象经济视角，利用微气候分析预测最佳采摘期，指导科学避灾。</p>
+                    <div class="mt-4 flex gap-2">
+                        <span class="px-3 py-1 rounded-full bg-cyan-500/10 text-cyan-400 text-xs">气候分析</span>
+                        <span class="px-3 py-1 rounded-full bg-cyan-500/10 text-cyan-400 text-xs">灾害预警</span>
+                    </div>
+                </div>
+
+                <!-- 会计 -->
+                <div class="glass-strong rounded-2xl p-6 group hover:bg-white/5 transition-all duration-500 cursor-pointer reveal-up" style="transition-delay: 200ms;">
+                    <div class="w-16 h-16 rounded-2xl bg-purple-500/20 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+                        <svg class="w-8 h-8 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path></svg>
+                    </div>
+                    <h3 class="text-xl font-bold serif mb-3">会计学</h3>
+                    <p class="text-gray-400 text-sm leading-relaxed">精细化成本核算与风控，优化联营分润机制，确保利益共同体稳固。</p>
+                    <div class="mt-4 flex gap-2">
+                        <span class="px-3 py-1 rounded-full bg-purple-500/10 text-purple-400 text-xs">财务管理</span>
+                        <span class="px-3 py-1 rounded-full bg-purple-500/10 text-purple-400 text-xs">税务筹划</span>
+                    </div>
+                </div>
+
+                <!-- 行政 -->
+                <div class="glass-strong rounded-2xl p-6 group hover:bg-white/5 transition-all duration-500 cursor-pointer reveal-up" style="transition-delay: 300ms;">
+                    <div class="w-16 h-16 rounded-2xl bg-orange-500/20 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+                        <svg class="w-8 h-8 text-orange-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path></svg>
+                    </div>
+                    <h3 class="text-xl font-bold serif mb-3">行政管理</h3>
+                    <p class="text-gray-400 text-sm leading-relaxed">政企资源接口，精准对接乡村振兴政策红利，设计符合治理目标的联营方案。</p>
+                    <div class="mt-4 flex gap-2">
+                        <span class="px-3 py-1 rounded-full bg-orange-500/10 text-orange-400 text-xs">政策对接</span>
+                        <span class="px-3 py-1 rounded-full bg-orange-500/10 text-orange-400 text-xs">绩效评估</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 财务预测 - 数据可视化 -->
+    <section class="relative py-32" id="finance">
+        <div class="max-w-7xl mx-auto px-8">
+            <div class="grid lg:grid-cols-2 gap-16 items-center">
+                <div class="reveal-left">
+                    <h2 class="text-5xl md:text-6xl font-black serif mb-8">财务<span class="text-emerald-400">预测</span></h2>
+                    
+                    <div class="space-y-6">
+                        <div class="glass-strong rounded-2xl p-6 border-l-4 border-emerald-500">
+                            <div class="flex justify-between items-end mb-2">
+                                <span class="text-gray-400">第1年（启动期）</span>
+                                <span class="text-2xl font-bold text-emerald-400">1.5万元</span>
+                            </div>
+                            <div class="w-full bg-gray-700 rounded-full h-2">
+                                <div class="bg-emerald-500 h-2 rounded-full" style="width: 10%"></div>
+                            </div>
+                            <p class="text-sm text-gray-500 mt-2">基础搭建与模式验证</p>
+                        </div>
+
+                        <div class="glass-strong rounded-2xl p-6 border-l-4 border-cyan-500">
+                            <div class="flex justify-between items-end mb-2">
+                                <span class="text-gray-400">第2年（验证期）</span>
+                                <span class="text-2xl font-bold text-cyan-400">3.75万元</span>
+                            </div>
+                            <div class="w-full bg-gray-700 rounded-full h-2">
+                                <div class="bg-cyan-500 h-2 rounded-full" style="width: 25%"></div>
+                            </div>
+                            <p class="text-sm text-gray-500 mt-2">增长150%，实现盈利</p>
+                        </div>
+
+                        <div class="glass-strong rounded-2xl p-6 border-l-4 border-purple-500">
+                            <div class="flex justify-between items-end mb-2">
+                                <span class="text-gray-400">第3年（成长期）</span>
+                                <span class="text-2xl font-bold text-purple-400">7.5万元</span>
+                            </div>
+                            <div class="w-full bg-gray-700 rounded-full h-2">
+                                <div class="bg-purple-500 h-2 rounded-full" style="width: 50%"></div>
+                            </div>
+                            <p class="text-sm text-gray-500 mt-2">增长100%，模式复制</p>
+                        </div>
+
+                        <div class="glass-strong rounded-2xl p-6 border-l-4 border-orange-500">
+                            <div class="flex justify-between items-end mb-2">
+                                <span class="text-gray-400">第5年（稳定期）</span>
+                                <span class="text-2xl font-bold text-orange-400">24.3万元</span>
+                            </div>
+                            <div class="w-full bg-gray-700 rounded-full h-2">
+                                <div class="bg-orange-500 h-2 rounded-full" style="width: 100%"></div>
+                            </div>
+                            <p class="text-sm text-gray-500 mt-2">净利率49.1%，指数级增长</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="relative h-[500px] glass-strong rounded-3xl p-8 reveal-scale overflow-hidden">
+                    <div class="absolute inset-0 bg-gradient-to-br from-emerald-500/10 to-cyan-500/10"></div>
+                    <div class="relative z-10 h-full flex flex-col justify-center items-center text-center">
+                        <div class="text-8xl font-black text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-cyan-400 mb-4">28-35%</div>
+                        <div class="text-2xl font-bold serif mb-2">预期内部收益率</div>
+                        <div class="text-gray-400 mb-8">高于传统农业项目平均水平</div>
+                        
+                        <div class="grid grid-cols-2 gap-6 w-full max-w-sm">
+                            <div class="glass rounded-xl p-4">
+                                <div class="text-3xl font-bold text-emerald-400 mb-1">2.5年</div>
+                                <div class="text-xs text-gray-400">投资回收期</div>
+                            </div>
+                            <div class="glass rounded-xl p-4">
+                                <div class="text-3xl font-bold text-cyan-400 mb-1">6-8倍</div>
+                                <div class="text-xs text-gray-400">成熟期估值倍数</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- 装饰性网格 -->
+                    <div class="absolute inset-0 opacity-20" style="background-image: radial-gradient(circle at 2px 2px, rgba(255,255,255,0.15) 1px, transparent 0); background-size: 40px 40px;"></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA - 霓虹光效 -->
+    <section class="relative py-32 overflow-hidden">
+        <div class="absolute inset-0 bg-gradient-to-t from-emerald-900/20 to-transparent"></div>
+        <div class="max-w-4xl mx-auto px-8 text-center relative z-10 reveal-up">
+            <h2 class="text-5xl md:text-7xl font-black serif mb-8">共创<span class="text-emerald-400 text-glow">乡村振兴</span>新范式</h2>
+            <p class="text-xl text-gray-300 mb-12 leading-relaxed">
+                我们期待与各方伙伴携手，以务实行动点亮乡村希望<br>
+                将"夏官营模式"从一个想法落地为具体的实践案例
+            </p>
+            
+            <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                <button class="magnetic-btn px-10 py-5 bg-emerald-500 text-black font-bold rounded-full text-lg hover:scale-105 transition-transform neon-glow flex items-center justify-center gap-2 group">
+                    <span>加入联营生态</span>
+                    <svg class="w-5 h-5 transform group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path></svg>
+                </button>
+                <button class="magnetic-btn px-10 py-5 glass text-white rounded-full text-lg hover:bg-white/10 transition-all border border-white/20">
+                    下载商业计划书
+                </button>
+            </div>
+
+            <div class="mt-16 grid grid-cols-3 gap-8 max-w-2xl mx-auto text-center">
+                <div>
+                    <div class="text-3xl font-bold text-emerald-400 mb-2">0.5万</div>
+                    <div class="text-sm text-gray-400">启动资金需求</div>
+                </div>
+                <div>
+                    <div class="text-3xl font-bold text-cyan-400 mb-2">3大</div>
+                    <div class="text-sm text-gray-400">核心投入领域</div>
+                </div>
+                <div>
+                    <div class="text-3xl font-bold text-purple-400 mb-2">∞</div>
+                    <div class="text-sm text-gray-400">社会价值潜力</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 页脚 -->
+    <footer class="relative py-12 border-t border-white/10 bg-black/50">
+        <div class="max-w-7xl mx-auto px-8 flex flex-col md:flex-row justify-between items-center gap-4">
+            <div class="text-2xl font-bold serif text-emerald-400">夏官营模式</div>
+            <div class="text-gray-500 text-sm">© 2026 多域协同·百村共振. All rights reserved.</div>
+            <div class="flex gap-6">
+                <a href="#" class="text-gray-400 hover:text-emerald-400 transition-colors">
+                    <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M24 4.557c-.883.392-1.832.656-2.828.775 1.017-.609 1.798-1.574 2.165-2.724-.951.564-2.005.974-3.127 1.195-.897-.957-2.178-1.555-3.594-1.555-3.179 0-5.515 2.966-4.797 6.045-4.091-.205-7.719-2.165-10.148-5.144-1.29 2.213-.669 5.108 1.523 6.574-.806-.026-1.566-.247-2.229-.616-.054 2.281 1.581 4.415 3.949 4.89-.693.188-1.452.232-2.224.084.626 1.956 2.444 3.379 4.6 3.419-2.07 1.623-4.678 2.348-7.29 2.04 2.179 1.397 4.768 2.212 7.548 2.212 9.142 0 14.307-7.721 13.995-14.646.962-.695 1.797-1.562 2.457-2.549z"/></svg>
+                </a>
+                <a href="#" class="text-gray-400 hover:text-emerald-400 transition-colors">
+                    <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
+                </a>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // 注册GSAP插件
+        gsap.registerPlugin(ScrollTrigger);
+
+        // 加载动画
+        window.addEventListener('load', () => {
+            const loader = document.getElementById('loader');
+            const loaderBar = document.getElementById('loader-bar');
+            
+            gsap.to(loaderBar, {
+                width: '100%',
+                duration: 1.5,
+                ease: 'power2.inOut',
+                onComplete: () => {
+                    gsap.to(loader, {
+                        opacity: 0,
+                        duration: 0.8,
+                        onComplete: () => {
+                            loader.style.display = 'none';
+                            initAnimations();
+                        }
+                    });
+                }
+            });
+        });
+
+        // 初始化所有动画
+        function initAnimations() {
+            // 导航栏显示
+            ScrollTrigger.create({
+                start: 'top -100',
+                end: 99999,
+                toggleClass: { className: 'translate-y-0', targets: '#navbar' }
+            });
+
+            // Reveal动画
+            gsap.utils.toArray('.reveal-up').forEach(elem => {
+                gsap.fromTo(elem, 
+                    { opacity: 0, y: 50 },
+                    {
+                        opacity: 1,
+                        y: 0,
+                        duration: 1,
+                        ease: 'power3.out',
+                        scrollTrigger: {
+                            trigger: elem,
+                            start: 'top 85%',
+                            toggleActions: 'play none none reverse'
+                        }
+                    }
+                );
+            });
+
+            gsap.utils.toArray('.reveal-left').forEach(elem => {
+                gsap.fromTo(elem,
+                    { opacity: 0, x: -50 },
+                    {
+                        opacity: 1,
+                        x: 0,
+                        duration: 1,
+                        ease: 'power3.out',
+                        scrollTrigger: {
+                            trigger: elem,
+                            start: 'top 85%',
+                            toggleActions: 'play none none reverse'
+                        }
+                    }
+                );
+            });
+
+            gsap.utils.toArray('.reveal-scale').forEach(elem => {
+                gsap.fromTo(elem,
+                    { opacity: 0, scale: 0.8 },
+                    {
+                        opacity: 1,
+                        scale: 1,
+                        duration: 1,
+                        ease: 'power3.out',
+                        scrollTrigger: {
+                            trigger: elem,
+                            start: 'top 85%',
+                            toggleActions: 'play none none reverse'
+                        }
+                    }
+                );
+            });
+
+            // 视差效果
+            gsap.utils.toArray('.parallax-layer').forEach(layer => {
+                const speed = layer.dataset.speed || 0.5;
+                gsap.to(layer, {
+                    y: (i, target) => -ScrollTrigger.maxScroll(window) * speed * 0.2,
+                    ease: 'none',
+                    scrollTrigger: {
+                        trigger: layer,
+                        start: 'top bottom',
+                        end: 'bottom top',
+                        scrub: true
+                    }
+                });
+            });
+
+            // 3D卡片鼠标跟随
+            const cardStack = document.getElementById('card-stack');
+            if (cardStack) {
+                cardStack.addEventListener('mousemove', (e) => {
+                    const rect = cardStack.getBoundingClientRect();
+                    const x = (e.clientX - rect.left) / rect.width - 0.5;
+                    const y = (e.clientY - rect.top) / rect.height - 0.5;
+                    
+                    gsap.to(cardStack, {
+                        rotateY: x * 10,
+                        rotateX: -y * 10,
+                        duration: 0.5,
+                        ease: 'power2.out'
+                    });
+                });
+
+                cardStack.addEventListener('mouseleave', () => {
+                    gsap.to(cardStack, {
+                        rotateY: 0,
+                        rotateX: 0,
+                        duration: 0.5,
+                        ease: 'power2.out'
+                    });
+                });
+            }
+        }
+
+        // 自定义光标
+        const cursor = document.getElementById('cursor');
+        const cursorDot = document.getElementById('cursor-dot');
+        
+        if (window.matchMedia('(pointer: fine)').matches) {
+            document.addEventListener('mousemove', (e) => {
+                gsap.to(cursor, {
+                    x: e.clientX - 10,
+                    y: e.clientY - 10,
+                    duration: 0.1
+                });
+                gsap.to(cursorDot, {
+                    x: e.clientX - 2,
+                    y: e.clientY - 2,
+                    duration: 0.5
+                });
+            });
+
+            // 磁性按钮效果
+            document.querySelectorAll('.magnetic-btn').forEach(btn => {
+                btn.addEventListener('mousemove', (e) => {
+                    const rect = btn.getBoundingClientRect();
+                    const x = e.clientX - rect.left - rect.width / 2;
+                    const y = e.clientY - rect.top - rect.height / 2;
+                    
+                    gsap.to(btn, {
+                        x: x * 0.3,
+                        y: y * 0.3,
+                        duration: 0.3
+                    });
+                });
+
+                btn.addEventListener('mouseleave', () => {
+                    gsap.to(btn, {
+                        x: 0,
+                        y: 0,
+                        duration: 0.3
+                    });
+                });
+            });
+        }
+
+        // Three.js 粒子背景
+        const canvas = document.getElementById('particle-canvas');
+        const ctx = canvas.getContext('2d');
+        
+        let width, height;
+        let particles = [];
+        
+        function resize() {
+            width = canvas.width = window.innerWidth;
+            height = canvas.height = window.innerHeight;
+        }
+        
+        window.addEventListener('resize', resize);
+        resize();
+        
+        class Particle {
+            constructor() {
+                this.x = Math.random() * width;
+                this.y = Math.random() * height;
+                this.vx = (Math.random() - 0.5) * 0.5;
+                this.vy = (Math.random() - 0.5) * 0.5;
+                this.size = Math.random() * 2;
+                this.opacity = Math.random() * 0.5;
+            }
+            
+            update() {
+                this.x += this.vx;
+                this.y += this.vy;
+                
+                if (this.x < 0 || this.x > width) this.vx *= -1;
+                if (this.y < 0 || this.y > height) this.vy *= -1;
+            }
+            
+            draw() {
+                ctx.fillStyle = `rgba(16, 185, 129, ${this.opacity})`;
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fill();
+            }
+        }
+        
+        for (let i = 0; i < 50; i++) {
+            particles.push(new Particle());
+        }
+        
+        function animateParticles() {
+            ctx.clearRect(0, 0, width, height);
+            
+            particles.forEach(p => {
+                p.update();
+                p.draw();
+            });
+            
+            // 连线
+            particles.forEach((p1, i) => {
+                particles.slice(i + 1).forEach(p2 => {
+                    const dx = p1.x - p2.x;
+                    const dy = p1.y - p2.y;
+                    const dist = Math.sqrt(dx * dx + dy * dy);
+                    
+                    if (dist < 150) {
+                        ctx.strokeStyle = `rgba(16, 185, 129, ${0.1 * (1 - dist / 150)})`;
+                        ctx.lineWidth = 1;
+                        ctx.beginPath();
+                        ctx.moveTo(p1.x, p1.y);
+                        ctx.lineTo(p2.x, p2.y);
+                        ctx.stroke();
+                    }
+                });
+            });
+            
+            requestAnimationFrame(animateParticles);
+        }
+        
+        animateParticles();
+
+        // 平滑滚动
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    gsap.to(window, {
+                        duration: 1,
+                        scrollTo: { y: target, offsetY: 70 },
+                        ease: 'power3.inOut'
+                    });
+                }
+            });
+        });
+
+        // 鼠标视差效果（主视觉区）
+        const hero = document.getElementById('hero');
+        const heroBg = document.getElementById('hero-bg');
+        
+        if (hero && heroBg) {
+            hero.addEventListener('mousemove', (e) => {
+                const x = (e.clientX / window.innerWidth - 0.5) * 20;
+                const y = (e.clientY / window.innerHeight - 0.5) * 20;
+                
+                gsap.to(heroBg, {
+                    x: x,
+                    y: y,
+                    duration: 1,
+                    ease: 'power2.out'
+                });
+            });
+        }
+    </script>
+</body>
+</html>

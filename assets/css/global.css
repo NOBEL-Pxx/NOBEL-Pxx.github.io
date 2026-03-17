@@ -1,148 +1,472 @@
 /* assets/css/global.css */
+/*
+ * Theme: New Chinese Tech Style (High-End Edition) — Refined
+ * Description: Visual depth, fluid typography, and smooth interactions.
+ * Notes: Only visual refinement; class/logic structure unchanged.
+ */
 
 :root {
-    /* 品牌色盘：新中式科技风 */
-    --color-primary: #3b82f6;       /* 科技蓝：代表数据、平台 */
-    --color-accent: #d97706;        /* 丰收黄：代表农业、百合 */
-    --color-success: #10b981;       /* 生态绿：代表乡村、生机 */
-    --color-danger: #ef4444;        /* 警示红：代表痛点 */
-    
-    /* 中性色 */
-    --color-text-main: #1e293b;
-    --color-text-sub: #64748b;
-    --color-bg-light: #f8fafc;
-    
-    /* 阴影系统 */
-    --shadow-soft: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
-    --shadow-float: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+    /* --- 品牌色盘：新中式科技风 (增强饱和度与层次感) --- */
+    --color-primary: #3b82f6;        /* 科技蓝：数据、平台 */
+    --color-primary-dark: #2563eb;   /* 深蓝：悬停状态 */
+    --color-primary-light: #eff6ff;  /* 浅蓝：背景点缀 */
+
+    --color-accent: #d97706;         /* 丰收黄：农业、百合 */
+    --color-accent-dark: #b45309;    /* 深黄：悬停状态 */
+    --color-accent-glow: rgba(217, 119, 6, 0.4); /* 黄色光晕 */
+
+    --color-success: #10b981;        /* 生态绿：乡村、生机 */
+    --color-danger: #ef4444;         /* 警示红：痛点 */
+
+    /* --- 中性色体系 (更柔和的对比度) --- */
+    --color-text-main: #0f172a;      /* 深蓝灰：主标题 */
+    --color-text-sub: #475569;       /* 中灰：正文 */
+    --color-text-light: #94a3b8;     /* 浅灰：辅助信息 */
+
+    --color-bg-body: #ffffff;
+    --color-bg-alt: #f8fafc;         /* 极浅灰：区分区块 */
+    --color-border: #e2e8f0;         /* 边框色 */
+
+    /* --- 阴影系统 (多层叠加，营造空间感) --- */
+    --shadow-sm: 0 1px 2px rgba(15, 23, 42, 0.06);
+    --shadow-md: 0 8px 20px rgba(15, 23, 42, 0.08), 0 2px 6px rgba(15, 23, 42, 0.06);
+    --shadow-lg: 0 18px 40px rgba(15, 23, 42, 0.10), 0 6px 16px rgba(15, 23, 42, 0.06);
+    --shadow-float: 0 26px 60px rgba(15, 23, 42, 0.14), 0 10px 26px rgba(15, 23, 42, 0.08);
+    --shadow-glow-primary: 0 0 0 1px rgba(59, 130, 246, 0.18), 0 12px 34px rgba(59, 130, 246, 0.24);
+    --shadow-glow-accent: 0 0 0 1px rgba(217, 119, 6, 0.16), 0 14px 42px var(--color-accent-glow);
+
+    /* --- 布局变量 --- */
+    --container-max: 1200px;
+    --header-height: 80px;
+
+    /* --- 高级动画曲线 (Apple-like Ease Out) --- */
+    --ease-elastic: cubic-bezier(0.19, 1, 0.22, 1);
+
+    /* --- 精致化细节补充 (不改变逻辑，仅增强质感) --- */
+    --radius-xs: 10px;
+    --radius-sm: 12px;
+    --radius-md: 16px;
+    --radius-lg: 20px;
+
+    --ring-primary: 0 0 0 4px rgba(59, 130, 246, 0.22);
+    --ring-accent: 0 0 0 4px rgba(217, 119, 6, 0.20);
+
+    --text-render: optimizeLegibility;
 }
 
-* {
+/* --- 基础重置 (Reset & Normalize) --- */
+*, *::before, *::after {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
 }
 
 html {
-    scroll-behavior: smooth; /* 平滑滚动 */
+    scroll-behavior: smooth;
+    text-size-adjust: 100%;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: var(--text-render);
+}
+
+/* 更细腻的选中文本效果 */
+::selection {
+    background: rgba(59, 130, 246, 0.18);
+    color: var(--color-text-main);
 }
 
 body {
     font-family: 'PingFang SC', 'Microsoft YaHei', 'Helvetica Neue', Arial, sans-serif;
     color: var(--color-text-main);
-    background-color: #ffffff;
-    line-height: 1.6;
+    background-color: var(--color-bg-body);
+    line-height: 1.75;
     overflow-x: hidden;
+    font-feature-settings: "kern" 1, "liga" 1;
+
+    /* 轻微的整体背景层次（不改变布局逻辑） */
+    background-image:
+        radial-gradient(1200px 600px at 10% -10%, rgba(59,130,246,0.08) 0%, rgba(59,130,246,0) 60%),
+        radial-gradient(900px 500px at 110% 10%, rgba(217,119,6,0.06) 0%, rgba(217,119,6,0) 55%);
+    background-attachment: fixed;
 }
 
-/* 自定义滚动条 (Webkit) */
+/* --- 自定义滚动条 (精致化) --- */
 ::-webkit-scrollbar {
-    width: 8px;
-    height: 8px;
+    width: 10px;
+    height: 10px;
 }
 ::-webkit-scrollbar-track {
-    background: #f1f5f9;
+    background: var(--color-bg-alt);
+    border-left: 1px solid rgba(226, 232, 240, 0.9);
 }
 ::-webkit-scrollbar-thumb {
-    background: #cbd5e1;
-    border-radius: 4px;
+    background: linear-gradient(180deg, #cbd5e1 0%, #b6c2d2 100%);
+    border-radius: 999px;
+    border: 2px solid var(--color-bg-alt);
+    transition: background 0.3s ease, transform 0.3s ease;
 }
 ::-webkit-scrollbar-thumb:hover {
-    background: #94a3b8;
+    background: linear-gradient(180deg, #aab7c9 0%, #8ea0b8 100%);
 }
 
-/* 通用容器 */
+/* --- 通用容器 (Container) --- */
 .container {
-    max-width: 1200px;
+    width: 100%;
+    max-width: var(--container-max);
     margin: 0 auto;
-    padding: 0 20px;
+    padding: 0 24px;
 }
 
+/* --- 区块排版 (Fluid Typography & Spacing) --- */
 .section-padding {
-    padding: 80px 0;
+    padding: clamp(60px, 8vw, 100px) 0;
 }
 
 .section-title {
     text-align: center;
-    margin-bottom: 60px;
-}
-.section-title h2 {
-    font-size: 2.2rem;
-    font-weight: 800;
-    margin-bottom: 15px;
-    background: linear-gradient(to right, var(--color-primary), var(--color-accent));
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-}
-.section-title p {
-    color: var(--color-text-sub);
-    font-size: 1.1rem;
+    margin-bottom: clamp(40px, 6vw, 80px);
+    position: relative;
 }
 
-/* 按钮系统 */
-.btn {
+/* 标题区的微弱光感与分隔（不改变结构，仅增强精致度） */
+.section-title::before {
+    content: "";
+    position: absolute;
+    left: 50%;
+    top: -18px;
+    transform: translateX(-50%);
+    width: min(520px, 72vw);
+    height: 1px;
+    background: linear-gradient(90deg,
+        rgba(59,130,246,0) 0%,
+        rgba(59,130,246,0.22) 22%,
+        rgba(217,119,6,0.22) 78%,
+        rgba(217,119,6,0) 100%);
+    opacity: 0.9;
+}
+
+.section-title h2 {
+    font-size: clamp(1.8rem, 5vw, 2.8rem);
+    font-weight: 800;
+    margin-bottom: 16px;
+    line-height: 1.2;
+    letter-spacing: -0.02em;
+
+    /* 渐变文字效果（更柔的高光与对比） */
+    background: linear-gradient(135deg,
+        var(--color-primary) 0%,
+        rgba(59,130,246,0.88) 35%,
+        rgba(217,119,6,0.92) 70%,
+        var(--color-accent) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
     display: inline-block;
-    padding: 12px 32px;
+    position: relative;
+    z-index: 1;
+
+    /* 轻微阴影提升高级感（不改变排版） */
+    filter: drop-shadow(0 10px 24px rgba(15, 23, 42, 0.08));
+}
+
+.section-title p {
+    color: var(--color-text-sub);
+    font-size: clamp(1rem, 2vw, 1.125rem);
+    max-width: 640px;
+    margin: 0 auto;
+    line-height: 1.65;
+}
+
+/* --- 按钮系统 (High-End Interaction) --- */
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 14px 36px;
     border-radius: 50px;
     font-weight: 600;
     text-decoration: none;
-    transition: all 0.3s ease;
-    cursor: pointer;
-    border: none;
     font-size: 1rem;
+    cursor: pointer;
+    border: 2px solid transparent;
+    position: relative;
+    overflow: hidden;
+    z-index: 1;
+
+    transition: transform 0.45s var(--ease-elastic),
+                box-shadow 0.45s var(--ease-elastic),
+                background 0.45s var(--ease-elastic),
+                color 0.45s var(--ease-elastic),
+                border-color 0.45s var(--ease-elastic),
+                filter 0.45s var(--ease-elastic);
+    will-change: transform, box-shadow;
+    transform: translateZ(0); /* 提升交互的顺滑感 */
 }
 
+/* 增加细腻的高光扫过（不改变按钮逻辑） */
+.btn::before {
+    content: "";
+    position: absolute;
+    inset: -2px;
+    background: linear-gradient(120deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.22) 35%, rgba(255,255,255,0) 70%);
+    transform: translateX(-120%);
+    transition: transform 0.9s var(--ease-elastic);
+    pointer-events: none;
+    z-index: 0;
+}
+
+/* hover 时扫光出现 */
+.btn:hover::before {
+    transform: translateX(120%);
+}
+
+/* 无障碍焦点状态 */
+.btn:focus-visible {
+    outline: 3px solid var(--color-primary);
+    outline-offset: 4px;
+}
+
+/* 主按钮：丰收黄渐变 + 发光 */
 .btn-primary {
-    background: linear-gradient(135deg, var(--color-accent), #b45309);
+    background: linear-gradient(135deg, var(--color-accent), var(--color-accent-dark));
     color: white;
-    box-shadow: 0 4px 15px rgba(217, 119, 6, 0.3);
-}
-.btn-primary:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 8px 25px rgba(217, 119, 6, 0.4);
+    box-shadow: var(--shadow-md);
+
+    /* 轻微质感叠层 */
+    border-color: rgba(255, 255, 255, 0.14);
 }
 
-.btn-outline {
-    background: transparent;
-    border: 2px solid var(--color-primary);
-    color: var(--color-primary);
+.btn-primary:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-float), var(--shadow-glow-accent);
+    filter: saturate(1.05);
 }
+
+.btn-primary:active {
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-sm);
+    filter: saturate(1);
+}
+
+/* 描边按钮：科技蓝 */
+.btn-outline {
+    background: rgba(255, 255, 255, 0.6);
+    border-color: rgba(59, 130, 246, 0.65);
+    color: var(--color-primary);
+    box-shadow: 0 1px 0 rgba(15, 23, 42, 0.03);
+    backdrop-filter: blur(10px) saturate(160%);
+    -webkit-backdrop-filter: blur(10px) saturate(160%);
+}
+
 .btn-outline:hover {
     background: var(--color-primary);
     color: white;
+    box-shadow: var(--shadow-md), var(--shadow-glow-primary);
+    transform: translateY(-2px);
+    border-color: var(--color-primary);
 }
 
-/* 动画类 (由 main.js 触发) */
+.btn-outline:active {
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-sm);
+}
+
+/* --- 滚动动画系统 (Smooth Reveal) --- */
+.reveal-up, .reveal-scale {
+    opacity: 0;
+    will-change: transform, opacity;
+    transition: opacity 0.85s var(--ease-elastic), transform 0.85s var(--ease-elastic);
+}
+
 .reveal-up {
-    opacity: 0;
-    transform: translateY(30px);
-    transition: all 0.8s cubic-bezier(0.5, 0, 0, 1);
+    transform: translateY(40px);
 }
+
 .reveal-scale {
-    opacity: 0;
-    transform: scale(0.95);
-    transition: all 0.8s cubic-bezier(0.5, 0, 0, 1);
+    transform: scale(0.92);
 }
+
+/* 激活状态 */
 .reveal-up.active, .reveal-scale.active {
     opacity: 1;
-    transform: translateY(0) scale(1);
+    transform: translate(0, 0) scale(1);
 }
 
-/* 延迟工具类 */
-.delay-100 { transition-delay: 0.1s; }
-.delay-200 { transition-delay: 0.2s; }
-.delay-300 { transition-delay: 0.3s; }
-.delay-400 { transition-delay: 0.4s; }
+/* 延迟工具类 (毫秒级精确控制) */
+.delay-100 { transition-delay: 100ms; }
+.delay-200 { transition-delay: 200ms; }
+.delay-300 { transition-delay: 300ms; }
+.delay-400 { transition-delay: 400ms; }
+.delay-500 { transition-delay: 500ms; }
 
-/* 移动端适配 (Media Queries) */
+/* --- 移动端导航增强 (Mobile Navigation Base) --- */
+/* 注意：需在 HTML 中添加 <button class="mobile-menu-toggle"> 并配合 JS 切换 .is-open 类 */
+
+.mobile-menu-toggle {
+    display: none; /* 桌面端隐藏 */
+    flex-direction: column;
+    justify-content: space-between;
+    width: 30px;
+    height: 21px;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    z-index: 1001;
+
+    /* 更细腻的点击手感 */
+    -webkit-tap-highlight-color: transparent;
+}
+
+.mobile-menu-toggle span {
+    display: block;
+    width: 100%;
+    height: 3px;
+    background-color: var(--color-text-main);
+    border-radius: 999px;
+    transition: transform 0.35s var(--ease-elastic), opacity 0.25s ease, background-color 0.35s ease;
+    transform-origin: left center;
+}
+
+/* 汉堡菜单激活态动画 (需 JS 添加 .active 类) */
+.mobile-menu-toggle.active span:nth-child(1) {
+    transform: rotate(45deg);
+    background-color: var(--color-primary);
+}
+.mobile-menu-toggle.active span:nth-child(2) {
+    opacity: 0;
+    transform: translateX(-10px);
+}
+.mobile-menu-toggle.active span:nth-child(3) {
+    transform: rotate(-45deg);
+    background-color: var(--color-primary);
+}
+
+/* --- 媒体查询 (Responsive Design) --- */
 @media (max-width: 768px) {
-    .section-title h2 { font-size: 1.8rem; }
-    .section-padding { padding: 50px 0; }
-    
-    /* 移动端导航栏处理 (简单版：隐藏非激活链接，实际项目中建议做汉堡菜单) */
-    header { padding: 15px 20px; }
-    nav { display: none; } /* 简化处理：移动端暂时隐藏顶部复杂导航，依靠返回首页按钮 */
-    /* 如果需要移动端菜单，需要额外加 JS，这里为了保持代码简洁，建议评委主要在平板/电脑观看，或手机仅看单页 */
-    
-    .logo { font-size: 1.1rem !important; }
+    /* 显示汉堡按钮 */
+    .mobile-menu-toggle {
+        display: flex;
+    }
+
+    /* 移动端导航栏：毛玻璃悬浮效果 */
+    nav {
+        position: fixed;
+        top: var(--header-height);
+        left: 0;
+        width: 100%;
+        min-height: calc(100vh - var(--header-height));
+        background: rgba(255, 255, 255, 0.92);
+        backdrop-filter: blur(18px) saturate(180%);
+        -webkit-backdrop-filter: blur(18px) saturate(180%);
+
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: flex-start;
+        padding-top: 40px;
+        gap: 24px;
+
+        /* 隐藏动画 */
+        transform: translateY(-100%);
+        opacity: 0;
+        visibility: hidden;
+        transition: transform 0.55s var(--ease-elastic),
+                    opacity 0.35s ease,
+                    visibility 0.35s ease;
+        z-index: 1000;
+        box-shadow: 0 18px 46px rgba(15, 23, 42, 0.10);
+        border-bottom: 1px solid rgba(226, 232, 240, 0.75);
+    }
+
+    /* 导航展开状态 */
+    nav.is-open {
+        transform: translateY(0);
+        opacity: 1;
+        visibility: visible;
+    }
+
+    nav a {
+        font-size: 1.25rem;
+        font-weight: 600;
+        color: var(--color-text-main);
+        padding: 12px 24px;
+        border-radius: 14px;
+        width: 80%;
+        text-align: center;
+        transition: transform 0.35s var(--ease-elastic),
+                    background 0.25s ease,
+                    color 0.25s ease,
+                    box-shadow 0.35s var(--ease-elastic);
+        background: rgba(248, 250, 252, 0.5);
+        border: 1px solid rgba(226, 232, 240, 0.7);
+        backdrop-filter: blur(10px) saturate(160%);
+        -webkit-backdrop-filter: blur(10px) saturate(160%);
+    }
+
+    nav a:hover {
+        background: var(--color-primary-light);
+        color: var(--color-primary);
+        transform: scale(1.02);
+        box-shadow: 0 14px 28px rgba(15, 23, 42, 0.08);
+    }
+
+    /* 调整移动端排版 */
+    .section-title h2 {
+        font-size: 1.8rem;
+    }
+
+    .container {
+        padding: 0 20px;
+    }
+
+    .logo {
+        font-size: 1.2rem !important;
+        font-weight: 700;
+        letter-spacing: -0.01em;
+    }
+}
+
+/* --- 打印样式优化 (Print Styles) --- */
+@media print {
+    body {
+        background: white !important;
+        color: black !important;
+        font-size: 12pt;
+        background-image: none !important;
+    }
+
+    /* 隐藏交互元素 */
+    .btn, .mobile-menu-toggle, nav, header {
+        display: none !important;
+    }
+
+    /* 强制显示内容 */
+    .reveal-up, .reveal-scale {
+        opacity: 1 !important;
+        transform: none !important;
+        display: block !important;
+        filter: none !important;
+    }
+
+    /* 打印时移除渐变，节省墨水并保证清晰度 */
+    .section-title h2 {
+        background: none !important;
+        -webkit-text-fill-color: black !important;
+        color: black !important;
+        border-bottom: 2px solid #000;
+        display: inline-block;
+        padding-bottom: 5px;
+        filter: none !important;
+    }
+
+    .container {
+        max-width: 100%;
+        padding: 0;
+    }
+
+    .section-padding {
+        padding: 20px 0;
+    }
 }

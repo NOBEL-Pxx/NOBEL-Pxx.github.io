@@ -232,13 +232,15 @@
             box-shadow: 0 5px 15px rgba(217, 119, 6, 0.3);
             transition: all 0.3s;
             margin: 5px; /* 增加按钮间距 */
+            cursor: pointer;
+            border: none;
         }
         .btn:hover {
             transform: translateY(-3px);
             box-shadow: 0 8px 20px rgba(217, 119, 6, 0.4);
         }
         
-        /* 新增：次要按钮样式（可选，保持统一也可不用） */
+        /* 新增：次要按钮样式 */
         .btn-secondary {
             background: linear-gradient(135deg, #475569, #334155);
             box-shadow: 0 5px 15px rgba(71, 85, 105, 0.3);
@@ -256,7 +258,7 @@
         .delay-200 { transition-delay: 0.2s; }
         .delay-300 { transition-delay: 0.3s; }
 
-        /* 音乐播放器样式 - 仅新增此部分，无其他样式修改 */
+        /* 音乐播放器样式 */
         .music-player {
             position: fixed;
             bottom: 30px;
@@ -294,13 +296,85 @@
             animation-play-state: paused;
         }
 
+        /* --- 新增：PDF预览模态框样式 --- */
+        .pdf-modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(15, 23, 42, 0.9);
+            z-index: 10000;
+            display: none; /* 默认隐藏 */
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        .pdf-modal-overlay.active {
+            display: flex;
+            opacity: 1;
+        }
+        .pdf-modal-content {
+            background: white;
+            width: 90%;
+            max-width: 1000px;
+            height: 85vh;
+            border-radius: 12px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            transform: scale(0.95);
+            transition: transform 0.3s ease;
+        }
+        .pdf-modal-overlay.active .pdf-modal-content {
+            transform: scale(1);
+        }
+        .pdf-modal-header {
+            padding: 15px 20px;
+            border-bottom: 1px solid #e2e8f0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #f8fafc;
+        }
+        .pdf-modal-title {
+            font-weight: 700;
+            color: #1e293b;
+            font-size: 1.1rem;
+        }
+        .pdf-close-btn {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            color: #64748b;
+            cursor: pointer;
+            transition: color 0.2s;
+            line-height: 1;
+        }
+        .pdf-close-btn:hover {
+            color: #ef4444;
+        }
+        .pdf-frame-container {
+            flex: 1;
+            width: 100%;
+            height: 100%;
+            background: #525659; /* PDF阅读器常见背景色 */
+        }
+        .pdf-frame-container iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+        /* 移动端适配 */
         @media (max-width: 768px) {
             .founders-section { flex-direction: column; align-items: center; }
             .advisors-track { animation-duration: 10s; }
             header { padding: 15px 20px; }
             nav a { margin-left: 15px; font-size: 0.9rem; }
             .team-hero h1 { font-size: 2.5rem; }
-            /* 音乐播放器移动端适配 - 仅新增此部分 */
             .music-player {
                 width: 50px;
                 height: 50px;
@@ -309,6 +383,10 @@
             }
             .music-icon {
                 font-size: 20px;
+            }
+            .pdf-modal-content {
+                width: 95%;
+                height: 90vh;
             }
         }
     </style>
@@ -500,28 +578,39 @@
     <!-- 底部引导 (已修改) -->
     <section class="container section-padding" style="text-align: center;">
         <h3 class="reveal-up">我们已准备好，只缺您的支持！</h3>
-        <p class="reveal-up delay-100" style="color: #64748b; margin: 15px 0 30px;">点击下方按钮下载完整商业计划书</p>
+        <p class="reveal-up delay-100" style="color: #64748b; margin: 15px 0 30px;">点击下方按钮查看完整商业计划书</p>
         
         <!-- 按钮容器，使用 Flex 布局让按钮并排 -->
         <div class="reveal-up delay-200" style="display: flex; justify-content: center; gap: 20px; flex-wrap: wrap;">
-            <!-- 新增：下载商业计划书按钮 -->
-            <!-- 注意：这里使用了相对路径 ../ 指向 index.html 同级目录。
-                 由于原文件是 .docx，这里暂时指向 .docx。
-                 【重要】建议您将文件重命名为 .pdf 后，将下方的 .docx 改为 .pdf -->
-            <a href="../实战赛_商业计划书.docx" class="btn btn-secondary" download="兰州大学金鹰_商业计划书">
-                📥 下载商业计划书 (PDF/Word)
-            </a>
+            <!-- 修改后的按钮：触发PDF预览 -->
+            <button id="openPdfBtn" class="btn btn-secondary">
+                📄 查看商业计划书
+            </button>
             
             <!-- 原有：返回首页按钮 -->
             <a href="../index.html" class="btn btn-primary">返回首页</a>
         </div>
     </section>
 
-    <!-- 音乐播放器 - 仅修改音频文件路径 -->
+    <!-- 新增：PDF预览模态框 -->
+    <div class="pdf-modal-overlay" id="pdfModal">
+        <div class="pdf-modal-content">
+            <div class="pdf-modal-header">
+                <span class="pdf-modal-title">兰州大学·金鹰 - 商业计划书</span>
+                <button class="pdf-close-btn" id="closePdfBtn">&times;</button>
+            </div>
+            <div class="pdf-frame-container">
+                <!-- iframe src 初始为空，点击按钮后动态加载 -->
+                <iframe id="pdfFrame" src="" title="商业计划书预览"></iframe>
+            </div>
+        </div>
+    </div>
+
+    <!-- 音乐播放器 -->
     <div class="music-player" id="musicPlayer">
         <i class="fas fa-music music-icon" id="musicIcon"></i>
         <audio id="backgroundMusic" loop preload="auto">
-            <!-- 替换为相对路径，需确保音乐文件放在项目根目录的music文件夹下 -->
+            <!-- 相对路径 -->
             <source src="../music/1.mp3" type="audio/mpeg">
             您的浏览器不支持音频播放
         </audio>
@@ -632,7 +721,54 @@
                 myChart.resize();
             });
 
-            // ========== 仅新增音乐播放逻辑，不修改原有任何代码 ==========
+            // ========== 新增：PDF预览功能逻辑 ==========
+            const openPdfBtn = document.getElementById('openPdfBtn');
+            const closePdfBtn = document.getElementById('closePdfBtn');
+            const pdfModal = document.getElementById('pdfModal');
+            const pdfFrame = document.getElementById('pdfFrame');
+            
+            // PDF文件相对路径 (与index.html同级，当前页面在子目录，故使用 ../)
+            const pdfPath = "../实战赛_商业计划书.pdf";
+            
+            // 打开模态框
+            openPdfBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+                // 设置 iframe 源
+                pdfFrame.src = pdfPath;
+                
+                pdfModal.classList.add('active');
+                document.body.style.overflow = 'hidden'; // 禁止背景滚动
+            });
+
+            // 关闭模态框函数
+            function closePdf() {
+                pdfModal.classList.remove('active');
+                document.body.style.overflow = ''; // 恢复背景滚动
+                // 清空 src 以停止加载/播放
+                setTimeout(() => {
+                    pdfFrame.src = '';
+                }, 300);
+            }
+
+            // 关闭按钮事件
+            closePdfBtn.addEventListener('click', closePdf);
+
+            // 点击遮罩层关闭
+            pdfModal.addEventListener('click', function(e) {
+                if (e.target === pdfModal) {
+                    closePdf();
+                }
+            });
+
+            // ESC 键关闭
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape' && pdfModal.classList.contains('active')) {
+                    closePdf();
+                }
+            });
+            // ========== PDF预览逻辑结束 ==========
+
+            // ========== 原有音乐播放逻辑，不修改原有任何代码 ==========
             // 音乐播放功能
             const musicPlayer = document.getElementById('musicPlayer');
             const musicIcon = document.getElementById('musicIcon');

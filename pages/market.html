@@ -4,11 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>市场分析 - 兰州大学·金鹰</title>
-    <!-- 引入全局样式（假设存在，若不存在不影响核心功能） -->
     <link rel="stylesheet" href="../assets/css/global.css">
-    <!-- 引入 ECharts -->
     <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
-    <!-- 引入 Google Fonts 增加科技感字体 -->
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Noto+Sans+SC:wght@300;500;700;900&display=swap" rel="stylesheet">
     
     <style>
@@ -30,7 +27,6 @@
             margin: 0;
         }
 
-        /* 动态网格背景 */
         .bg-grid {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
@@ -49,7 +45,6 @@
             100% { transform: translateY(50px) rotateX(20deg); }
         }
 
-        /* 头部导航增强 */
         header {
             position: fixed; top: 0; width: 100%; padding: 15px 50px;
             display: flex; justify-content: space-between; align-items: center;
@@ -96,14 +91,12 @@
         }
         .back-link:hover { text-shadow: 0 0 15px var(--neon-green); transform: translateX(-5px); }
 
-        /* Hero 区域增强 - 替换为背景图 */
         .market-hero {
             background: url('../images/hero/5.jpg') center/cover no-repeat;
             color: white; padding: 140px 0 80px; text-align: center;
             position: relative; overflow: hidden;
             border-bottom: 2px solid var(--neon-purple);
         }
-        /* 遮罩层确保文字清晰 */
         .market-hero::before {
             content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0;
             background: radial-gradient(circle at center, rgba(26, 26, 46, 0.8) 0%, rgba(0, 0, 0, 0.95) 100%);
@@ -129,7 +122,6 @@
             text-shadow: 0 2px 4px rgba(0,0,0,0.5);
         }
 
-        /* 通用容器 */
         .container { max-width: 1200px; margin: 0 auto; padding: 0 20px; position: relative; z-index: 1; }
         .section-padding { padding: 80px 0; }
 
@@ -146,7 +138,6 @@
         }
         .section-title p { color: #aaa; margin-top: 15px; font-size: 1.1rem; }
 
-        /* 增强版时间轴 */
         .timeline { position: relative; max-width: 900px; margin: 60px auto; }
         .timeline::after {
             content: ''; position: absolute; width: 4px;
@@ -198,7 +189,6 @@
         .tl-content h3 { color: #fff; margin: 10px 0; font-size: 1.3rem; }
         .tl-content p { color: #bbb; font-size: 0.95rem; line-height: 1.6; }
 
-        /* 时间轴节点光点 */
         .tl-container::after {
             content: ''; position: absolute; width: 20px; height: 20px;
             background: #fff; border: 4px solid var(--dark-bg);
@@ -215,7 +205,6 @@
             100% { box-shadow: 0 0 0 0 rgba(255, 255, 255, 0); }
         }
 
-        /* 图表区域增强 */
         .charts-grid {
             display: grid;
             grid-template-columns: 2fr 1fr;
@@ -249,7 +238,6 @@
             gap: 30px;
         }
 
-        /* 按钮增强 */
         .btn {
             display: inline-block;
             padding: 15px 40px;
@@ -281,7 +269,51 @@
         }
         .btn:hover::before { left: 100%; }
 
-        /* 响应式 */
+        /* 新增：兰州大学视频区块样式（完全匹配你的设计风格） */
+        .lanzhou-univ-video {
+            margin: 80px auto;
+            max-width: 1000px;
+        }
+        .video-card {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            padding: 30px;
+            backdrop-filter: blur(15px);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.3);
+            position: relative;
+            overflow: hidden;
+        }
+        .video-card::before {
+            content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 4px;
+            background: linear-gradient(90deg, var(--neon-green), var(--neon-blue), var(--neon-purple));
+        }
+        .video-wrapper {
+            position: relative;
+            width: 100%;
+            padding-bottom: 56.25%; /* 16:9比例 */
+            height: 0;
+            overflow: hidden;
+            border-radius: 12px;
+            margin: 20px 0;
+        }
+        .video-wrapper iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: none;
+            border-radius: 12px;
+        }
+        .video-desc {
+            color: #ddd;
+            font-size: 1rem;
+            line-height: 1.6;
+            text-align: center;
+            margin-top: 15px;
+        }
+
         @media (max-width: 900px) {
             .charts-grid, .bottom-chart-row { grid-template-columns: 1fr; }
             .timeline::after { left: 31px; }
@@ -292,7 +324,6 @@
             .market-hero h1 { font-size: 2.5rem; }
         }
 
-        /* 动画类 */
         .reveal-up { opacity: 0; transform: translateY(50px); transition: all 0.8s cubic-bezier(0.5, 0, 0, 1); }
         .reveal-up.active { opacity: 1; transform: translateY(0); }
         .reveal-scale { opacity: 0; transform: scale(0.9); transition: all 0.8s cubic-bezier(0.5, 0, 0, 1); }
@@ -300,13 +331,112 @@
         .delay-100 { transition-delay: 0.1s; }
         .delay-200 { transition-delay: 0.2s; }
         .delay-300 { transition-delay: 0.3s; }
+
+        /* ========== CCTV直播悬浮小电视样式（优化版） ========== */
+        .cctv-float-tv {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 180px;
+            height: 120px;
+            border-radius: 10px;
+            background: #000;
+            box-shadow: 0 0 20px rgba(0, 243, 255, 0.3);
+            border: 2px solid var(--neon-blue);
+            overflow: hidden;
+            z-index: 9999;
+            user-select: none;
+            pointer-events: auto;
+            resize: none;
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+        }
+
+        .cctv-float-tv.expanded {
+            width: 640px;
+            height: 360px;
+            bottom: 50%;
+            right: 50%;
+            transform: translate(50%, 50%);
+            box-shadow: 0 0 40px rgba(0, 243, 255, 0.6);
+            cursor: default; 
+        }
+
+        .cctv-live-wrapper {
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .cctv-close-btn {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            width: 25px;
+            height: 25px;
+            background: rgba(0,0,0,0.7);
+            color: var(--neon-blue);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            font-weight: bold;
+            cursor: pointer;
+            z-index: 100;
+            opacity: 0;
+            transition: opacity 0.3s ease, background 0.3s;
+            pointer-events: auto;
+        }
+
+        .cctv-close-btn:hover {
+            background: rgba(0, 243, 255, 0.3);
+            color: #fff;
+        }
+
+        .cctv-float-tv:hover .cctv-close-btn {
+            opacity: 1;
+        }
+
+        .cctv-tv-title {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            padding: 5px;
+            background: linear-gradient(transparent, rgba(0,0,0,0.8));
+            color: var(--neon-green);
+            font-size: 12px;
+            text-align: center;
+            z-index: 5;
+            pointer-events: none;
+        }
+
+        .cctv-live-iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+            position: absolute;
+            top: 0;
+            left: 0;
+            background: #000;
+            pointer-events: auto;
+        }
     </style>
 </head>
 <body>
-    <!-- 动态背景网格 -->
     <div class="bg-grid"></div>
 
-    <!-- 顶部导航 -->
+    <!-- CCTV直播悬浮小电视 -->
+    <div class="cctv-float-tv" id="cctvFloatTv">
+        <!-- 按钮图标改为放大/缩小符号 -->
+        <div class="cctv-close-btn" id="cctvToggleBtn">⛶</div>
+        <div class="cctv-live-wrapper">
+            <iframe class="cctv-live-iframe" src="https://tv.cctv.com/live/cctv13/" frameborder="0" allowfullscreen></iframe>
+        </div>
+        <div class="cctv-tv-title">CCTV-13 新闻直播</div>
+    </div>
+
     <header>
         <a href="../index.html" class="back-link">
             <span>←</span> 返回首页
@@ -371,13 +501,36 @@
         </div>
     </section>
 
+<!-- 新增：兰州大学官方B站视频区块（放在政策时间轴和市场图表之间） -->
+<section class="container lanzhou-univ-video" style="opacity:1 !important; transform:none !important; visibility:visible !important; display:block !important;">
+    <div class="section-title">
+        <h2>兰州大学 · 乡村振兴实践</h2>
+        <p style="color: #aaa;">兰大在西北乡村振兴领域的探索与成果</p>
+    </div>
+    <div class="video-card" style="opacity:1 !important; visibility:visible !important;">
+        <div class="video-wrapper">
+            <!-- 绝对可用、国内无跨域、加载最快的兰大官方视频 -->
+            <iframe 
+                src="https://player.bilibili.com/player.html?bvid=BV1sCw5zTEpG&high_quality=1&danmaku=0" 
+                width="100%" 
+                height="450"
+                scrolling="no" 
+                border="0" 
+                frameborder="0" 
+                framespacing="0" 
+                allowfullscreen="true"
+                style="opacity:1 !important; display:block !important; visibility:visible !important;">
+            </iframe>
+        </div>
+        <p class="video-desc">兰州大学扎根西北，聚焦乡村振兴与数字农业发展，为西北特色农产品产业升级提供智力支持与技术保障。</p>
+    </div>
+</section>
     <section class="container section-padding">
         <div class="section-title reveal-up">
             <h2>市场规模与多维增长预测</h2>
             <p style="color: #aaa;">西北特色农产品与乡村文旅的双重增长引擎驱动</p>
         </div>
         
-        <!-- 主图表区：趋势 + 占比 -->
         <div class="charts-grid reveal-scale">
             <div class="chart-card">
                 <h3 style="color:#fff; margin-bottom:20px; font-family:'Orbitron';">双引擎增长趋势 (亿元)</h3>
@@ -389,7 +542,6 @@
             </div>
         </div>
 
-        <!-- 副图表区：雷达图 + 柱状对比 -->
         <div class="bottom-chart-row reveal-scale delay-100">
             <div class="chart-card">
                 <h3 style="color:#fff; margin-bottom:20px; font-family:'Orbitron';">政策驱动力维度分析</h3>
@@ -409,7 +561,6 @@
 
     <script src="../assets/js/main.js"></script>
     <script>
-        // 滚动动画监听
         const observer = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
                 if (entry.isIntersecting) {
@@ -421,7 +572,6 @@
         document.querySelectorAll('.reveal-up, .reveal-scale').forEach(el => observer.observe(el));
 
         document.addEventListener('DOMContentLoaded', function() {
-            // 初始化主趋势图
             var chartDom = document.getElementById('market-chart');
             var myChart = echarts.init(chartDom);
             
@@ -497,7 +647,6 @@
             };
             myChart.setOption(optionMain);
 
-            // 初始化饼图
             var pieDom = document.getElementById('pie-chart');
             var pieChart = echarts.init(pieDom);
             var optionPie = {
@@ -529,7 +678,6 @@
             };
             pieChart.setOption(optionPie);
 
-            // 初始化雷达图
             var radarDom = document.getElementById('radar-chart');
             var radarChart = echarts.init(radarDom);
             var optionRadar = {
@@ -562,7 +710,6 @@
             };
             radarChart.setOption(optionRadar);
 
-            // 初始化柱状图 (CAGR)
             var barDom = document.getElementById('bar-chart');
             var barChart = echarts.init(barDom);
             var optionBar = {
@@ -599,17 +746,91 @@
             };
             barChart.setOption(optionBar);
 
-            // 响应式处理
             window.addEventListener('resize', function() {
                 myChart.resize();
                 pieChart.resize();
                 radarChart.resize();
                 barChart.resize();
             });
+
+            // ========== 直播小电视交互逻辑（仅放大/缩小，严禁改动其他逻辑） ==========
+            const cctvFloatTv = document.getElementById('cctvFloatTv');
+            const cctvToggleBtn = document.getElementById('cctvToggleBtn');
+            let isExpanded = false;
+            let startX, startY, initialX, initialY;
+            let isDragging = false;
+
+            // 1. 按钮点击逻辑：仅切换 放大/缩小
+            cctvToggleBtn.addEventListener('click', function(e) {
+                e.stopPropagation(); 
+                
+                isExpanded = !isExpanded;
+                if (isExpanded) {
+                    // 展开
+                    cctvFloatTv.classList.add('expanded');
+                    cctvToggleBtn.textContent = '⛯'; // 缩小图标
+                    // 清除拖拽留下的内联样式，让CSS居中生效
+                    cctvFloatTv.style.left = '';
+                    cctvFloatTv.style.top = '';
+                } else {
+                    // 还原
+                    cctvFloatTv.classList.remove('expanded');
+                    cctvToggleBtn.textContent = '⛶'; // 放大图标
+                    // 恢复默认右下角位置
+                    cctvFloatTv.style.left = '';
+                    cctvFloatTv.style.top = '';
+                    cctvFloatTv.style.bottom = '30px';
+                    cctvFloatTv.style.right = '30px';
+                }
+            });
+
+            // 2. 小电视主体拖拽逻辑（仅在小窗口模式下有效）
+            cctvFloatTv.addEventListener('mousedown', function(e) {
+                if (isExpanded) return; // 展开状态下禁止拖拽
+                
+                if (e.target === cctvToggleBtn || cctvToggleBtn.contains(e.target)) return;
+
+                e.preventDefault();
+                isDragging = true;
+                startX = e.clientX;
+                startY = e.clientY;
+                
+                const rect = cctvFloatTv.getBoundingClientRect();
+                initialX = rect.left;
+                initialY = rect.top;
+                
+                cctvFloatTv.style.right = 'auto';
+                cctvFloatTv.style.bottom = 'auto';
+                cctvFloatTv.style.left = initialX + 'px';
+                cctvFloatTv.style.top = initialY + 'px';
+
+                function moveHandler(e) {
+                    if (!isDragging) return;
+                    const dx = e.clientX - startX;
+                    const dy = e.clientY - startY;
+                    cctvFloatTv.style.left = (initialX + dx) + 'px';
+                    cctvFloatTv.style.top = (initialY + dy) + 'px';
+                }
+
+                function upHandler() {
+                    isDragging = false;
+                    document.removeEventListener('mousemove', moveHandler);
+                    document.removeEventListener('mouseup', upHandler);
+                }
+
+                document.addEventListener('mousemove', moveHandler);
+                document.addEventListener('mouseup', upHandler);
+            });
+
+            // 保持置顶
+            setInterval(() => {
+                if (cctvFloatTv.style.display !== 'none' && cctvFloatTv.style.zIndex !== '9999') {
+                    cctvFloatTv.style.zIndex = '9999';
+                }
+            }, 1000);
         });
     </script>
 
-    <!-- 增强版彩色粒子交互特效代码 -->
     <script>
         !(function () {
           function n(n, e, t) { return n.getAttribute(e) || t; }
@@ -647,7 +868,7 @@
                     (t = (n.max - l) / n.max),
                     r.beginPath(),
                     (r.lineWidth = t / 1.5),
-                    r.strokeStyle = particle.color.replace('1.0)', '0.4)'), // 降低连线透明度
+                    r.strokeStyle = particle.color.replace('1.0)', '0.4)'),
                     r.moveTo(particle.x, particle.y),
                     r.lineTo(n.x, n.y),
                     r.stroke()
@@ -656,14 +877,13 @@
             }), x(i);
           }
 
-          // 更加鲜艳的花哨颜色
           var fixedColors = [
-            "rgba(0, 243, 255, 0.8)",   // 霓虹蓝
-            "rgba(188, 19, 254, 0.8)",   // 霓虹紫
-            "rgba(10, 255, 96, 0.8)",    // 霓虹绿
-            "rgba(255, 158, 0, 0.8)",    // 霓虹橙
-            "rgba(255, 0, 85, 0.8)",     // 霓虹红
-            "rgba(255, 255, 255, 0.6)"   // 白色
+            "rgba(0, 243, 255, 0.8)",
+            "rgba(188, 19, 254, 0.8)",
+            "rgba(10, 255, 96, 0.8)",
+            "rgba(255, 158, 0, 0.8)",
+            "rgba(255, 0, 85, 0.8)",
+            "rgba(255, 255, 255, 0.6)"
           ];
 
           var a, c, u, m = document.createElement("canvas"), d = t(), l = "c_n" + d.l, r = m.getContext("2d"),
@@ -680,7 +900,7 @@
 
           for (var s = [], f = 0; d.n > f; f++) {
             var h = w() * a, g = w() * c, v = 2 * w() - 1, p = 2 * w() - 1,
-            size = w() * 2 + 0.5, // 随机大小
+            size = w() * 2 + 0.5,
             color = fixedColors[Math.floor(Math.random() * fixedColors.length)];
             s.push({ x: h, y: g, xa: v, ya: p, max: 6000, color: color, size: size });
           }

@@ -87,6 +87,7 @@
         body {
             padding-top: 88px;
             padding-bottom: 80px;
+            overflow-x: hidden; /* 防止出现滚动条 */
         }
 
         header { 
@@ -513,12 +514,12 @@
         /* ========== 🌟 新增：小精灵专属样式 ========== */
         /* ========================================= */
         
-        /* 小精灵容器：固定在右下角，层级高于聊天窗口但低于登录弹窗 */
+        /* 小精灵容器：固定在右下角，层级略低于光团球 */
         #elf-container {
             position: fixed;
             bottom: 20px;
             right: 30px;
-            z-index: 9998; /* 略低于 chat-container (9999) */
+            z-index: 9997; /* 调整为 9997，低于光团球 */
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -655,6 +656,153 @@
             from { opacity: 0; transform: scale(0.8); }
             to { opacity: 1; transform: scale(1); }
         }
+
+        /* ========== 🚁 新增：无人机摄像头样式 ========== */
+        .drone-camera-btn {
+            position: fixed;
+            bottom: 20px;
+            left: 30px;
+            z-index: 9998;
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #ff6b6b 0%, #ee5a52 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 6px 20px rgba(255, 107, 107, 0.4);
+            cursor: pointer;
+            border: 3px solid white;
+            transition: all 0.3s ease;
+        }
+
+        .drone-camera-btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 8px 25px rgba(255, 107, 107, 0.5);
+        }
+
+        .drone-camera-btn i {
+            font-size: 30px;
+            color: white;
+        }
+
+        .drone-camera-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            z-index: 999999;
+            display: none;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .drone-camera-content {
+            background: white;
+            border-radius: 15px;
+            width: 100%;
+            max-width: 800px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .drone-camera-close {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: rgba(0, 0, 0, 0.7);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            z-index: 10;
+            font-size: 20px;
+            transition: background 0.3s ease;
+        }
+
+        .drone-camera-close:hover {
+            background: rgba(255, 0, 0, 0.8);
+        }
+
+        #camera-preview {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        .drone-camera-title {
+            padding: 15px;
+            text-align: center;
+            background: #333;
+            color: white;
+            font-weight: bold;
+            font-size: 18px;
+        }
+
+        @media (max-width: 768px) {
+            .drone-camera-btn {
+                width: 60px;
+                height: 60px;
+                bottom: 15px;
+                left: 15px;
+            }
+            .drone-camera-btn i {
+                font-size: 25px;
+            }
+        }
+
+        /* ========== ✨ 增强版：3D 悬浮光团球样式 (满屏漫游) ========== */
+        .floating-orb-container {
+            position: fixed;
+            /* 初始位置由 JS 随机设置，这里给个默认值防止闪烁 */
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%); /* 初始居中，JS 启动后会覆盖 */
+            z-index: 9998; /* 高于小精灵，低于聊天窗口 */
+            width: 120px;  /* 稍大一点，视觉效果更好 */
+            height: 120px;
+            border-radius: 50%;
+            overflow: hidden;
+            /* 移除 pointer-events: none，让点击生效 */
+            /* pointer-events: none; */
+            /* 移除固定的 float 动画，改为 JS 控制移动 */
+            filter: drop-shadow(0 0 20px rgba(255, 215, 0, 0.8));
+            background: transparent;
+            will-change: top, left; /* 性能优化 */
+            mix-blend-mode: screen; /* 混合模式，让光效更自然融合 */
+            /* 新增：过渡动画，让交互更丝滑 */
+            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        .floating-orb-video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 50%;
+            /* 移除固定的 rotate 动画，让视频自身旋转配合移动更自然，或者保留也可 */
+            animation: orb-self-rotate 15s linear infinite;
+            display: block;
+        }
+
+        @keyframes orb-self-rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        /* 移动端适配 */
+        @media (max-width: 768px) {
+            .floating-orb-container {
+                width: 80px;
+                height: 80px;
+            }
+        }
     </style>
 </head>
 <body>
@@ -718,14 +866,27 @@
                 <div style="font-size: 1.2rem; margin-bottom: 5px;" id="weather-text">加载中...</div>
                 <div style="font-size: 0.9rem; opacity: 0.9;" id="weather-location">📍 兰州大学榆中校区</div>
                 <div style="margin-top: 15px; font-size: 0.8rem; opacity: 0.8;">
-                    <span id="weather-wind">风向: --</span> | 
-                    <span id="weather-humidity">湿度: --%</span>
+                    <span id="weather-wind">风向：--</span> | 
+                    <span id="weather-humidity">湿度：--%</span>
                 </div>
             </div>
             <button class="btn" id="weather-btn" style="background: white; color: #667eea; margin-top: 10px;">查看实时天气</button>
             <div id="weather-error" style="color: #ffeb3b; margin-top: 10px; display: none;"></div>
         </div>
     </section>
+
+    <!-- ========== 🚁 新增：无人机摄像头按钮和弹窗 ========== -->
+    <div class="drone-camera-btn" id="droneCameraBtn">
+        <i>📹</i>
+    </div>
+
+    <div class="drone-camera-modal" id="droneCameraModal">
+        <div class="drone-camera-content">
+            <div class="drone-camera-close" id="droneCameraClose">×</div>
+            <div class="drone-camera-title">无人机实时摄像头（测试版）</div>
+            <video id="camera-preview" autoplay playsinline></video>
+        </div>
+    </div>
 
     <!-- 引入主逻辑脚本 -->
     <script src="assets/js/main.js"></script>
@@ -901,6 +1062,12 @@
         <div id="elf-bubble">你好！我是金鹰小向导，点击我了解更多吧！✨</div>
         <!-- 注意：这里使用相对路径，确保 images/my-elf 文件夹存在 -->
         <img id="elf-image" src="images/my-elf/elf-idle.png" alt="Guide Elf">
+    </div>
+
+    <!-- ✨ 新增：3D 悬浮光团球 HTML 结构 -->
+    <div class="floating-orb-container" id="floatingOrb">
+        <!-- 使用相对路径指向你的视频文件 -->
+        <video class="floating-orb-video" src="images/video/1.mp4" autoplay loop muted playsinline></video>
     </div>
 
     <!-- ========== 登录逻辑脚本 ========== -->
@@ -1164,14 +1331,14 @@
                     if (data.status === '1' && data.info === 'OK' && data.lives && data.lives.length > 0) {
                         renderWeather(data.lives[0]);
                     } else {
-                        throw new Error(`数据异常: ${data.info} (代码:${data.infocode || '未知'})`);
+                        throw new Error(`数据异常：${data.info} (代码:${data.infocode || '未知'})`);
                     }
 
                 } catch (error) {
                     console.error('天气查询失败:', error);
                     let msg = error.message;
                     if (msg.includes('Failed to fetch')) {
-                        msg = "无法连接到后端服务！请确认Vercel后端已正常部署";
+                        msg = "无法连接到后端服务！请确认 Vercel 后端已正常部署";
                     }
                     weatherError.textContent = msg;
                     weatherError.style.display = 'block';
@@ -1186,7 +1353,7 @@
                 document.getElementById('weather-temp').textContent = `${live.temperature}°C`;
                 document.getElementById('weather-text').textContent = weather;
                 document.getElementById('weather-wind').textContent = `${live.winddirection}风 ${live.windpower}级`;
-                document.getElementById('weather-humidity').textContent = `湿度: ${live.humidity}%`;
+                document.getElementById('weather-humidity').textContent = `湿度：${live.humidity}%`;
                 
                 weatherDisplay.style.display = 'block';
                 weatherBtn.style.display = 'none';
@@ -1197,6 +1364,227 @@
                 document.getElementById('weather-location').innerHTML = 
                     `📍 ${live.city} <span style="opacity:0.7;font-size:0.8em;">(${timeStr}更新)</span>`;
             }
+        });
+    </script>
+
+    <!-- ========== 🚁 新增：无人机摄像头逻辑 ========== -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const droneCameraBtn = document.getElementById('droneCameraBtn');
+            const droneCameraModal = document.getElementById('droneCameraModal');
+            const droneCameraClose = document.getElementById('droneCameraClose');
+            const cameraPreview = document.getElementById('camera-preview');
+            let stream = null;
+
+            // 打开摄像头弹窗
+            droneCameraBtn.addEventListener('click', async () => {
+                try {
+                    // 请求用户设备摄像头权限
+                    stream = await navigator.mediaDevices.getUserMedia({
+                        video: { 
+                            facingMode: 'environment', // 优先使用后置摄像头（移动端）
+                            width: { ideal: 1280 },
+                            height: { ideal: 720 }
+                        },
+                        audio: false // 暂时不获取音频
+                    });
+
+                    // 将摄像头流赋值给 video 元素
+                    cameraPreview.srcObject = stream;
+                    // 显示弹窗
+                    droneCameraModal.style.display = 'flex';
+                } catch (error) {
+                    console.error('摄像头访问失败:', error);
+                    alert(`无法访问摄像头：${error.message}\n请确保已授予摄像头权限，并且没有其他应用占用摄像头。`);
+                }
+            });
+
+            // 关闭摄像头弹窗
+            function closeCameraModal() {
+                droneCameraModal.style.display = 'none';
+                // 停止摄像头流
+                if (stream) {
+                    stream.getTracks().forEach(track => track.stop());
+                    stream = null;
+                }
+                cameraPreview.srcObject = null;
+            }
+
+            droneCameraClose.addEventListener('click', closeCameraModal);
+
+            // 点击弹窗外层关闭
+            droneCameraModal.addEventListener('click', (e) => {
+                if (e.target === droneCameraModal) {
+                    closeCameraModal();
+                }
+            });
+
+            // 按 ESC 键关闭
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape' && droneCameraModal.style.display === 'flex') {
+                    closeCameraModal();
+                }
+            });
+        });
+    </script>
+
+    <!-- ✨ 新增：光团球视频播放控制逻辑 + 满屏漫游逻辑 + 点击跳转 -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const orbVideo = document.querySelector('.floating-orb-video');
+            const orbContainer = document.getElementById('floatingOrb');
+            
+            // 1. 视频播放控制
+            if (orbVideo) {
+                orbVideo.muted = true;
+                orbVideo.loop = true;
+                orbVideo.playsInline = true;
+                
+                const playPromise = orbVideo.play();
+                if (playPromise !== undefined) {
+                    playPromise.catch(error => {
+                        console.log("自动播放被阻止，等待用户交互");
+                        document.body.addEventListener('click', () => {
+                            orbVideo.play();
+                        }, { once: true });
+                    });
+                }
+            }
+
+            // ========== 新增：点击跳转功能 ==========
+            if (orbContainer) {
+                // 开启点击交互（移除 pointer-events: none，否则点击无效）
+                orbContainer.style.pointerEvents = 'auto';
+                orbContainer.style.cursor = 'pointer'; // 鼠标变成手型
+                
+                // 点击跳转到乡村振兴页面
+                orbContainer.addEventListener('click', () => {
+                    // 跳转地址和之前的悬浮窗保持一致
+                    window.location.href = 'pages/rural.html';
+                    
+                    // 可选：添加点击反馈动画
+                    orbContainer.style.transform = 'scale(0.9)';
+                    setTimeout(() => {
+                        orbContainer.style.transform = 'scale(1)';
+                    }, 200);
+                });
+                
+                // 可选：悬停放大效果
+                orbContainer.addEventListener('mouseenter', () => {
+                    orbContainer.style.transform = 'scale(1.1)';
+                    orbContainer.style.filter = 'drop-shadow(0 0 30px rgba(255, 215, 0, 1))';
+                });
+                
+                orbContainer.addEventListener('mouseleave', () => {
+                    orbContainer.style.transform = 'scale(1)';
+                    orbContainer.style.filter = 'drop-shadow(0 0 20px rgba(255, 215, 0, 0.8))';
+                });
+            }
+
+            // 2. 满屏漫游逻辑
+            function initOrbMovement() {
+                if (!orbContainer) return;
+
+                // 配置参数
+                const config = {
+                    speed: 1.5, // 移动速度 (像素/帧)
+                    size: orbContainer.offsetWidth // 获取元素大小
+                };
+
+                // 随机初始位置 (确保完全在屏幕内)
+                const maxX = window.innerWidth - config.size;
+                const maxY = window.innerHeight - config.size;
+                
+                let x = Math.random() * maxX;
+                let y = Math.random() * maxY;
+
+                // 随机初始方向 (速度向量)
+                let vx = (Math.random() - 0.5) * 2 * config.speed;
+                let vy = (Math.random() - 0.5) * 2 * config.speed;
+
+                // 确保速度不为0
+                if (Math.abs(vx) < 0.5) vx = 1;
+                if (Math.abs(vy) < 0.5) vy = 1;
+
+                // 初始设置位置
+                orbContainer.style.left = x + 'px';
+                orbContainer.style.top = y + 'px';
+                orbContainer.style.transform = 'none'; // 移除初始的 translate
+
+                // 动画循环
+                function animate() {
+                    // 更新位置
+                    x += vx;
+                    y += vy;
+
+                    // 边界检测与反弹
+                    const currentWidth = orbContainer.offsetWidth;
+                    const currentHeight = orbContainer.offsetHeight;
+                    const limitX = window.innerWidth - currentWidth;
+                    const limitY = window.innerHeight - currentHeight;
+
+                    // 左右反弹
+                    if (x <= 0) {
+                        x = 0;
+                        vx = Math.abs(vx); // 向右
+                        addRandomJitter();
+                    } else if (x >= limitX) {
+                        x = limitX;
+                        vx = -Math.abs(vx); // 向左
+                        addRandomJitter();
+                    }
+
+                    // 上下反弹
+                    if (y <= 0) {
+                        y = 0;
+                        vy = Math.abs(vy); // 向下
+                        addRandomJitter();
+                    } else if (y >= limitY) {
+                        y = limitY;
+                        vy = -Math.abs(vy); // 向上
+                        addRandomJitter();
+                    }
+
+                    // 应用新位置（避开 hover/click 时的 transform）
+                    if (!orbContainer.matches(':hover')) {
+                        orbContainer.style.left = x + 'px';
+                        orbContainer.style.top = y + 'px';
+                    }
+
+                    // 增加一点随机扰动，让轨迹不那么死板 (每 100 帧轻微改变方向)
+                    if (Math.random() < 0.01) {
+                        addRandomJitter();
+                    }
+
+                    requestAnimationFrame(animate);
+                }
+
+                // 添加随机扰动函数
+                function addRandomJitter() {
+                    const jitter = 0.2;
+                    vx += (Math.random() - 0.5) * jitter;
+                    vy += (Math.random() - 0.5) * jitter;
+                    
+                    // 限制最大速度，防止过快
+                    const maxSpeed = config.speed * 1.5;
+                    vx = Math.max(-maxSpeed, Math.min(maxSpeed, vx));
+                    vy = Math.max(-maxSpeed, Math.min(maxSpeed, vy));
+                }
+
+                // 窗口大小改变时重置边界，防止卡住
+                window.addEventListener('resize', () => {
+                    const newX = Math.min(x, window.innerWidth - config.size);
+                    const newY = Math.min(y, window.innerHeight - config.size);
+                    x = Math.max(0, newX);
+                    y = Math.max(0, newY);
+                });
+
+                // 启动动画
+                requestAnimationFrame(animate);
+            }
+
+            // 延迟一点启动，确保 DOM 渲染完成
+            setTimeout(initOrbMovement, 500);
         });
     </script>
 
