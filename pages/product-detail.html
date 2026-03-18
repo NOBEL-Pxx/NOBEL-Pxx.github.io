@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>农产品详情 - 兰州大学·金鹰</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="../assets/css/global.css">
+  <style>
+    body { padding-top: 100px; }
+    .product-img { max-height: 400px; object-fit: cover; }
+  </style>
+</head>
+<body>
+  <!-- 复用你的导航栏 -->
+  <header>
+    <a href="business.html" class="back-link">
+      <span>←</span> 返回商业模式
+    </a>
+    <div class="logo" style="font-weight: 900; font-size: 1.4rem; color: #f59e0b; font-family: 'Orbitron', sans-serif;">
+      &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp<span style="color:#0f172a">兰州大学·金鹰</span>
+    </div>
+    <nav>
+      <a href="vision.html">愿景模式</a>
+      <a href="painpoints.html">痛点破局</a>
+      <a href="solution.html">解决方案</a>
+      <a href="market.html">市场分析</a>
+      <a href="business.html" class="active">商业模式</a>
+      <a href="team.html">核心团队</a>
+    </nav>
+  </header>
+
+  <div class="container">
+    <div class="row mt-5">
+      <div class="col-md-6">
+        <img src="../images/products/default.jpg" class="product-img img-fluid rounded" alt="农产品图片">
+      </div>
+      <div class="col-md-6">
+        <h2 id="productName">兰州百合</h2>
+        <p class="text-muted" id="productOrigin">产地：兰州市榆中县</p>
+        <h3 class="text-danger fw-bold mt-3" id="productPrice">¥29.9/斤</h3>
+        <p class="mt-3" id="productSpec">规格：精选特级百合（500g）</p>
+        <p class="mt-3" id="productDesc">
+          兰州百合色泽洁白、肉质肥厚，富含多种维生素和矿物质，是甘肃名优特产，口感清甜，可炒菜、煲汤、煮粥。
+        </p>
+        <button class="btn btn-warning btn-lg mt-4" style="background-color: #f59e0b; border: none; padding: 10px 40px;">
+          加入购物车
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    // 获取URL中的产品ID，展示对应信息（先写死，后面对接后端）
+    const urlParams = new URLSearchParams(window.location.search);
+    const productId = urlParams.get('id');
+    
+    // 模拟产品数据
+    const products = {
+      1: {
+        name: '兰州百合',
+        origin: '兰州市榆中县',
+        price: '29.9/斤',
+        spec: '精选特级百合（500g）',
+        desc: '兰州百合色泽洁白、肉质肥厚，富含多种维生素和矿物质，是甘肃名优特产，口感清甜，可炒菜、煲汤、煮粥。'
+      },
+      2: {
+        name: '榆中高原夏菜',
+        origin: '兰州市榆中县夏官营镇',
+        price: '8.8/斤',
+        spec: '混合装（西兰花+娃娃菜+菜心）500g',
+        desc: '榆中高原夏菜生长在海拔1800米以上的高原地区，昼夜温差大，口感脆嫩，无农药残留，绿色健康。'
+      },
+      3: {
+        name: '苦水玫瑰',
+        origin: '兰州市永登县苦水镇',
+        price: '58.0/罐',
+        spec: '精选玫瑰花茶（50g）',
+        desc: '苦水玫瑰是中国四大玫瑰品系之一，香气浓郁，富含玫瑰精油，可泡茶、制作糕点，具有美容养颜的功效。'
+      }
+    };
+
+    // 渲染产品信息
+    if (products[productId]) {
+      document.getElementById('productName').textContent = products[productId].name;
+      document.getElementById('productOrigin').textContent = '产地：' + products[productId].origin;
+      document.getElementById('productPrice').textContent = '¥' + products[productId].price;
+      document.getElementById('productSpec').textContent = '规格：' + products[productId].spec;
+      document.getElementById('productDesc').textContent = products[productId].desc;
+    }
+  </script>
+</body>
+</html>

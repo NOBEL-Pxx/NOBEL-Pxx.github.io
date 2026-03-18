@@ -118,35 +118,105 @@
             color: white;
         }
 
-        /* 顾问无限轮播 */
+        /* ========== 顾问团队 - 优化为高端3D视差风格 ========== */
         .advisors-section {
-            background: #0f172a;
+            position: relative;
+            min-height: 600px;
+            overflow: hidden;
             padding: 80px 0;
             color: white;
-            overflow: hidden;
+            perspective: 2000px;
+            transform-style: preserve-3d;
+        }
+        .advisors-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: 
+                linear-gradient(135deg, rgba(16, 185, 129, 0.85) 0%, 
+                            rgba(22, 163, 74, 0.75) 25%,
+                            rgba(16, 185, 129, 0.65) 50%,
+                            rgba(5, 150, 105, 0.85) 100%);
+            z-index: 2;
+        }
+        .advisors-section::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: 
+                radial-gradient(circle at 20% 30%, rgba(255, 255, 255, 0.15) 0%, transparent 40%),
+                radial-gradient(circle at 80% 70%, rgba(52, 211, 153, 0.2) 0%, transparent 40%),
+                radial-gradient(circle at 50% 50%, rgba(16, 185, 129, 0.1) 0%, transparent 60%);
+            animation: lightFlow 12s ease-in-out infinite;
+            z-index: 1;
+        }
+        .advisors-bg-layer {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('https://images.unsplash.com/photo-1464226184884-fa280b87c399?q=80&w=2340&auto=format&fit=crop') center/cover no-repeat;
+            transform: scale(1.1);
+            will-change: transform;
+            z-index: 0;
+        }
+        @keyframes lightFlow {
+            0%, 100% { transform: translate(0, 0) scale(1); opacity: 0.8; }
+            33% { transform: translate(5%, 3%) scale(1.05); opacity: 1; }
+            66% { transform: translate(-3%, -2%) scale(0.98); opacity: 0.9; }
         }
         .advisors-track {
             display: flex;
             gap: 40px;
             animation: scroll 20s linear infinite;
             width: max-content;
+            position: relative;
+            z-index: 3;
         }
         .advisor-item {
             text-align: center;
             width: 200px;
             flex-shrink: 0;
+            transition: transform 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+        }
+        .advisor-item:hover {
+            transform: translateZ(30px) scale(1.05);
         }
         .advisor-img {
             width: 120px;
             height: 120px;
             border-radius: 50%;
             object-fit: cover;
-            border: 3px solid var(--color-primary);
+            border: 3px solid rgba(255, 255, 255, 0.3);
             margin-bottom: 15px;
-            background: #334155;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            box-shadow: 0 20px 40px -12px rgba(16, 185, 129, 0.4);
+            transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
         }
-        .advisor-name { font-weight: bold; font-size: 1.1rem; }
-        .advisor-title { font-size: 0.85rem; color: #94a3b8; }
+        .advisor-item:hover .advisor-img {
+            transform: scale(1.1);
+            box-shadow: 0 25px 50px -12px rgba(16, 185, 129, 0.6);
+            border-color: rgba(255, 255, 255, 0.6);
+        }
+        .advisor-name { 
+            font-weight: bold; 
+            font-size: 1.1rem; 
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+        }
+        .advisor-title { 
+            font-size: 0.85rem; 
+            color: rgba(255, 255, 255, 0.85);
+            text-shadow: 0 1px 5px rgba(0, 0, 0, 0.2);
+        }
 
         @keyframes scroll {
             0% { transform: translateX(0); }
@@ -175,6 +245,7 @@
             z-index: 1000; 
             background: rgba(255,255,255,0.95); 
             backdrop-filter: blur(10px); 
+            -webkit-backdrop-filter: blur(10px);
             box-shadow: 0 2px 10px rgba(0,0,0,0.05); 
         }
         nav a { 
@@ -200,7 +271,7 @@
             margin: 0 auto;
             padding: 0 20px;
             position: relative;
-            z-index: 2; /* 确保内容在遮罩层之上 */
+            z-index: 3; /* 确保内容在遮罩层之上 */
         }
 
         /* 通用标题样式 */
@@ -389,6 +460,101 @@
                 height: 90vh;
             }
         }
+
+        /* ========== 宣传视频区域 - 优化为高端3D视差风格 ========== */
+        .promo-video-section {
+            position: relative;
+            min-height: 700px;
+            overflow: hidden;
+            padding: 80px 0;
+            perspective: 2000px;
+            transform-style: preserve-3d;
+        }
+        .promo-video-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: 
+                linear-gradient(135deg, rgba(5, 150, 105, 0.88) 0%, 
+                            rgba(16, 185, 129, 0.78) 25%,
+                            rgba(22, 163, 74, 0.68) 50%,
+                            rgba(5, 150, 105, 0.88) 100%);
+            z-index: 2;
+        }
+        .promo-video-section::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: 
+                radial-gradient(circle at 30% 20%, rgba(255, 255, 255, 0.15) 0%, transparent 40%),
+                radial-gradient(circle at 70% 80%, rgba(52, 211, 153, 0.25) 0%, transparent 40%),
+                radial-gradient(circle at 50% 50%, rgba(16, 185, 129, 0.15) 0%, transparent 60%);
+            animation: promoLightFlow 10s ease-in-out infinite;
+            z-index: 1;
+        }
+        .promo-bg-layer {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('https://images.unsplash.com/photo-1560518883-ce09059eeffa?q=80&w=2338&auto=format&fit=crop') center/cover no-repeat;
+            transform: scale(1.1);
+            will-change: transform;
+            z-index: 0;
+        }
+        @keyframes promoLightFlow {
+            0%, 100% { transform: translate(0, 0) scale(1); opacity: 0.8; }
+            25% { transform: translate(4%, 2%) scale(1.08); opacity: 1; }
+            50% { transform: translate(-2%, -3%) scale(0.97); opacity: 0.9; }
+            75% { transform: translate(3%, -1%) scale(1.03); opacity: 0.95; }
+        }
+        .promo-video-container {
+            position: relative;
+            max-width: 1000px;
+            margin: 0 auto;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 
+                0 0 40px rgba(16, 185, 129, 0.3),
+                0 0 80px rgba(16, 185, 129, 0.2),
+                0 0 120px rgba(16, 185, 129, 0.1);
+            background: #000;
+            z-index: 3;
+            transform-style: preserve-3d;
+            transition: transform 0.6s cubic-bezier(0.23, 1, 0.32, 1);
+        }
+        .promo-video-wrapper {
+            position: relative;
+            padding-bottom: 56.25%; /* 16:9 比例 */
+            height: 0;
+            overflow: hidden;
+        }
+        .promo-video-wrapper video {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .promo-video-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(to bottom, transparent 60%, rgba(0,0,0,0.7) 100%);
+            pointer-events: none;
+            z-index: 4;
+        }
+        /* ========== 宣传视频区域样式结束 ========== */
     </style>
 </head>
 <body>
@@ -425,8 +591,8 @@
     <!-- 核心创始人 -->
     <section class="container section-padding">
         <div class="section-title reveal-up">
-            <h2>核心创始团队</h2>
-            <p style="color: #64748b;">CEO + CTO + COO 铁三角架构</p>
+            <h2>广告投放</h2>
+            <p style="color: #64748b;">广告位招租·联系电话：19372025723</p>
         </div>
 
         <div class="founders-section">
@@ -441,9 +607,9 @@
                 </div>
                 <div class="member-info">
                     <div class="member-name">彭小溪</div>
-                    <span class="member-role">萃英学院</span>
+                    <span class="member-role">兰州大学·萃英学院</span>
                     <p class="member-bio">
-                        兰州大学CEO
+                        CEO
                     </p>
                     <div class="skills-container">
                         <span class="skill-tag">战略规划</span>
@@ -453,7 +619,7 @@
                 </div>
             </div>
 
-            <!-- 成员 2: CTO -->
+            <!—广告位 -->
             <div class="member-card reveal-up delay-200">
                 <div class="member-img-box">
                     <video class="member-video" autoplay loop muted playsinline>
@@ -462,7 +628,7 @@
                     </video>
                 </div>
                 <div class="member-info">
-                    <div class="member-name">张华</div>
+                    <div class="member-name">公司A</div>
                     <span class="member-role">CTO & 技术总监</span>
                     <p class="member-bio">
                         兰州大学大气科学博士。主攻农业气象大数据模型，曾参与国家级智慧农业课题，负责平台算法核心研发。
@@ -475,7 +641,7 @@
                 </div>
             </div>
 
-            <!-- 成员 3: COO -->
+            <!—广告位 -->
             <div class="member-card reveal-up delay-300">
                 <div class="member-img-box">
                     <video class="member-video" autoplay loop muted playsinline>
@@ -484,10 +650,10 @@
                     </video>
                 </div>
                 <div class="member-info">
-                    <div class="member-name">王芳</div>
+                    <div class="member-name">公司B</div>
                     <span class="member-role">COO & 运营总监</span>
                     <p class="member-bio">
-                        兰州大学农学学士，MBA在读。深耕西北特色农产品供应链，拥有丰富的赛事策划与新媒体营销经验。
+                        兰州大学管理学学士，MBA在读。深耕西北特色农产品供应链，拥有丰富的赛事策划与新媒体营销经验。
                     </p>
                     <div class="skills-container">
                         <span class="skill-tag">供应链</span>
@@ -499,6 +665,28 @@
         </div>
     </section>
 
+    <!-- ========== 宣传视频区域（位于组织架构上方）========== -->
+    <section class="promo-video-section" id="promo-section">
+        <div class="promo-bg-layer" id="promo-bg"></div>
+        <div class="container">
+            <div class="section-title reveal-up" style="margin-bottom: 40px;">
+                <h2 style="color: white;">项目宣传片</h2>
+                <p style="color: rgba(255, 255, 255, 0.9);">了解兰州大学·金鹰的愿景与使命</p>
+            </div>
+            <div class="promo-video-container reveal-up delay-100" id="promo-card">
+                <div class="promo-video-wrapper">
+                    <video autoplay loop muted playsinline poster="../images/hero/7.jpg">
+                        <source src="../images/video/无人机测试.mp4" type="video/mp4">
+                        <source src="https://test-videos.co.uk/vids/bigbuckbunny/mp4/h264/720/Big_Buck_Bunny_720_10s_1MB.mp4" type="video/mp4">
+                        您的浏览器不支持HTML5视频播放，请升级浏览器或下载视频查看
+                    </video>
+                    <div class="promo-video-overlay"></div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- ========== 宣传视频区域结束 ========== -->
+
     <!-- 组织架构图 -->
     <section class="container section-padding" style="background: #f8fafc; border-radius: 20px;">
         <div class="section-title reveal-up">
@@ -509,11 +697,12 @@
     </section>
 
     <!-- 顾问团队 (无限轮播) -->
-    <section class="advisors-section">
+    <section class="advisors-section" id="advisors-section">
+        <div class="advisors-bg-layer" id="advisors-bg"></div>
         <div class="container">
             <div class="section-title reveal-up">
-                <h2 style="color: white;">专家顾问委员会</h2>
-                <p style="color: #94a3b8;">学术界与产业界的双重背书</p>
+                <h2 style="color: white;">金鹰实战委员会</h2>
+                <p style="color: rgba(255, 255, 255, 0.9);">成员介绍</p>
             </div>
             
             <!-- 轮播轨道 (内容复制一份以实现无缝滚动) -->
@@ -813,6 +1002,46 @@
                 }
             });
             // ========== 音乐播放逻辑结束 ==========
+
+            // ========== 新增：3D视差鼠标跟随效果 ==========
+            const advisorsSection = document.getElementById('advisors-section');
+            const advisorsBg = document.getElementById('advisors-bg');
+            
+            if (advisorsSection && advisorsBg) {
+                advisorsSection.addEventListener('mousemove', (e) => {
+                    const rect = advisorsSection.getBoundingClientRect();
+                    const x = (e.clientX - rect.left) / rect.width - 0.5;
+                    const y = (e.clientY - rect.top) / rect.height - 0.5;
+                    
+                    advisorsBg.style.transform = `scale(1.15) translate(${x * 20}px, ${y * 20}px)`;
+                });
+            }
+
+            const promoSection = document.getElementById('promo-section');
+            const promoBg = document.getElementById('promo-bg');
+            const promoCard = document.getElementById('promo-card');
+            
+            if (promoSection && promoBg) {
+                promoSection.addEventListener('mousemove', (e) => {
+                    const rect = promoSection.getBoundingClientRect();
+                    const x = (e.clientX - rect.left) / rect.width - 0.5;
+                    const y = (e.clientY - rect.top) / rect.height - 0.5;
+                    
+                    promoBg.style.transform = `scale(1.15) translate(${x * 25}px, ${y * 25}px)`;
+                    
+                    if (promoCard) {
+                        promoCard.style.transform = `rotateY(${x * 8}deg) rotateX(${-y * 8}deg)`;
+                    }
+                });
+
+                promoSection.addEventListener('mouseleave', () => {
+                    promoBg.style.transform = 'scale(1.1)';
+                    if (promoCard) {
+                        promoCard.style.transform = 'rotateY(0) rotateX(0)';
+                    }
+                });
+            }
+            // ========== 3D视差效果结束 ==========
         });
     </script>
 
@@ -845,8 +1074,8 @@
               document.body.clientWidth),
               (c = m.height =
                 window.innerHeight ||
-                document.documentElement.clientHeight ||
-                document.body.clientHeight);
+              document.documentElement.clientHeight ||
+              document.body.clientHeight);
           }
           function i() {
             r.clearRect(0, 0, a, c);

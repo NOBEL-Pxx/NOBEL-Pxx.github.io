@@ -931,76 +931,136 @@
     }
 
     /* =========================
-      乡村种菜小游戏样式（保留并协调颜色）
+      乡村种菜小游戏样式 - 悬浮窗口版本
     ========================= */
-    .farm-game-section {
-      position: relative;
-      width: 100%;
-      padding: 40px 0;
-      margin: 40px 0;
-      z-index: 1;
+    
+    /* 悬浮按钮 */
+    .farm-float-btn {
+      position: fixed;
+      bottom: 30px;
+      right: 30px;
+      width: 60px;
+      height: 60px;
+      background: linear-gradient(135deg, var(--primary-green), #059669);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      box-shadow: 0 8px 30px rgba(16,185,129,0.4);
+      z-index: 9999;
+      transition: all 0.3s var(--ease-out);
+      border: none;
+      animation: farmBtnPulse 2s infinite;
     }
     
-    .farm-game-container {
-      width: 95%;
-      max-width: 800px;
-      margin: 0 auto;
-      background: linear-gradient(180deg, rgba(248,250,252,0.95) 0%, rgba(255,255,255,0.95) 100%);
+    .farm-float-btn:hover {
+      transform: scale(1.1) translateY(-5px);
+      box-shadow: 0 12px 40px rgba(16,185,129,0.5);
+    }
+    
+    .farm-float-btn i {
+      font-size: 28px;
+      color: white;
+    }
+    
+    @keyframes farmBtnPulse {
+      0%, 100% { box-shadow: 0 8px 30px rgba(16,185,129,0.4); }
+      50% { box-shadow: 0 8px 30px rgba(16,185,129,0.6), 0 0 0 10px rgba(16,185,129,0.1); }
+    }
+    
+    /* 悬浮窗口 */
+    .farm-float-window {
+      position: fixed;
+      bottom: 100px;
+      right: 30px;
+      width: 420px;
+      max-width: calc(100vw - 60px);
+      max-height: calc(100vh - 140px);
+      background: linear-gradient(180deg, rgba(248,250,252,0.98) 0%, rgba(255,255,255,0.98) 100%);
       border-radius: var(--radius-xl);
-      border: 1px solid rgba(226,232,240,.7);
-      box-shadow: var(--shadow-soft);
+      border: 1px solid rgba(226,232,240,.9);
+      box-shadow: 0 20px 60px rgba(2,6,23,.2);
+      z-index: 9998;
+      display: none;
+      flex-direction: column;
       overflow: hidden;
-      position: relative;
+      animation: farmWindowIn 0.3s var(--ease-out);
     }
     
-    .farm-game-container::before {
-      content: "";
-      position: absolute;
-      inset: 0;
-      background: radial-gradient(900px 260px at 50% 0%, rgba(16,185,129,.08), transparent 55%);
-      pointer-events: none;
+    @keyframes farmWindowIn {
+      from {
+        opacity: 0;
+        transform: translateY(20px) scale(0.95);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
     }
     
-    .farm-game-header {
-      background: linear-gradient(90deg, rgba(16,185,129,0.9), rgba(5,150,105,0.9));
-      padding: 16px 24px;
+    .farm-float-window.active {
+      display: flex;
+    }
+    
+    .farm-float-header {
+      background: linear-gradient(90deg, rgba(16,185,129,0.95), rgba(5,150,105,0.95));
+      padding: 12px 16px;
       display: flex;
       justify-content: space-between;
       align-items: center;
       border-bottom: 2px solid rgba(255,255,255,0.1);
-      position: relative;
-      z-index: 2;
+      flex-shrink: 0;
     }
     
-    .farm-game-title {
+    .farm-float-title {
       color: white;
-      font-weight: 900;
-      font-size: 1.25rem;
+      font-weight: 800;
+      font-size: 1rem;
       display: flex;
       align-items: center;
-      gap: 10px;
-      text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+      gap: 8px;
     }
     
-    .farm-game-content {
-      padding: 24px;
-      position: relative;
-      z-index: 2;
+    .farm-float-close {
+      background: rgba(255,255,255,0.2);
+      border: none;
+      color: white;
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 16px;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    .farm-float-close:hover {
+      background: rgba(255,255,255,0.3);
+      transform: scale(1.1);
+    }
+    
+    .farm-float-body {
+      padding: 16px;
+      overflow-y: auto;
+      flex: 1;
     }
     
     .farm-game-fields {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
-      gap: 15px;
-      margin-bottom: 20px;
-      max-width: 400px;
+      gap: 10px;
+      margin-bottom: 16px;
+      max-width: 300px;
       margin-left: auto;
       margin-right: auto;
     }
     
     .farm-field {
       aspect-ratio: 1/1;
-      border-radius: 12px;
+      border-radius: 10px;
       background: linear-gradient(135deg, #dcfce7, #bbf7d0);
       border: 2px solid var(--primary-green);
       display: flex;
@@ -1036,28 +1096,28 @@
     
     .farm-game-tools {
       display: flex;
-      gap: 10px;
-      margin-bottom: 20px;
+      gap: 8px;
+      margin-bottom: 12px;
       flex-wrap: wrap;
       justify-content: center;
     }
     
     .farm-tool-btn {
       flex: 1;
-      min-width: 100px;
-      max-width: 120px;
-      padding: 12px 8px;
-      border-radius: 10px;
+      min-width: 70px;
+      max-width: 90px;
+      padding: 10px 6px;
+      border-radius: 8px;
       border: 1px solid var(--slate-200);
       background: var(--slate-50);
       color: var(--slate-800);
-      font-size: 14px;
+      font-size: 12px;
       font-weight: 700;
       cursor: pointer;
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 8px;
+      gap: 6px;
       transition: all 0.2s ease;
       box-shadow: 0 4px 15px rgba(2,6,23,.04);
     }
@@ -1071,33 +1131,53 @@
     }
     
     .farm-game-status {
-      font-size: 16px;
+      font-size: 13px;
       color: var(--slate-700);
       text-align: center;
-      padding: 12px;
-      border-radius: 10px;
+      padding: 10px;
+      border-radius: 8px;
       background: rgba(248,250,252,0.95);
       border: 1px solid rgba(226,232,240,.9);
-      margin-bottom: 12px;
+      margin-bottom: 8px;
       font-weight: 500;
     }
     
     .farm-game-hint {
-      font-size: 13px;
+      font-size: 11px;
       color: var(--slate-500);
       text-align: center;
-      line-height: 1.6;
+      line-height: 1.5;
     }
     
-    @media (max-width: 640px) {
+    /* 移动端适配 */
+    @media (max-width: 480px) {
+      .farm-float-btn {
+        width: 50px;
+        height: 50px;
+        bottom: 20px;
+        right: 20px;
+      }
+      
+      .farm-float-btn i {
+        font-size: 22px;
+      }
+      
+      .farm-float-window {
+        bottom: 80px;
+        right: 20px;
+        left: 20px;
+        width: auto;
+        max-height: calc(100vh - 120px);
+      }
+      
       .farm-game-fields {
-        gap: 10px;
+        gap: 8px;
       }
       
       .farm-tool-btn {
-        min-width: 80px;
-        font-size: 12px;
-        padding: 10px 5px;
+        min-width: 60px;
+        font-size: 11px;
+        padding: 8px 4px;
       }
     }
   </style>
@@ -1311,67 +1391,76 @@
   </section>
 
   <!-- =========================
-      乡村种菜小游戏（第二个游戏，保留原逻辑）
+      乡村种菜小游戏 - 悬浮窗口版本
   ========================= -->
-  <section class="farm-game-section">
-    <div class="farm-game-container reveal-up" data-aos="fade-up">
-      <div class="farm-game-header">
-        <div class="farm-game-title"><i class="fa-solid fa-tractor"></i> 乡村振兴小农场</div>
+  <!-- 悬浮按钮 -->
+  <div class="farm-float-btn" id="farmFloatBtn" title="打开乡村小农场">
+    <i class="fa-solid fa-seedling"></i>
+  </div>
+  
+  <!-- 悬浮窗口 -->
+  <div class="farm-float-window" id="farmFloatWindow">
+    <div class="farm-float-header">
+      <div class="farm-float-title">
+        <i class="fa-solid fa-tractor"></i> 乡村振兴小农场
       </div>
-      <div class="farm-game-content">
-        <div class="farm-game-fields" id="farmFields">
-          <!-- 9块菜地 -->
-          <div class="farm-field" data-field="1">
-            <img src="https://picsum.photos/seed/vegetable1/100/100" alt="蔬菜1">
-          </div>
-          <div class="farm-field" data-field="2">
-            <img src="https://picsum.photos/seed/vegetable2/100/100" alt="蔬菜2">
-          </div>
-          <div class="farm-field" data-field="3">
-            <img src="https://picsum.photos/seed/vegetable3/100/100" alt="蔬菜3">
-          </div>
-          <div class="farm-field" data-field="4">
-            <img src="https://picsum.photos/seed/vegetable4/100/100" alt="蔬菜4">
-          </div>
-          <div class="farm-field" data-field="5">
-            <img src="https://picsum.photos/seed/vegetable5/100/100" alt="蔬菜5">
-          </div>
-          <div class="farm-field" data-field="6">
-            <img src="https://picsum.photos/seed/vegetable6/100/100" alt="蔬菜6">
-          </div>
-          <div class="farm-field" data-field="7">
-            <img src="https://picsum.photos/seed/vegetable7/100/100" alt="蔬菜7">
-          </div>
-          <div class="farm-field" data-field="8">
-            <img src="https://picsum.photos/seed/vegetable8/100/100" alt="蔬菜8">
-          </div>
-          <div class="farm-field" data-field="9">
-            <img src="https://picsum.photos/seed/vegetable9/100/100" alt="蔬菜9">
-          </div>
+      <button class="farm-float-close" id="farmFloatClose" title="关闭">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+    </div>
+    <div class="farm-float-body">
+      <div class="farm-game-fields" id="farmFields">
+        <!-- 9块菜地 -->
+        <div class="farm-field" data-field="1">
+          <img src="https://picsum.photos/seed/vegetable1/100/100" alt="蔬菜1">
         </div>
-        <div class="farm-game-tools">
-          <button class="farm-tool-btn" id="plantBtn">
-            <i class="fa-solid fa-seedling"></i> 种植
-          </button>
-          <button class="farm-tool-btn" id="waterBtn">
-            <i class="fa-solid fa-droplet"></i> 浇水
-          </button>
-          <button class="farm-tool-btn" id="harvestBtn">
-            <i class="fa-solid fa-wheat-awn"></i> 收获
-          </button>
-          <button class="farm-tool-btn" id="clearBtn">
-            <i class="fa-solid fa-broom"></i> 清空
-          </button>
+        <div class="farm-field" data-field="2">
+          <img src="https://picsum.photos/seed/vegetable2/100/100" alt="蔬菜2">
         </div>
-        <div class="farm-game-status" id="farmStatus">
-          欢迎来到乡村小农场！点击「种植」开始种菜吧～
+        <div class="farm-field" data-field="3">
+          <img src="https://picsum.photos/seed/vegetable3/100/100" alt="蔬菜3">
         </div>
-        <div class="farm-game-hint">
-          🌱 玩法：先种植→浇水→收获，体验乡村种植的乐趣
+        <div class="farm-field" data-field="4">
+          <img src="https://picsum.photos/seed/vegetable4/100/100" alt="蔬菜4">
         </div>
+        <div class="farm-field" data-field="5">
+          <img src="https://picsum.photos/seed/vegetable5/100/100" alt="蔬菜5">
+        </div>
+        <div class="farm-field" data-field="6">
+          <img src="https://picsum.photos/seed/vegetable6/100/100" alt="蔬菜6">
+        </div>
+        <div class="farm-field" data-field="7">
+          <img src="https://picsum.photos/seed/vegetable7/100/100" alt="蔬菜7">
+        </div>
+        <div class="farm-field" data-field="8">
+          <img src="https://picsum.photos/seed/vegetable8/100/100" alt="蔬菜8">
+        </div>
+        <div class="farm-field" data-field="9">
+          <img src="https://picsum.photos/seed/vegetable9/100/100" alt="蔬菜9">
+        </div>
+      </div>
+      <div class="farm-game-tools">
+        <button class="farm-tool-btn" id="plantBtn">
+          <i class="fa-solid fa-seedling"></i> 种植
+        </button>
+        <button class="farm-tool-btn" id="waterBtn">
+          <i class="fa-solid fa-droplet"></i> 浇水
+        </button>
+        <button class="farm-tool-btn" id="harvestBtn">
+          <i class="fa-solid fa-wheat-awn"></i> 收获
+        </button>
+        <button class="farm-tool-btn" id="clearBtn">
+          <i class="fa-solid fa-broom"></i> 清空
+        </button>
+      </div>
+      <div class="farm-game-status" id="farmStatus">
+        欢迎来到乡村小农场！点击「种植」开始种菜吧～
+      </div>
+      <div class="farm-game-hint">
+        🌱 玩法：先种植→浇水→收获，体验乡村种植的乐趣
       </div>
     </div>
-  </section>
+  </div>
 
   <section class="container cta-section">
     <h3 class="reveal-up" data-aos="fade-up">面对这些痛点，我们的解法是？</h3>
@@ -1699,7 +1788,7 @@
       function i() {
         r.clearRect(0, 0, a, c);
         var n, e, t, o, m, l;
-        s.forEach(function (particle, index) {
+        s.forEach(function(particle, index) {
           for (
             particle.x += particle.xa,
             particle.y += particle.ya,
@@ -2264,10 +2353,35 @@
   </script>
 
   <!-- =========================
-      乡村种菜小游戏逻辑（第二个游戏，保留原逻辑）
+      乡村种菜小游戏逻辑（第二个游戏）- 悬浮窗口版本
+      代码逻辑完全保留，只修改了DOM获取方式
   ========================= -->
   <script>
     document.addEventListener('DOMContentLoaded', function() {
+      // 悬浮窗口控制
+      const farmFloatBtn = document.getElementById('farmFloatBtn');
+      const farmFloatWindow = document.getElementById('farmFloatWindow');
+      const farmFloatClose = document.getElementById('farmFloatClose');
+      
+      // 打开窗口
+      farmFloatBtn.addEventListener('click', function() {
+        farmFloatWindow.classList.add('active');
+      });
+      
+      // 关闭窗口
+      farmFloatClose.addEventListener('click', function() {
+        farmFloatWindow.classList.remove('active');
+      });
+      
+      // 点击窗口外部关闭（可选）
+      document.addEventListener('click', function(e) {
+        if (!farmFloatWindow.contains(e.target) && !farmFloatBtn.contains(e.target)) {
+          farmFloatWindow.classList.remove('active');
+        }
+      });
+
+      // ========== 以下是原种菜游戏逻辑，完全保留 ==========
+      
       // 游戏元素获取
       const farmFields = document.querySelectorAll('.farm-field');
       const plantBtn = document.getElementById('plantBtn');

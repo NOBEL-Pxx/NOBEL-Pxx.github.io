@@ -7,13 +7,13 @@
     <!-- 全局样式 -->
     <link rel="stylesheet" href="../assets/css/global.css">
     <!-- ECharts CDN -->
-    <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js "></script>
     <!-- 引入谷歌字体以提升质感 -->
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700;900&family=Orbitron:wght@400;700;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300 ;400;500;700;900&family=Orbitron:wght@400;700;900&display=swap" rel="stylesheet">
     
     <style>
         :root {
-            /* 更明亮、更“日光感”的主题变量（不改任何逻辑，仅调色与视觉） */
+            /* 更明亮、更"日光感"的主题变量（不改任何逻辑，仅调色与视觉） */
             --color-primary: #f59e0b;
             --color-accent:  #fb923c;
             --color-neon-blue: #22d3ee;
@@ -427,6 +427,55 @@
             nav { display: none; } 
             .business-hero h1 { font-size: 2.5rem; }
         }
+
+        /* ===== 搜索功能样式（新增，不影响原有逻辑）===== */
+        .nav-search-box {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-left: 20px;
+        }
+        .nav-search-box input {
+            padding: 8px 16px;
+            border: 2px solid #e2e8f0;
+            border-radius: 20px;
+            width: 160px;
+            font-size: 0.9rem;
+            outline: none;
+            transition: all 0.3s;
+            background: rgba(255,255,255,0.8);
+            font-family: 'Noto Sans SC', sans-serif;
+        }
+        .nav-search-box input:focus {
+            border-color: var(--color-primary);
+            width: 200px;
+            box-shadow: 0 0 15px rgba(245, 158, 11, 0.2);
+        }
+        .nav-search-box button {
+            background: linear-gradient(135deg, var(--color-primary), #fb7185);
+            color: white;
+            border: none;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s;
+            box-shadow: 0 4px 15px rgba(245, 158, 11, 0.3);
+        }
+        .nav-search-box button:hover {
+            transform: scale(1.1);
+            box-shadow: 0 6px 20px rgba(245, 158, 11, 0.4);
+        }
+        .nav-search-box svg {
+            width: 16px;
+            height: 16px;
+        }
+        @media (max-width: 1100px) {
+            .nav-search-box { display: none; }
+        }
     </style>
 </head>
 <body>
@@ -438,6 +487,16 @@
         </a>
         <div class="logo" style="font-weight: 900; font-size: 1.4rem; color: #f59e0b; font-family: 'Orbitron', sans-serif;">
              &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp<span style="color:#0f172a">兰州大学·金鹰</span>
+             <!-- 搜索框（新增，放在logo后面） -->
+             <span class="nav-search-box" style="display: inline-flex; margin-left: 25px; vertical-align: middle;">
+                <input type="text" id="searchInput" placeholder="搜索..." onkeypress="if(event.key==='Enter') doSearch()">
+                <button onclick="doSearch()" title="搜索">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="11" cy="11" r="8"></circle>
+                        <path d="m21 21-4.35-4.35"></path>
+                    </svg>
+                </button>
+             </span>
         </div>
         <nav>
             <a href="vision.html">愿景模式</a>
@@ -677,6 +736,18 @@
 
         document.querySelectorAll('.reveal-up, .reveal-scale').forEach(el => observer.observe(el));
 
+        // ===== 搜索功能（新增，不影响原有逻辑）=====
+        function doSearch() {
+            const keyword = document.getElementById('searchInput').value.trim();
+            if (keyword) {
+                // 使用百度搜索
+                const url = 'https://www.baidu.com/s?wd=' + encodeURIComponent(keyword);
+                window.open(url, '_blank');
+                // 清空输入框
+                document.getElementById('searchInput').value = '';
+            }
+        }
+
         document.addEventListener('DOMContentLoaded', function() {
             // --- 图表 1: 营收与利润混合图 (增强版) ---
             var chartRev = echarts.init(document.getElementById('chart-revenue'));
@@ -909,7 +980,7 @@
             chartRadar.setOption(optionRadar);
 
             /* =========================
-               关键优化：桑基图“亮色化”
+               关键优化：桑基图"亮色化"
                - 不改数据与连线关系
                - 只增强颜色函数兼容性（避免返回 undefined 导致默认灰/黑）
                - 统一明亮节点色 + 明亮连线渐变
