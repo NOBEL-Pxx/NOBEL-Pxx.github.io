@@ -20,8 +20,18 @@
   <script src="https://webapi.amap.com/loader.js"></script>
 
   <style>
-    /* ✅ 让粒子 canvas 作为“空白处背景”，不挡住任何交互 */
+    /* ✅ 让粒子 canvas 作为"空白处背景"，不挡住任何交互 */
     canvas[id^="c_n"] { pointer-events: none; }
+
+    /* CSS变量 - 用于存储鼠标位置，实现3D效果 */
+    :root {
+      --mouse-x: 50%;
+      --mouse-y: 50%;
+      --card-rotate-x: 0deg;
+      --card-rotate-y: 0deg;
+      --spotlight-x: 50%;
+      --spotlight-y: 50%;
+    }
 
     /* 页面特有样式 */
     .vision-hero {
@@ -38,6 +48,21 @@
       text-align: center;
       position: relative;
       overflow: hidden;
+    }
+
+    /* 英雄区聚光灯效果 - 随鼠标移动 */
+    .vision-hero::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(
+        800px circle at var(--spotlight-x) var(--spotlight-y),
+        rgba(255, 255, 255, 0.15),
+        transparent 40%
+      );
+      pointer-events: none;
+      z-index: 1;
+      transition: opacity 0.3s ease;
     }
 
     #hero-particles {
@@ -67,6 +92,13 @@
       backdrop-filter: blur(10px);
       border: 1px solid rgba(226, 232, 240, 0.90);
       box-shadow: 0 10px 26px rgba(2, 6, 23, 0.08);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    /* 工具栏磁吸效果 */
+    .map-toolbar:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 20px 40px rgba(2, 6, 23, 0.12);
     }
 
     .toolbar-left,
@@ -89,6 +121,13 @@
       font-size: 0.92rem;
       user-select: none;
       white-space: nowrap;
+      transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    .chip:hover {
+      transform: scale(1.05);
+      border-color: #d97706;
+      box-shadow: 0 4px 12px rgba(217, 119, 6, 0.15);
     }
 
     .chip strong { font-weight: 800; }
@@ -101,19 +140,40 @@
       border-radius: 10px;
       font-weight: 700;
       cursor: pointer;
-      transition: transform 0.08s ease, box-shadow 0.15s ease, border-color 0.15s ease;
+      transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
       font-size: 0.92rem;
       white-space: nowrap;
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* 按钮涟漪效果 */
+    .btn-mini::after {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 0;
+      height: 0;
+      border-radius: 50%;
+      background: rgba(217, 119, 6, 0.3);
+      transform: translate(-50%, -50%);
+      transition: width 0.6s ease, height 0.6s ease;
+    }
+
+    .btn-mini:active::after {
+      width: 200%;
+      height: 200%;
     }
 
     .btn-mini:hover {
-      transform: translateY(-1px);
+      transform: translateY(-2px) scale(1.02);
       box-shadow: 0 10px 18px rgba(2, 6, 23, 0.08);
       border-color: rgba(148, 163, 184, 0.80);
     }
 
     .btn-mini:active {
-      transform: translateY(0);
+      transform: translateY(0) scale(0.98);
       box-shadow: none;
     }
 
@@ -140,6 +200,13 @@
       font-size: 0.92rem;
       color: #0f172a;
       white-space: nowrap;
+      transition: all 0.3s ease;
+      cursor: pointer;
+    }
+
+    .switch:hover {
+      background: rgba(217, 119, 6, 0.05);
+      border-color: rgba(217, 119, 6, 0.3);
     }
 
     .switch input {
@@ -159,6 +226,11 @@
       position: relative;
       overflow: hidden;
       border: 1px solid rgba(148, 163, 184, 0.35);
+      transition: box-shadow 0.5s ease;
+    }
+
+    .map-container:hover {
+      box-shadow: 0 20px 60px rgba(2, 6, 23, 0.15);
     }
 
     /* 高德地图容器 */
@@ -206,17 +278,323 @@
       mix-blend-mode: multiply;
     }
 
-    .grid-3 {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-      gap: 32px;
-      margin-top: 40px;
+    /* ==================== 浅色苹果风格 实施路径 ==================== */
+    /* 浅色通透背景 - 纯白 + 微妙渐变 */
+    .container.section-padding[style*="background: #f1f5f9"] {
+      background: linear-gradient(135deg, #ffffff 0%, #fafafa 50%, #f5f5f5 100%) !important;
+      border-radius: 24px !important;
+      margin-bottom: 60px !important;
+      position: relative;
+      overflow: hidden;
+      border: 1px solid rgba(226, 232, 240, 0.6);
+      box-shadow: 
+        0 4px 6px -1px rgba(0, 0, 0, 0.02),
+        0 2px 4px -1px rgba(0, 0, 0, 0.02),
+        inset 0 0 0 1px rgba(255, 255, 255, 0.8);
+    }
+    
+    /* 背景微妙纹理 */
+    .container.section-padding[style*="background: #f1f5f9"]::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-image: 
+        radial-gradient(circle at 20% 50%, rgba(217, 119, 6, 0.03) 0%, transparent 50%),
+        radial-gradient(circle at 80% 80%, rgba(59, 130, 246, 0.03) 0%, transparent 50%),
+        radial-gradient(circle at 40% 20%, rgba(16, 185, 129, 0.02) 0%, transparent 50%);
+      pointer-events: none;
     }
 
-    .strategy-point { text-align: center; }
-    .icon-box { font-size: 3rem; margin-bottom: 16px; display: block; }
+    /* 标题区域优化 - 磁性文字效果 */
+    .container.section-padding[style*="background: #f1f5f9"] .section-title h2 {
+      color: #0f172a;
+      font-size: 3rem;
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      margin-bottom: 1rem;
+      position: relative;
+      display: inline-block;
+      transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
 
-    /* 导航栏样式 */
+    /* 标题下划线流动效果 */
+    .container.section-padding[style*="background: #f1f5f9"] .section-title h2::after {
+      content: '';
+      position: absolute;
+      bottom: -8px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 60px;
+      height: 4px;
+      background: linear-gradient(90deg, #d97706, #f59e0b, #d97706);
+      background-size: 200% 100%;
+      border-radius: 2px;
+      animation: shimmer 3s infinite;
+    }
+
+    @keyframes shimmer {
+      0% { background-position: -200% 0; }
+      100% { background-position: 200% 0; }
+    }
+    
+    .container.section-padding[style*="background: #f1f5f9"] .section-title {
+      position: relative;
+      z-index: 2;
+    }
+
+    /* 网格布局优化 */
+    .grid-3 {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 40px;
+      margin-top: 60px;
+      position: relative;
+      z-index: 2;
+      perspective: 1000px;
+    }
+
+    @media (max-width: 1024px) {
+      .grid-3 {
+        grid-template-columns: 1fr;
+        gap: 32px;
+        max-width: 600px;
+        margin-left: auto;
+        margin-right: auto;
+      }
+    }
+
+    /* 3D磁吸卡片 - 核心特效 */
+    .strategy-point {
+      position: relative;
+      height: 480px;
+      border-radius: 24px;
+      overflow: hidden;
+      background: rgba(255, 255, 255, 0.7);
+      border: 1px solid rgba(226, 232, 240, 0.8);
+      backdrop-filter: blur(20px);
+      transition: transform 0.1s ease, box-shadow 0.3s ease;
+      text-align: left;
+      display: flex;
+      flex-direction: column;
+      transform-style: preserve-3d;
+      transform: 
+        perspective(1000px) 
+        rotateX(var(--card-rotate-x)) 
+        rotateY(var(--card-rotate-y));
+      box-shadow: 
+        0 10px 30px -5px rgba(0, 0, 0, 0.05),
+        0 4px 6px -2px rgba(0, 0, 0, 0.02),
+        inset 0 0 0 1px rgba(255, 255, 255, 0.6);
+    }
+
+    /* 流光边框效果 */
+    .strategy-point::before {
+      content: '';
+      position: absolute;
+      inset: -2px;
+      background: conic-gradient(
+        from 0deg at var(--mouse-x) var(--mouse-y),
+        transparent 0deg,
+        rgba(217, 119, 6, 0.4) 60deg,
+        rgba(59, 130, 246, 0.4) 120deg,
+        transparent 180deg
+      );
+      border-radius: 26px;
+      z-index: -1;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+      filter: blur(8px);
+    }
+
+    .strategy-point:hover::before {
+      opacity: 1;
+    }
+
+    /* 卡片内发光跟随鼠标 */
+    .strategy-point::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(
+        300px circle at var(--mouse-x) var(--mouse-y),
+        rgba(255, 255, 255, 0.4),
+        transparent 50%
+      );
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+      z-index: 2;
+    }
+
+    .strategy-point:hover::after {
+      opacity: 1;
+    }
+
+    /* 背景大图占位 - 视差效果 */
+    .strategy-point .icon-box {
+      position: absolute;
+      inset: -20px;
+      width: calc(100% + 40px);
+      height: calc(100% + 40px);
+      margin: 0;
+      font-size: 0;
+      background-size: cover;
+      background-position: center;
+      transition: transform 0.2s ease-out;
+      transform: translateZ(-50px) scale(1.1);
+      filter: saturate(0.9) brightness(1.05);
+    }
+
+    /* 三张高端占位图 - 浅色苹果风格 */
+    .strategy-point:nth-child(1) .icon-box {
+      background-image: url('https://kimi-web-img.moonshot.cn/img/cdn.home-designing.com/d78ce797b0c689580f3b5779eff3916aced982ef.jpg');
+    }
+
+    .strategy-point:nth-child(2) .icon-box {
+      background-image: url('https://kimi-web-img.moonshot.cn/img/static.vecteezy.com/ea2fe73dbfb089444b98a60898d671f5954467e6.jpeg');
+    }
+
+    .strategy-point:nth-child(3) .icon-box {
+      background-image: url('https://kimi-web-img.moonshot.cn/img/img.freepik.com/750dd1973f03e9b4df38a560a206d2911545b58a.jpg');
+    }
+
+    /* 渐变遮罩 - 确保文字可读 */
+    .strategy-point .gradient-mask {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(
+        180deg,
+        transparent 0%,
+        transparent 30%,
+        rgba(255, 255, 255, 0.8) 60%,
+        rgba(255, 255, 255, 0.95) 100%
+      );
+      z-index: 1;
+      pointer-events: none;
+    }
+
+    /* 内容区域定位 */
+    .strategy-point h3,
+    .strategy-point p,
+    .strategy-point a {
+      position: relative;
+      z-index: 3;
+      padding: 0 32px;
+      transform: translateZ(30px);
+    }
+
+    .strategy-point h3 {
+      color: #0f172a;
+      font-size: 1.75rem;
+      font-weight: 700;
+      margin-top: auto;
+      margin-bottom: 12px;
+      letter-spacing: -0.02em;
+      line-height: 1.2;
+      transition: transform 0.3s ease;
+      text-shadow: 0 2px 4px rgba(255, 255, 255, 0.8);
+    }
+
+    .strategy-point p {
+      color: #475569;
+      font-size: 0.95rem;
+      line-height: 1.7;
+      margin-bottom: 24px;
+      font-weight: 400;
+      transition: transform 0.3s ease;
+    }
+
+    /* 精致的链接按钮 - 悬浮玻璃效果 */
+    .strategy-point a {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      color: #0f172a;
+      font-weight: 600;
+      font-size: 0.9rem;
+      text-decoration: none;
+      margin-bottom: 32px;
+      padding: 12px 24px;
+      background: rgba(255, 255, 255, 0.6);
+      border: 1px solid rgba(226, 232, 240, 0.8);
+      border-radius: 100px;
+      width: fit-content;
+      margin-left: 32px;
+      transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+      backdrop-filter: blur(10px);
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .strategy-point a::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.8), transparent);
+      transform: translateX(-100%);
+      transition: transform 0.6s ease;
+    }
+
+    .strategy-point a::after {
+      content: '→';
+      transition: transform 0.3s ease;
+    }
+
+    .strategy-point a:hover {
+      background: rgba(255, 255, 255, 0.9);
+      border-color: #d97706;
+      transform: translateX(4px) translateZ(40px);
+      box-shadow: 0 10px 25px -5px rgba(217, 119, 6, 0.2);
+    }
+
+    .strategy-point a:hover::before {
+      transform: translateX(100%);
+    }
+
+    .strategy-point a:hover::after {
+      transform: translateX(4px);
+    }
+
+    /* 添加序号标识 - 悬浮在右上角 */
+    .strategy-point .index-number {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      font-size: 4rem;
+      font-weight: 800;
+      color: rgba(15, 23, 42, 0.08);
+      line-height: 1;
+      z-index: 3;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      pointer-events: none;
+      transition: all 0.3s ease;
+      transform: translateZ(40px);
+    }
+
+    .strategy-point:hover .index-number {
+      color: rgba(217, 119, 6, 0.15);
+      transform: translateZ(60px) scale(1.1);
+    }
+
+    /* 鼠标轨迹发光粒子 */
+    .cursor-glow {
+      position: fixed;
+      width: 300px;
+      height: 300px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(217, 119, 6, 0.08) 0%, transparent 70%);
+      pointer-events: none;
+      z-index: 9999;
+      transform: translate(-50%, -50%);
+      transition: opacity 0.3s ease;
+      mix-blend-mode: multiply;
+    }
+
+    /* 导航栏样式 - 增加磁吸效果 */
     header {
       position: fixed;
       top: 0;
@@ -226,28 +604,51 @@
       justify-content: space-between;
       align-items: center;
       z-index: 1000;
+      background: rgba(255, 255, 255, 0.8);
+      backdrop-filter: blur(20px);
+      box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+      border-bottom: 1px solid rgba(226, 232, 240, 0.5);
+      transition: all 0.3s ease;
+    }
+
+    header:hover {
       background: rgba(255, 255, 255, 0.95);
-      backdrop-filter: blur(10px);
-      box-shadow: 0 2px 10px rgba(0,0,0,0.05);
     }
 
     nav a {
       margin-left: 25px;
       text-decoration: none;
-      color: #1e293b;
+      color: #475569;
       font-weight: 600;
       font-size: 0.95rem;
       position: relative;
+      transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+      padding: 8px 12px;
+      border-radius: 8px;
     }
-    nav a:hover, nav a.active { color: #d97706; }
+
+    /* 导航磁吸hover */
+    nav a:hover {
+      color: #d97706;
+      transform: translateY(-2px);
+      background: rgba(217, 119, 6, 0.08);
+    }
+
+    nav a.active { 
+      color: #d97706; 
+      background: rgba(217, 119, 6, 0.12);
+    }
+
     nav a.active::after {
       content: "";
       position: absolute;
-      bottom: -5px;
-      left: 0;
-      width: 100%;
-      height: 2px;
+      bottom: -2px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 20px;
+      height: 3px;
       background: #d97706;
+      border-radius: 2px;
     }
 
     .back-link {
@@ -258,22 +659,83 @@
       display: flex;
       align-items: center;
       gap: 5px;
+      transition: all 0.3s ease;
+      padding: 8px 12px;
+      border-radius: 8px;
     }
-    .back-link:hover { color: #d97706; }
+
+    .back-link:hover { 
+      color: #d97706; 
+      background: rgba(217, 119, 6, 0.08);
+      transform: translateX(-4px);
+    }
 
     @media (max-width: 900px) {
       header { padding: 15px 20px; }
       nav { display: none; }
       .vision-hero { height: 56vh; }
       .map-container { height: 520px; }
-
-      /* ✅ 工具条移动到外侧后：移动端更紧凑 */
       .map-toolbar { margin: 14px auto 10px; padding: 10px 10px; }
+      
+      .strategy-point {
+        height: 420px;
+      }
+      
+      .container.section-padding[style*="background: #f1f5f9"] .section-title h2 {
+        font-size: 2.2rem;
+      }
+    }
+
+    /* 底部引导区域微动画 */
+    .container.section-padding:last-of-type h3 {
+      background: linear-gradient(135deg, #0f172a 0%, #475569 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      transition: transform 0.3s ease;
+    }
+
+    .container.section-padding:last-of-type:hover h3 {
+      transform: translateY(-2px);
+    }
+
+    /* 按钮主样式增强 */
+    .btn-primary {
+      position: relative;
+      overflow: hidden;
+      transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    .btn-primary::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+      transition: left 0.6s ease;
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-3px) scale(1.02);
+      box-shadow: 0 20px 40px -10px rgba(217, 119, 6, 0.4);
+    }
+
+    .btn-primary:hover::before {
+      left: 100%;
+    }
+
+    .btn-primary:active {
+      transform: translateY(-1px) scale(0.98);
     }
   </style>
 </head>
 
 <body>
+  <!-- 鼠标轨迹发光 -->
+  <div class="cursor-glow" id="cursorGlow"></div>
+
   <!-- 顶部导航 -->
   <header>
     <a href="../index.html" class="back-link">
@@ -320,7 +782,7 @@
       <p style="color: #64748b; font-size: 1.1rem;">数据驱动下的资源流动与价值分配网络</p>
     </div>
 
-    <!-- ✅ 工具条移到地图外侧上方：就在“数据驱动...”下面 -->
+    <!-- ✅ 工具条移到地图外侧上方：就在"数据驱动..."下面 -->
     <div class="map-toolbar reveal-up delay-100">
       <div class="toolbar-left">
         <span class="chip">
@@ -363,45 +825,44 @@
     </div>
   </section>
 
-  <!-- 三大核心策略 -->
+  <!-- 三大核心策略 - 浅色3D磁吸版 -->
   <section class="container section-padding" style="background: #f1f5f9; border-radius: 12px; margin-bottom: 60px;">
     <div class="section-title reveal-up">
       <h2>实施路径</h2>
     </div>
 
     <div class="grid-3">
-      <div class="card strategy-point reveal-up delay-100">
-        <span class="icon-box">🏛️</span>
+      <div class="card strategy-point reveal-up delay-100" data-index="01">
+        <span class="icon-box"></span>
+        <div class="gradient-mask"></div>
+        <span class="index-number">01</span>
         <h3>组织共建</h3>
-        <p style="color: #64748b; margin-top: 12px; line-height: 1.8;">
-          成立跨区域联营公司，统一标准、统一品牌、统一调度，解决“各自为战”的分散难题。
+        <p>
+          成立跨区域联营公司，统一标准、统一品牌、统一调度，解决"各自为战"的分散难题。
         </p>
-        <!-- 仅修改这一行的 href 属性，其余代码完全不变 -->
-        <a href="team.html#org-chart" style="color: #d97706; font-weight: bold; margin-top: 20px; display: inline-block; border-bottom: 2px solid transparent;">
-          查看组织架构 →
-        </a>
+        <a href="team.html#org-chart">查看组织架构</a>
       </div>
 
-      <div class="card strategy-point reveal-up delay-200">
-        <span class="icon-box">🔗</span>
+      <div class="card strategy-point reveal-up delay-200" data-index="02">
+        <span class="icon-box"></span>
+        <div class="gradient-mask"></div>
+        <span class="index-number">02</span>
         <h3>链条共融</h3>
-        <p style="color: #64748b; margin-top: 12px; line-height: 1.8;">
-          打通“种植 - 加工 - 赛事 - 旅游”全产业链，实现农产品就地增值、游客就地消费，形成闭环。
+        <p>
+          打通"种植 - 加工 - 赛事 - 旅游"全产业链，实现农产品就地增值、游客就地消费，形成闭环。
         </p>
-        <a href="solution.html#ecosystem" style="color: #d97706; font-weight: bold; margin-top: 20px; display: inline-block; border-bottom: 2px solid transparent;">
-          查看生态闭环 →
-        </a>
+        <a href="solution.html#ecosystem">查看生态闭环</a>
       </div>
 
-      <div class="card strategy-point reveal-up delay-300">
-        <span class="icon-box">💰</span>
+      <div class="card strategy-point reveal-up delay-300" data-index="03">
+        <span class="icon-box"></span>
+        <div class="gradient-mask"></div>
+        <span class="index-number">03</span>
         <h3>利益共享</h3>
-        <p style="color: #64748b; margin-top: 12px; line-height: 1.8;">
+        <p>
           建立可执行的分红机制，确保村集体、农户、企业三方共赢，提升乡村振兴内生动力。
         </p>
-        <a href="business.html#finance" style="color: #d97706; font-weight: bold; margin-top: 20px; display: inline-block; border-bottom: 2px solid transparent;">
-          查看财务模型 →
-        </a>
+        <a href="business.html#finance">查看财务模型</a>
       </div>
     </div>
   </section>
@@ -838,7 +1299,7 @@
             </div>
             ${cards}
             <div style="margin-top:10px; color:#64748b; font-size:12px;">
-              提示：在“节点模式”下悬停查看更稳定
+              提示：在"节点模式"下悬停查看更稳定
             </div>
           </div>
         `;
@@ -1158,10 +1619,120 @@
           spawn();
         });
       })();
+
+      // ==================== 新增：3D磁吸卡片特效 ====================
+      (function initMagneticCards() {
+        const cards = document.querySelectorAll('.strategy-point');
+        const cursorGlow = document.getElementById('cursorGlow');
+        let mouseX = 0, mouseY = 0;
+        let currentX = 0, currentY = 0;
+        
+        // 鼠标轨迹跟随（缓动效果）
+        function animateCursor() {
+          currentX += (mouseX - currentX) * 0.1;
+          currentY += (mouseY - currentY) * 0.1;
+          
+          if (cursorGlow) {
+            cursorGlow.style.left = currentX + 'px';
+            cursorGlow.style.top = currentY + 'px';
+          }
+          
+          requestAnimationFrame(animateCursor);
+        }
+        animateCursor();
+
+        document.addEventListener('mousemove', (e) => {
+          mouseX = e.clientX;
+          mouseY = e.clientY;
+          
+          // 更新CSS变量用于聚光灯效果
+          document.documentElement.style.setProperty('--spotlight-x', e.clientX + 'px');
+          document.documentElement.style.setProperty('--spotlight-y', e.clientY + 'px');
+        });
+
+        cards.forEach(card => {
+          const iconBox = card.querySelector('.icon-box');
+          
+          card.addEventListener('mousemove', (e) => {
+            const rect = card.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+            
+            // 计算鼠标在卡片内的相对位置 (0-1)
+            const centerX = rect.width / 2;
+            const centerY = rect.height / 2;
+            const rotateX = (y - centerY) / 20; // 反转以获得自然的3D感觉
+            const rotateY = (centerX - x) / 20;
+            
+            // 应用3D旋转
+            card.style.setProperty('--card-rotate-x', `${rotateX}deg`);
+            card.style.setProperty('--card-rotate-y', `${rotateY}deg`);
+            
+            // 更新流光边框的鼠标位置
+            card.style.setProperty('--mouse-x', `${x}px`);
+            card.style.setProperty('--mouse-y', `${y}px`);
+            
+            // 图片视差效果（反向移动）
+            if (iconBox) {
+              const moveX = (x - centerX) / 15;
+              const moveY = (y - centerY) / 15;
+              iconBox.style.transform = `translateZ(-50px) scale(1.1) translate(${-moveX}px, ${-moveY}px)`;
+            }
+          });
+          
+          card.addEventListener('mouseleave', () => {
+            // 复位
+            card.style.setProperty('--card-rotate-x', '0deg');
+            card.style.setProperty('--card-rotate-y', '0deg');
+            
+            if (iconBox) {
+              iconBox.style.transform = 'translateZ(-50px) scale(1.1)';
+            }
+          });
+          
+          // 点击时的脉冲效果
+          card.addEventListener('click', () => {
+            card.style.animation = 'pulse 0.6s ease';
+            setTimeout(() => {
+              card.style.animation = '';
+            }, 600);
+          });
+        });
+        
+        // 添加脉冲动画
+        const style = document.createElement('style');
+        style.textContent = `
+          @keyframes pulse {
+            0% { transform: perspective(1000px) rotateX(var(--card-rotate-x)) rotateY(var(--card-rotate-y)) scale(1); }
+            50% { transform: perspective(1000px) rotateX(var(--card-rotate-x)) rotateY(var(--card-rotate-y)) scale(0.98); }
+            100% { transform: perspective(1000px) rotateX(var(--card-rotate-x)) rotateY(var(--card-rotate-y)) scale(1); }
+          }
+        `;
+        document.head.appendChild(style);
+      })();
+
+      // ==================== 新增：磁性导航链接 ====================
+      (function initMagneticNav() {
+        const navLinks = document.querySelectorAll('nav a');
+        
+        navLinks.forEach(link => {
+          link.addEventListener('mousemove', (e) => {
+            const rect = link.getBoundingClientRect();
+            const x = e.clientX - rect.left - rect.width / 2;
+            const y = e.clientY - rect.top - rect.height / 2;
+            
+            link.style.transform = `translate(${x * 0.3}px, ${y * 0.3}px) translateY(-2px)`;
+          });
+          
+          link.addEventListener('mouseleave', () => {
+            link.style.transform = '';
+          });
+        });
+      })();
     });
   </script>
 
-  <!-- ✅ 彩色粒子交互特效：作为“空白处背景” -->
+  <!-- ✅ 彩色粒子交互特效：作为"空白处背景" -->
   <!-- 不改原逻辑：用 script 标签属性控制 zIndex / opacity / count -->
   <script zIndex="-1" opacity="0.6" count="400">
     !(function () {
