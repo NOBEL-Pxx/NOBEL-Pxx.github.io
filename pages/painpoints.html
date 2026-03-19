@@ -3,39 +3,35 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1.0" />
-  <title>痛点破局 - 兰州大学·金鹰</title>
+  <title>痛点破局 - 兰州大学·金鹰 | 多域协同·百村共振</title>
 
-  <!-- 保留你的原有全局样式 -->
-  <link rel="stylesheet" href="../assets/css/global.css" />
-
-  <!-- 网络精美资源（CDN） -->
+  <!-- 基础资源 -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <!-- 高级字体：Inter + Noto Sans SC（更现代、更"高端"） -->
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Noto+Sans+SC:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <!-- 图标库 -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.5.2/css/all.min.css">
-  <!-- 动效库（可选，但很显"精致"） -->
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.css">
-
-  <!-- ECharts：保留你的逻辑依赖 -->
   <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
+  
+  <!-- 动画库 -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.js"></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.css">
 
   <style>
     /* =========================
-      1) 设计系统（更高级的视觉）
+      设计系统与CSS变量
     ========================= */
     :root{
       --shadow-soft: 0 10px 30px rgba(2,6,23,.08);
       --shadow-hover: 0 18px 55px rgba(2,6,23,.14);
       --shadow-glow: 0 20px 70px rgba(245,158,11,.22);
-
       --primary-red: #ef4444;
       --primary-blue: #3b82f6;
       --primary-purple: #8b5cf6;
       --primary-yellow: #f59e0b;
       --primary-green: #10b981;
-
       --ink: #0b1220;
       --slate-900: #0f172a;
       --slate-800: #1e293b;
@@ -45,48 +41,128 @@
       --slate-200: #e2e8f0;
       --slate-100: #f1f5f9;
       --slate-50: #f8fafc;
-
       --radius-xl: 20px;
       --radius-lg: 16px;
       --radius-md: 12px;
-
       --glass: rgba(255,255,255,.65);
       --glass-border: rgba(255,255,255,.55);
-
-      --grad-hero: radial-gradient(1200px 500px at 50% 0%, rgba(245,158,11,.22), transparent 60%),
-                   radial-gradient(900px 450px at 15% 20%, rgba(59,130,246,.18), transparent 55%),
-                   radial-gradient(900px 450px at 85% 15%, rgba(139,92,246,.14), transparent 55%);
-
       --ease-out: cubic-bezier(.2,.8,.2,1);
     }
 
-    *{ box-sizing:border-box; }
-    html{ scroll-behavior:smooth; }
+    *{ box-sizing: border-box; margin:0; padding:0; }
+    
+    html{ 
+      scroll-behavior:smooth; 
+      overflow-x:hidden;
+    }
+    
     body{
       margin:0;
       padding:0;
       font-family: "Inter","Noto Sans SC","Microsoft Yahei",system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
       color: var(--slate-800);
-      background:
-        var(--grad-hero),
-        linear-gradient(180deg, #ffffff 0%, #fbfdff 20%, #f7fafc 100%);
+      background: linear-gradient(180deg, #0f172a 0%, #1e293b 50%, #0f172a 100%);
       overflow-x:hidden;
-      padding-top: 84px; /* 原固定导航高度 + 更舒服的间距 */
+      padding-top: 84px;
+      position:relative;
     }
 
-    /* 细腻的噪点层（高级感） */
-    body::before{
-      content:"";
+    /* WebGL Canvas 背景 */
+    #nebula-canvas {
       position:fixed;
-      inset:0;
+      top:0;
+      left:0;
+      width:100%;
+      height:100%;
+      z-index:-1;
       pointer-events:none;
-      background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='180' height='180' filter='url(%23n)' opacity='.18'/%3E%3C/svg%3E");
-      mix-blend-mode: multiply;
-      opacity:.12;
-      z-index:0;
     }
 
-    /* 页面滚动进度条 */
+    /* 流体渐变背景 */
+    .fluid-gradient {
+      position:fixed;
+      top:0;
+      left:0;
+      width:100%;
+      height:100%;
+      background: 
+        radial-gradient(ellipse at 20% 20%, rgba(245,158,11,0.15) 0%, transparent 50%),
+        radial-gradient(ellipse at 80% 80%, rgba(139,92,246,0.15) 0%, transparent 50%),
+        radial-gradient(ellipse at 50% 50%, rgba(59,130,246,0.1) 0%, transparent 70%);
+      animation: fluidMove 20s ease-in-out infinite;
+      z-index:-2;
+      pointer-events:none;
+    }
+
+    @keyframes fluidMove {
+      0%, 100% { transform: translate(0, 0) scale(1); }
+      33% { transform: translate(30px, -30px) scale(1.1); }
+      66% { transform: translate(-20px, 20px) scale(0.9); }
+    }
+
+    /* 玻璃拟态动态模糊 */
+    .glass-morph {
+      background: rgba(255,255,255,0.08);
+      backdrop-filter: blur(20px) saturate(180%);
+      -webkit-backdrop-filter: blur(20px) saturate(180%);
+      border: 1px solid rgba(255,255,255,0.1);
+      box-shadow: 0 8px 32px 0 rgba(0,0,0,0.37);
+    }
+
+    /* 文字扫描动画 */
+    .scan-text {
+      position:relative;
+      display:inline-block;
+      overflow:hidden;
+    }
+    
+    .scan-text::after {
+      content:'';
+      position:absolute;
+      top:0;
+      left:-100%;
+      width:100%;
+      height:100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+      animation: scan 3s infinite;
+    }
+
+    @keyframes scan {
+      0% { left: -100%; }
+      100% { left: 200%; }
+    }
+
+    /* 文字碎裂聚合效果 */
+    .fragment-text {
+      display:inline-block;
+      transition: all 0.3s;
+    }
+    
+    .fragment-text:hover {
+      animation: fragment 0.5s ease-in-out;
+    }
+
+    @keyframes fragment {
+      0% { transform: scale(1); opacity:1; filter: blur(0); letter-spacing: normal; }
+      50% { transform: scale(1.1); opacity:0.5; filter: blur(4px); letter-spacing: 10px; }
+      100% { transform: scale(1); opacity:1; filter: blur(0); letter-spacing: normal; }
+    }
+
+    /* 渐变遮罩文字流光 */
+    .shimmer-text {
+      background: linear-gradient(90deg, #fff, #f59e0b, #8b5cf6, #fff);
+      background-size: 200% auto;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      animation: shimmer 3s linear infinite;
+    }
+
+    @keyframes shimmer {
+      to { background-position: 200% center; }
+    }
+
+    /* 滚动进度条 */
     .scroll-progress{
       position:fixed;
       top:0; left:0;
@@ -109,26 +185,7 @@
     .section-padding{ padding: 70px 0; }
 
     /* =========================
-      2) 你的 reveal-up 逻辑保留 + 更细腻
-    ========================= */
-    .reveal-up{
-      opacity:0;
-      transform: translateY(18px);
-      transition: all .7s var(--ease-out);
-      will-change: transform, opacity;
-    }
-    .reveal-up.active{
-      opacity:1;
-      transform: translateY(0);
-    }
-    .delay-100{ transition-delay:.10s; }
-    .delay-200{ transition-delay:.20s; }
-    .delay-300{ transition-delay:.30s; }
-    .delay-400{ transition-delay:.40s; }
-    .delay-500{ transition-delay:.50s; }
-
-    /* =========================
-      3) 顶部导航：玻璃拟态 + 高级动效
+      顶部导航
     ========================= */
     header{
       position:fixed;
@@ -139,42 +196,45 @@
       justify-content:space-between;
       align-items:center;
       z-index:2000;
-      background: rgba(255,255,255,.78);
+      background: rgba(15, 23, 42, 0.8);
       backdrop-filter: blur(14px);
       -webkit-backdrop-filter: blur(14px);
-      border-bottom: 1px solid rgba(226,232,240,.7);
-      box-shadow: 0 8px 30px rgba(2,6,23,.05);
-      transition: padding .35s var(--ease-out), background .35s var(--ease-out);
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+      box-shadow: 0 8px 30px rgba(2,6,23,.3);
+      transition: all .35s var(--ease-out);
     }
+    
     header.compact{
       padding: 10px 50px;
-      background: rgba(255,255,255,.9);
+      background: rgba(15, 23, 42, 0.95);
     }
 
     .back-link{
       position:absolute;
       left: 22px;
-      color: var(--slate-600);
+      color: rgba(255,255,255,0.8);
       text-decoration:none;
       font-weight:700;
       display:flex;
       align-items:center;
       gap:10px;
-      transition: color .25s var(--ease-out), transform .25s var(--ease-out);
+      transition: all .25s var(--ease-out);
     }
+    
     .back-link span{
       width:30px; height:30px;
       border-radius: 999px;
       display:inline-flex;
       align-items:center;
       justify-content:center;
-      background: rgba(245,158,11,.10);
-      color: #b45309;
+      background: rgba(245,158,11,.2);
+      color: #fbbf24;
       font-weight:800;
-      box-shadow: 0 6px 18px rgba(245,158,11,.15);
+      box-shadow: 0 6px 18px rgba(245,158,11,.3);
     }
+    
     .back-link:hover{
-      color:#b45309;
+      color:#fbbf24;
       transform: translateY(-1px);
     }
 
@@ -182,20 +242,28 @@
       font-weight: 900;
       font-size: 1.25rem;
       letter-spacing: .2px;
-      color:#b45309;
+      color:#fbbf24;
       display:flex;
       align-items:center;
       gap:10px;
-      margin-left: 80px; /* 避免被 back-link 覆盖 */
+      margin-left: 80px;
     }
+    
     .logo::before{
       content:"";
       width: 11px; height: 11px;
       border-radius: 50%;
       background: radial-gradient(circle at 30% 30%, #fff, var(--primary-yellow));
-      box-shadow: 0 0 0 6px rgba(245,158,11,.16);
+      box-shadow: 0 0 0 6px rgba(245,158,11,.3);
+      animation: pulse-dot 2s infinite;
     }
-    .logo span{ color: var(--slate-900); font-weight:900; }
+    
+    @keyframes pulse-dot {
+      0%, 100% { box-shadow: 0 0 0 6px rgba(245,158,11,.3); }
+      50% { box-shadow: 0 0 0 12px rgba(245,158,11,.1); }
+    }
+    
+    .logo span{ color: #fff; font-weight:900; }
 
     nav{
       display:flex;
@@ -203,35 +271,54 @@
       gap: 18px;
       position:relative;
     }
+    
     nav a{
       margin-left: 0;
       text-decoration:none;
-      color: var(--slate-800);
+      color: rgba(255,255,255,0.8);
       font-weight:700;
       font-size: .98rem;
       padding: 10px 12px;
       border-radius: 999px;
-      transition: color .25s var(--ease-out), background .25s var(--ease-out), transform .25s var(--ease-out);
+      transition: all .25s var(--ease-out);
       position:relative;
+      overflow: hidden;
     }
+    
+    nav a::before {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 0;
+      height: 0;
+      background: rgba(245,158,11,0.2);
+      border-radius: 50%;
+      transform: translate(-50%, -50%);
+      transition: width 0.3s, height 0.3s;
+    }
+    
+    nav a:hover::before {
+      width: 100%;
+      height: 100%;
+    }
+    
     nav a:hover{
-      color:#b45309;
-      background: rgba(245,158,11,.10);
+      color:#fbbf24;
       transform: translateY(-1px);
     }
+    
     nav a.active{
-      color:#111827;
-      background: rgba(245,158,11,.16);
-      box-shadow: 0 8px 22px rgba(245,158,11,.18);
+      color:#fff;
+      background: rgba(245,158,11,.2);
+      box-shadow: 0 0 20px rgba(245,158,11,.3);
     }
 
-    /* =========================
-      4) Hero：更强层次 + 装饰性元素（保留你背景图素材）
-    ========================= */
+    /* Hero区域 - 恢复原有背景 */
     .pain-hero{
       background: url('../images/hero/3.jpg') center/cover no-repeat;
       color:white;
-      padding: 90px 0;
+      padding: 120px 0;
       text-align:center;
       border-radius: var(--radius-xl);
       margin: 22px auto;
@@ -241,213 +328,473 @@
       overflow:hidden;
       isolation:isolate;
     }
+    
     .pain-hero::before{
       content:'';
       position:absolute;
       inset:0;
       background:
-        linear-gradient(180deg, rgba(0,0,0,.55) 0%, rgba(0,0,0,.30) 55%, rgba(0,0,0,.55) 100%),
+        linear-gradient(180deg, rgba(0,0,0,.7) 0%, rgba(0,0,0,.4) 50%, rgba(0,0,0,.7) 100%),
         radial-gradient(600px 220px at 50% 15%, rgba(245,158,11,.35), transparent 60%),
         radial-gradient(540px 240px at 15% 10%, rgba(59,130,246,.25), transparent 62%),
         radial-gradient(540px 240px at 85% 12%, rgba(139,92,246,.22), transparent 62%);
       border-radius: var(--radius-xl);
       z-index:1;
     }
-    .pain-hero::after{
-      content:"";
-      position:absolute;
-      inset:-2px;
-      border-radius: var(--radius-xl);
-      border: 1px solid rgba(255,255,255,.18);
-      z-index:2;
-      pointer-events:none;
-    }
+    
     .pain-hero .container{
       position:relative;
       z-index:3;
     }
+    
     .pain-hero h1{
-      font-size: clamp(2.1rem, 3.2vw, 3rem);
-      margin: 0 0 12px 0;
+      font-size: clamp(2.5rem, 4vw, 3.5rem);
+      margin: 0 0 20px 0;
       font-weight: 900;
-      letter-spacing: .2px;
-      text-shadow: 0 10px 40px rgba(0,0,0,.35);
+      letter-spacing: .5px;
+      text-shadow: 0 10px 40px rgba(0,0,0,.5);
     }
+    
     .pain-hero p{
-      font-size: 1.08rem;
-      opacity: .95;
+      font-size: 1.2rem;
+      opacity: .9;
       max-width: 760px;
       margin: 0 auto;
       line-height: 1.8;
-      text-shadow: 0 8px 26px rgba(0,0,0,.28);
+      text-shadow: 0 8px 26px rgba(0,0,0,.4);
     }
 
     /* Hero 内部"浮光"装饰 */
     .hero-orb{
       position:absolute;
-      width: 520px;
-      height: 520px;
+      width: 600px;
+      height: 600px;
       border-radius: 50%;
-      filter: blur(40px);
-      opacity:.22;
+      filter: blur(80px);
+      opacity:.3;
       z-index:2;
       pointer-events:none;
       mix-blend-mode: screen;
-      background: radial-gradient(circle at 30% 30%, rgba(245,158,11,.95), rgba(245,158,11,.00) 62%);
-      top:-220px;
-      right:-180px;
+      background: radial-gradient(circle at 30% 30%, rgba(245,158,11,.8), rgba(245,158,11,.0) 60%);
+      top:-200px;
+      right:-100px;
+      animation: float 6s ease-in-out infinite;
     }
+    
     .hero-orb.orb2{
-      width: 420px;
-      height: 420px;
-      opacity:.18;
-      background: radial-gradient(circle at 30% 30%, rgba(59,130,246,.95), rgba(59,130,246,.00) 62%);
-      left:-180px;
-      top:-180px;
+      width: 500px;
+      height: 500px;
+      opacity:.2;
+      background: radial-gradient(circle at 30% 30%, rgba(59,130,246,.8), rgba(59,130,246,.0) 60%);
+      left:-100px;
+      top:-150px;
+      animation-delay: -3s;
+    }
+    
+    @keyframes float {
+      0%, 100% { transform: translate(0, 0) scale(1); }
+      50% { transform: translate(30px, -30px) scale(1.1); }
     }
 
     /* =========================
-      5) 痛点卡片：更"产品级"卡片质感 + 结构优化
+      四大顽疾 - 轮叠卡片系统 (Card Stack Carousel)
     ========================= */
-    .pain-grid{
-      display:grid;
-      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-      gap: 26px;
+    .pain-grid-wrapper {
+      position: relative;
+      height: 600px;
       margin-top: 42px;
+      perspective: 2000px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .pain-grid {
+      position: relative;
+      width: 100%;
+      max-width: 420px;
+      height: 480px;
+      transform-style: preserve-3d;
     }
 
     .pain-card{
-      background: rgba(255,255,255,.92);
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      background: rgba(255,255,255,0.08);
       border-radius: var(--radius-xl);
-      padding: 30px;
-      position:relative;
+      padding: 0;
       overflow:hidden;
-      box-shadow: var(--shadow-soft);
-      border: 1px solid rgba(226,232,240,.7);
+      box-shadow: 
+        0 20px 60px rgba(0,0,0,0.4),
+        0 0 0 1px rgba(255,255,255,0.1),
+        0 0 30px rgba(245,158,11,0.1);
+      border: 1px solid rgba(255,255,255,0.15);
       border-top: 5px solid;
-      transition: transform .45s var(--ease-out), box-shadow .45s var(--ease-out);
-    }
-    .pain-card::before{
-      content:"";
-      position:absolute;
-      inset:0;
-      background: radial-gradient(700px 180px at 20% 0%, rgba(245,158,11,.10), transparent 55%);
-      opacity:.9;
-      pointer-events:none;
-    }
-    .pain-card:hover{
-      transform: translateY(-7px);
-      box-shadow: var(--shadow-hover);
+      transition: all .8s cubic-bezier(0.34, 1.56, 0.64, 1);
+      cursor: pointer;
+      backdrop-filter: blur(20px) saturate(150%);
+      -webkit-backdrop-filter: blur(20px) saturate(150%);
+      transform-style: preserve-3d;
+      /* 初始堆叠状态 */
+      top: 0;
+      left: 0;
     }
 
-    .pain-card:nth-child(1){ border-top-color: var(--primary-red); }
-    .pain-card:nth-child(2){ border-top-color: var(--primary-blue); }
-    .pain-card:nth-child(3){ border-top-color: var(--primary-purple); }
-    .pain-card:nth-child(4){ border-top-color: var(--primary-yellow); }
+    /* 轮叠定位 - 堆叠偏移 */
+    .pain-card[data-index="0"] { 
+      border-top-color: var(--primary-red); 
+      z-index: 4;
+      transform: translateZ(0px) rotateY(0deg) translateX(0);
+    }
+    .pain-card[data-index="1"] { 
+      border-top-color: var(--primary-blue); 
+      z-index: 3;
+      transform: translateZ(-40px) rotateY(2deg) translateX(15px) scale(0.95);
+      opacity: 0.9;
+    }
+    .pain-card[data-index="2"] { 
+      border-top-color: var(--primary-purple); 
+      z-index: 2;
+      transform: translateZ(-80px) rotateY(4deg) translateX(30px) scale(0.9);
+      opacity: 0.8;
+    }
+    .pain-card[data-index="3"] { 
+      border-top-color: var(--primary-yellow); 
+      z-index: 1;
+      transform: translateZ(-120px) rotateY(6deg) translateX(45px) scale(0.85);
+      opacity: 0.7;
+    }
 
-    .pain-icon{
-      font-size: 2.8rem;
-      margin-bottom: 14px;
-      display:inline-block;
-      transform: translateZ(0);
+    /* 激活状态（展开查看） */
+    .pain-card.active {
+      transform: translateZ(100px) rotateY(0deg) translateX(0) scale(1.05) !important;
+      opacity: 1 !important;
+      z-index: 10 !important;
+      box-shadow: 
+        0 30px 80px rgba(0,0,0,0.5),
+        0 0 0 1px rgba(255,255,255,0.2),
+        0 0 50px rgba(245,158,11,0.3);
+    }
+
+    /* 轮叠导航按钮 */
+    .stack-nav {
+      position: absolute;
+      bottom: -60px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      gap: 20px;
+      z-index: 20;
+    }
+
+    .stack-btn {
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.1);
+      border: 2px solid rgba(255,255,255,0.2);
+      color: #fff;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.3s;
+      backdrop-filter: blur(10px);
+      font-size: 1.2rem;
+    }
+
+    .stack-btn:hover {
+      background: rgba(245,158,11,0.3);
+      border-color: rgba(245,158,11,0.5);
+      transform: scale(1.1);
+      box-shadow: 0 0 20px rgba(245,158,11,0.4);
+    }
+
+    .stack-indicators {
+      position: absolute;
+      bottom: -100px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      gap: 10px;
+    }
+
+    .stack-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.3);
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+
+    .stack-dot.active {
+      background: var(--primary-yellow);
+      width: 30px;
+      border-radius: 5px;
+      box-shadow: 0 0 10px rgba(245,158,11,0.5);
+    }
+
+    /* 3D 视差悬浮效果 */
+    .pain-card-inner {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      transform-style: preserve-3d;
+      transition: transform 0.1s;
+    }
+
+    /* 卡片内容分层 */
+    .pain-card-header{
+      position: relative;
+      height: 200px;
+      overflow: hidden;
+      transform: translateZ(30px);
+    }
+
+    .pain-card-bg{
+      position: absolute;
+      inset: 0;
+      background-size: cover;
+      background-position: center;
+      transition: all 0.6s cubic-bezier(0.2, 0.8, 0.2, 1);
+      filter: grayscale(30%) brightness(0.8);
+    }
+
+    .pain-card:hover .pain-card-bg{
+      transform: scale(1.15);
+      filter: grayscale(0%) brightness(1);
+    }
+
+    /* 遮罩渐显 */
+    .pain-card-overlay{
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(180deg, 
+        rgba(15,23,42,0.3) 0%, 
+        rgba(15,23,42,0.6) 50%,
+        rgba(15,23,42,0.9) 100%
+      );
+      opacity: 0.8;
+      transition: opacity 0.4s;
+    }
+
+    .pain-card:hover .pain-card-overlay{
+      opacity: 0.95;
+    }
+
+    /* 霓虹发光边框效果 */
+    .pain-card::after {
+      content: '';
+      position: absolute;
+      inset: -1px;
+      border-radius: var(--radius-xl);
+      padding: 1px;
+      background: linear-gradient(135deg, 
+        rgba(255,255,255,0.2) 0%, 
+        transparent 50%,
+        rgba(245,158,11,0.3) 100%
+      );
+      -webkit-mask: 
+        linear-gradient(#fff 0 0) content-box, 
+        linear-gradient(#fff 0 0);
+      mask: 
+        linear-gradient(#fff 0 0) content-box, 
+        linear-gradient(#fff 0 0);
+      -webkit-mask-composite: xor;
+      mask-composite: exclude;
+      opacity: 0;
+      transition: opacity 0.4s;
+      pointer-events: none;
+    }
+
+    .pain-card:hover::after {
+      opacity: 1;
+    }
+
+    .pain-icon-wrap{
+      position: absolute;
+      top: 20px;
+      left: 20px;
+      width: 70px;
+      height: 70px;
+      border-radius: 20px;
+      overflow: hidden;
+      box-shadow: 
+        0 10px 30px rgba(0,0,0,0.3),
+        0 0 0 2px rgba(255,255,255,0.1);
+      z-index: 2;
+      transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+      transform: translateZ(50px);
+    }
+
+    .pain-card:hover .pain-icon-wrap {
+      transform: translateZ(60px) scale(1.1);
+      box-shadow: 
+        0 15px 40px rgba(0,0,0,0.4),
+        0 0 0 3px rgba(245,158,11,0.3);
+    }
+
+    .pain-icon-wrap img{
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.6s;
+    }
+
+    .pain-card:hover .pain-icon-wrap img {
+      transform: scale(1.1);
     }
 
     .pain-title{
-      font-size: 1.28rem;
+      position: absolute;
+      bottom: 20px;
+      left: 20px;
+      right: 20px;
+      font-size: 1.4rem;
       font-weight: 900;
-      margin-bottom: 10px;
-      color: var(--slate-900);
-      padding-bottom: 10px;
-      border-bottom: 1px solid rgba(241,245,249,.9);
-      display:flex;
-      align-items:center;
+      color: #fff;
+      z-index: 2;
+      transform: translateZ(40px);
+      text-shadow: 0 4px 10px rgba(0,0,0,0.3);
+      display: flex;
+      align-items: center;
       justify-content: space-between;
       gap:12px;
     }
+
     .pain-title .mini-chip{
-      font-size:.82rem;
+      font-size:.8rem;
       font-weight:800;
-      padding: 6px 10px;
+      padding: 6px 12px;
       border-radius: 999px;
-      background: rgba(15,23,42,.06);
-      color: var(--slate-700);
-      border: 1px solid rgba(226,232,240,.8);
+      background: rgba(255,255,255,0.15);
+      color: rgba(255,255,255,0.9);
+      border: 1px solid rgba(255,255,255,0.2);
       white-space:nowrap;
+      backdrop-filter: blur(10px);
+      transition: all 0.3s;
+    }
+
+    .pain-card:hover .mini-chip {
+      background: rgba(245,158,11,0.3);
+      border-color: rgba(245,158,11,0.5);
+    }
+
+    /* 内容区域 - 滑入动画 */
+    .pain-card-body{
+      padding: 24px;
+      transform: translateZ(20px);
+      position: relative;
     }
 
     .pain-desc{
-      color: var(--slate-600);
+      color: rgba(255,255,255,0.85);
       line-height: 1.8;
-      font-size: .98rem;
-      margin-bottom: 18px;
-      position:relative;
-      z-index:1;
+      font-size: 1rem;
+      margin-bottom: 20px;
+      opacity: 0.9;
+      transform: translateY(10px);
+      transition: all 0.4s;
+    }
+
+    .pain-card:hover .pain-desc {
+      opacity: 1;
+      transform: translateY(0);
     }
 
     .pain-stat{
-      margin-top: 12px;
-      font-size: 1.85rem;
+      font-size: 2.2rem;
       font-weight: 900;
       display:flex;
       align-items: baseline;
       gap: 10px;
-      position:relative;
-      z-index:1;
+      margin-bottom: 20px;
+      transform: translateZ(30px);
+      transition: transform 0.3s;
     }
+    
+    .pain-card:hover .pain-stat {
+      transform: translateZ(40px) scale(1.05);
+    }
+    
     .pain-stat span{
       font-size: .95rem;
-      color: var(--slate-500);
+      color: rgba(255,255,255,0.7);
       font-weight: 600;
     }
-    .pain-card:nth-child(1) .pain-stat{ color: var(--primary-red); }
-    .pain-card:nth-child(2) .pain-stat{ color: var(--primary-blue); }
-    .pain-card:nth-child(3) .pain-stat{ color: var(--primary-purple); }
-    .pain-card:nth-child(4) .pain-stat{ color: var(--primary-yellow); }
+    
+    .pain-card[data-index="0"] .pain-stat{ color: var(--primary-red); text-shadow: 0 0 20px rgba(239,68,68,0.4); }
+    .pain-card[data-index="1"] .pain-stat{ color: var(--primary-blue); text-shadow: 0 0 20px rgba(59,130,246,0.4); }
+    .pain-card[data-index="2"] .pain-stat{ color: var(--primary-purple); text-shadow: 0 0 20px rgba(139,92,246,0.4); }
+    .pain-card[data-index="3"] .pain-stat{ color: var(--primary-yellow); text-shadow: 0 0 20px rgba(245,158,11,0.4); }
 
-    /* 图表容器：更干净 + 内边框 */
+    /* 图表容器 */
     .chart-container{
-      height: 210px;
-      margin-top: 18px;
-      border-radius: 14px;
+      height: 180px;
+      border-radius: 12px;
       overflow:hidden;
-      background: linear-gradient(180deg, #f8fafc, #ffffff);
-      padding: 10px;
-      border: 1px solid rgba(226,232,240,.9);
-      position:relative;
-      z-index:1;
+      background: rgba(0,0,0,0.3);
+      border: 1px solid rgba(255,255,255,0.1);
+      transform: translateZ(10px);
+      opacity: 0.9;
+      transition: all 0.4s;
     }
 
-    /* =========================
-      6) 数据总览：增强"看板感"
-    ========================= */
+    .pain-card:hover .chart-container {
+      opacity: 1;
+      transform: translateZ(20px);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+    }
+
+    /* 点击按压效果 */
+    .pain-card:active {
+      transform: scale(0.98) translateZ(-10px) !important;
+      transition: transform 0.1s;
+    }
+
+    /* 响应式轮叠 */
+    @media (max-width: 768px) {
+      .pain-grid-wrapper { height: 550px; }
+      .pain-grid { max-width: 340px; height: 420px; }
+      .pain-card-header { height: 160px; }
+      .pain-title { font-size: 1.2rem; }
+    }
+
+    /* 数据总览看板 */
     .data-overview{
-      margin: 56px auto 0;
+      margin: 80px auto 0;
       padding: 40px;
-      background: rgba(255,255,255,.92);
+      background: rgba(255,255,255,0.05);
       border-radius: var(--radius-xl);
       box-shadow: var(--shadow-soft);
-      border: 1px solid rgba(226,232,240,.7);
+      border: 1px solid rgba(255,255,255,0.1);
       position:relative;
       overflow:hidden;
+      backdrop-filter: blur(10px);
     }
+    
     .data-overview::before{
       content:"";
       position:absolute;
       inset:0;
-      background: radial-gradient(900px 220px at 50% 0%, rgba(59,130,246,.10), transparent 60%),
-                  radial-gradient(900px 220px at 10% 10%, rgba(139,92,246,.08), transparent 60%);
+      background: radial-gradient(900px 220px at 50% 0%, rgba(59,130,246,.15), transparent 60%),
+                  radial-gradient(900px 220px at 10% 10%, rgba(139,92,246,.1), transparent 60%);
       pointer-events:none;
     }
+    
     .data-overview h3{
       text-align:center;
-      font-size: 1.55rem;
-      color: var(--slate-900);
+      font-size: 1.8rem;
+      color: #fff;
       margin: 0 0 28px 0;
       font-weight: 900;
       letter-spacing:.2px;
       position:relative;
       z-index:1;
     }
+    
     .overview-grid{
       display:grid;
       grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
@@ -455,235 +802,342 @@
       position:relative;
       z-index:1;
     }
+    
     .overview-item{
       text-align:center;
       padding: 22px 18px;
-      background: rgba(248,250,252,.95);
+      background: rgba(255,255,255,0.05);
       border-radius: 16px;
-      border: 1px solid rgba(226,232,240,.9);
-      box-shadow: 0 10px 30px rgba(2,6,23,.04);
-      transition: transform .35s var(--ease-out), box-shadow .35s var(--ease-out);
+      border: 1px solid rgba(255,255,255,0.1);
+      box-shadow: 0 10px 30px rgba(2,6,23,.2);
+      transition: all .35s var(--ease-out);
+      position:relative;
+      overflow:hidden;
     }
+    
+    .overview-item::before {
+      content:'';
+      position:absolute;
+      top:0;
+      left:-100%;
+      width:100%;
+      height:2px;
+      background: linear-gradient(90deg, transparent, var(--primary-yellow), transparent);
+      animation: scan-border 3s infinite;
+    }
+    
+    @keyframes scan-border {
+      0% { left: -100%; }
+      100% { left: 200%; }
+    }
+    
     .overview-item:hover{
-      transform: translateY(-4px);
-      box-shadow: 0 16px 42px rgba(2,6,23,.08);
+      transform: translateY(-8px) scale(1.02);
+      box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+      border-color: rgba(245,158,11,0.3);
     }
+    
     .overview-number{
-      font-size: 2.15rem;
+      font-size: 2.5rem;
       font-weight: 950;
       margin-bottom: 8px;
-      color: var(--slate-900);
+      color: #fff;
       letter-spacing: .2px;
+      text-shadow: 0 0 20px rgba(245,158,11,0.3);
     }
+    
     .overview-label{
       font-size: 1rem;
-      color: var(--slate-600);
+      color: rgba(255,255,255,0.7);
       font-weight:600;
     }
 
     /* =========================
-      7) 对比区域：更像品牌展示页
+      对比区域
     ========================= */
     .comparison-section{
-      background: linear-gradient(180deg, rgba(248,250,252,1), rgba(255,255,255,1));
-      padding: 78px 0;
+      background: linear-gradient(180deg, rgba(15,23,42,0.95), rgba(30,41,59,0.95));
+      padding: 100px 0;
       margin-top: 60px;
-      border-radius: var(--radius-xl);
-      margin: 66px auto;
-      width: 95%;
       position:relative;
       overflow:hidden;
-      border: 1px solid rgba(226,232,240,.7);
-      box-shadow: var(--shadow-soft);
+      border-top: 1px solid rgba(255,255,255,0.1);
+      border-bottom: 1px solid rgba(255,255,255,0.1);
     }
+    
     .comparison-section::before{
       content:"";
       position:absolute;
       inset:0;
-      background: radial-gradient(900px 260px at 15% 0%, rgba(245,158,11,.12), transparent 55%),
-                  radial-gradient(900px 260px at 85% 0%, rgba(16,185,129,.10), transparent 55%);
+      background: 
+        radial-gradient(900px 400px at 0% 50%, rgba(239,68,68,.1), transparent 60%),
+        radial-gradient(900px 400px at 100% 50%, rgba(16,185,129,.1), transparent 60%);
       pointer-events:none;
     }
 
     .section-title{
       text-align:center;
-      margin-bottom: 44px;
+      margin-bottom: 60px;
       position:relative;
       z-index:1;
     }
+    
     .section-title h2{
-      font-size: 2rem;
-      color: var(--slate-900);
+      font-size: 2.5rem;
+      color: #fff;
       margin: 0;
       position:relative;
       display:inline-block;
-      padding-bottom: 12px;
+      padding-bottom: 15px;
       font-weight: 950;
-      letter-spacing:.2px;
+      letter-spacing:1px;
     }
+    
     .section-title h2::after{
       content:'';
       position:absolute;
       bottom:0;
       left:50%;
       transform: translateX(-50%);
-      width: 72px;
+      width: 100px;
       height: 4px;
-      background: linear-gradient(90deg, var(--primary-yellow), var(--primary-purple));
+      background: linear-gradient(90deg, var(--primary-red), var(--primary-yellow), var(--primary-green));
       border-radius: 999px;
+      box-shadow: 0 0 20px rgba(245,158,11,0.5);
     }
 
-    .compare-container{
-      display:flex;
-      gap: 26px;
-      flex-wrap:wrap;
-      justify-content:center;
-      margin-top: 28px;
+    .comparison-wrapper {
+      display: grid;
+      grid-template-columns: 1fr auto 1fr;
+      gap: 40px;
+      align-items: stretch;
       position:relative;
       z-index:1;
-    }
-    .compare-box{
-      flex:1;
-      min-width: 300px;
-      max-width: 520px;
-      padding: 34px;
-      border-radius: var(--radius-xl);
-      transition: transform .45s var(--ease-out), box-shadow .45s var(--ease-out);
-      position:relative;
-      overflow:hidden;
-      box-shadow: 0 14px 40px rgba(2,6,23,.06);
-    }
-    .compare-box:hover{
-      transform: translateY(-7px);
-      box-shadow: 0 18px 55px rgba(2,6,23,.10);
-    }
-    .box-bad{
-      background: linear-gradient(180deg, rgba(254,226,226,.9), rgba(255,255,255,.8));
-      border: 2px dashed rgba(239,68,68,.85);
-    }
-    .box-good{
-      background: linear-gradient(180deg, rgba(220,252,231,.92), rgba(255,255,255,.86));
-      border: 2px solid rgba(16,185,129,.85);
+      max-width: 1200px;
+      margin: 0 auto;
     }
 
-    .badge{
-      display:inline-flex;
-      align-items:center;
-      gap:10px;
-      padding: 7px 16px;
-      border-radius: 999px;
+    .vs-divider {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+    }
+
+    .vs-divider::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      width: 2px;
+      background: linear-gradient(180deg, transparent, rgba(255,255,255,0.3), transparent);
+    }
+
+    .vs-badge {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, rgba(255,255,255,0.1), rgba(255,255,255,0.05));
+      border: 2px solid rgba(255,255,255,0.2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
       font-weight: 900;
-      margin-bottom: 18px;
-      font-size: 1rem;
-      letter-spacing:.2px;
+      color: #fff;
+      position: relative;
+      z-index: 2;
+      backdrop-filter: blur(10px);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+      animation: pulse-vs 2s infinite;
     }
-    .badge-bad{ background: var(--primary-red); color:white; }
-    .badge-good{ background: var(--primary-green); color:white; }
-    .badge i{ opacity:.95; }
 
-    .compare-box h3{
-      font-size: 1.45rem;
-      margin: 0 0 18px 0;
-      font-weight: 950;
+    @keyframes pulse-vs {
+      0%, 100% { transform: scale(1); box-shadow: 0 10px 30px rgba(0,0,0,0.3); }
+      50% { transform: scale(1.05); box-shadow: 0 15px 40px rgba(245,158,11,0.3); }
     }
-    .box-bad h3{ color: #7f1d1d; }
-    .box-good h3{ color: #064e3b; }
 
-    .check-list{
-      list-style:none;
-      padding:0;
-      margin:0;
+    .compare-card {
+      background: rgba(255,255,255,0.03);
+      border-radius: var(--radius-xl);
+      padding: 40px;
+      position: relative;
+      overflow: hidden;
+      transition: all 0.4s var(--ease-out);
+      border: 1px solid rgba(255,255,255,0.1);
     }
-    .check-list li{
-      margin-bottom: 14px;
-      display:flex;
-      align-items:flex-start;
+
+    .compare-card:hover {
+      transform: translateY(-5px);
+      background: rgba(255,255,255,0.05);
+    }
+
+    .compare-card.bad-mode {
+      border-left: 5px solid var(--primary-red);
+    }
+
+    .compare-card.good-mode {
+      border-left: 5px solid var(--primary-green);
+      border-right: 5px solid var(--primary-green);
+    }
+
+    .compare-header {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      margin-bottom: 30px;
+      padding-bottom: 20px;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+    }
+
+    .compare-icon {
+      width: 60px;
+      height: 60px;
+      border-radius: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.8rem;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .compare-icon img{
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .bad-mode .compare-icon {
+      background: rgba(239,68,68,0.2);
+      color: var(--primary-red);
+      box-shadow: 0 0 20px rgba(239,68,68,0.3);
+    }
+
+    .good-mode .compare-icon {
+      background: rgba(16,185,129,0.2);
+      color: var(--primary-green);
+      box-shadow: 0 0 20px rgba(16,185,129,0.3);
+    }
+
+    .compare-title-group h3 {
+      font-size: 1.5rem;
+      color: #fff;
+      margin: 0 0 5px 0;
+      font-weight: 800;
+    }
+
+    .compare-subtitle {
+      font-size: 0.9rem;
+      color: rgba(255,255,255,0.6);
+      font-weight: 600;
+    }
+
+    .feature-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .feature-item {
+      display: flex;
+      align-items: flex-start;
       gap: 12px;
-      font-size: 1rem;
-      line-height: 1.75;
-      color: rgba(15,23,42,.86);
+      padding: 16px;
+      background: rgba(0,0,0,0.2);
+      border-radius: 12px;
+      transition: all 0.3s;
     }
-    .icon-check, .icon-cross{
-      font-weight: 900;
-      font-size: 1.15rem;
+
+    .feature-item:hover {
+      background: rgba(0,0,0,0.3);
+      transform: translateX(5px);
+    }
+
+    .feature-icon {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.9rem;
+      flex-shrink: 0;
       margin-top: 2px;
-      width: 20px;
-      text-align:center;
-      flex: 0 0 20px;
-    }
-    .icon-check{ color: var(--primary-green); }
-    .icon-cross{ color: var(--primary-red); }
-
-    /* 雷达图容器更大更稳 */
-    #radarChart{
-      background: rgba(255,255,255,.92);
-      border-radius: var(--radius-xl);
-      border: 1px solid rgba(226,232,240,.7);
-      box-shadow: 0 16px 45px rgba(2,6,23,.06);
     }
 
-    /* =========================
-      8) CTA：更"按钮级"高级
-    ========================= */
-    .btn{
-      display:inline-flex;
-      align-items:center;
-      gap:10px;
-      padding: 12px 30px;
-      border-radius: 999px;
-      text-decoration:none;
-      font-weight: 900;
-      transition: transform .25s var(--ease-out), box-shadow .25s var(--ease-out), background .25s var(--ease-out);
+    .bad-mode .feature-icon {
+      background: rgba(239,68,68,0.2);
+      color: var(--primary-red);
+    }
+
+    .good-mode .feature-icon {
+      background: rgba(16,185,129,0.2);
+      color: var(--primary-green);
+    }
+
+    .feature-text {
+      color: rgba(255,255,255,0.9);
       font-size: 1rem;
-      border:none;
-      cursor:pointer;
+      line-height: 1.6;
+      font-weight: 500;
     }
-    .btn-primary{
-      background: linear-gradient(135deg, #f59e0b, #fbbf24);
-      color:white;
-      box-shadow: 0 16px 40px rgba(245,158,11,.22);
+
+    /* 雷达图容器 */
+    .radar-wrapper {
+      margin-top: 60px;
+      background: rgba(0,0,0,0.2);
+      border-radius: var(--radius-xl);
+      padding: 30px;
+      border: 1px solid rgba(255,255,255,0.1);
+      max-width: 800px;
+      margin-left: auto;
+      margin-right: auto;
     }
-    .btn-primary:hover{
-      background: linear-gradient(135deg, #d97706, #f59e0b);
-      transform: translateY(-2px);
-      box-shadow: var(--shadow-glow);
+
+    #radarChart {
+      width: 100%;
+      height: 400px;
     }
-    .cta-section{
-      text-align:center;
-      padding: 48px 0 66px;
-    }
-    .cta-section h3{
-      font-size: 1.55rem;
-      color: var(--slate-900);
-      margin-bottom: 22px;
-      font-weight: 950;
+
+    @media (max-width: 968px) {
+      .comparison-wrapper {
+        grid-template-columns: 1fr;
+        gap: 30px;
+      }
+      
+      .vs-divider {
+        flex-direction: row;
+        padding: 20px 0;
+      }
+      
+      .vs-divider::before {
+        width: 100%;
+        height: 2px;
+        top: 50%;
+        left: 0;
+        transform: translateY(-50%);
+      }
+      
+      .compare-card.good-mode {
+        border-right: none;
+        border-left: 5px solid var(--primary-green);
+      }
     }
 
     /* =========================
-      9) 响应式细节
+      游戏区域 - 恢复原有浅色设计
     ========================= */
-    @media (max-width: 960px){
-      header{ padding: 12px 18px; }
-      header.compact{ padding: 10px 18px; }
-      .logo{ margin-left: 92px; font-size: 1.12rem; }
-      nav{ gap: 10px; flex-wrap: wrap; justify-content:flex-end; }
-      nav a{ padding: 8px 10px; }
-    }
-    @media (max-width: 640px){
-      .back-link{ display:none; }
-      .logo{ margin-left: 0; }
-      .pain-hero{ padding: 78px 0; }
-      .data-overview{ padding: 28px; }
-      .compare-box{ padding: 26px; }
-    }
-
-    /* =========================
-      丰收保卫战 - 嵌入背景样式（已协调颜色风格）
-    ========================= */
+    
+    /* 丰收保卫战 - 原有深色主题保持 */
     .harvest-game-section {
       position: relative;
       width: 100%;
-      padding: 40px 0;
+      padding: 60px 0;
       margin: 40px 0;
       z-index: 1;
     }
@@ -692,10 +1146,10 @@
       width: 95%;
       max-width: 1200px;
       margin: 0 auto;
-      background: linear-gradient(180deg, rgba(248,250,252,0.95) 0%, rgba(255,255,255,0.95) 100%);
+      background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
       border-radius: var(--radius-xl);
-      border: 1px solid rgba(226,232,240,.7);
-      box-shadow: var(--shadow-soft);
+      border: 1px solid #e2e8f0;
+      box-shadow: 0 20px 50px rgba(0,0,0,0.1);
       overflow: hidden;
       position: relative;
     }
@@ -704,18 +1158,19 @@
       content: "";
       position: absolute;
       inset: 0;
-      background: radial-gradient(900px 260px at 15% 0%, rgba(245,158,11,.08), transparent 55%),
-                  radial-gradient(900px 260px at 85% 0%, rgba(16,185,129,.06), transparent 55%);
+      background: 
+        radial-gradient(900px 260px at 15% 0%, rgba(245,158,11,.05), transparent 55%),
+        radial-gradient(900px 260px at 85% 0%, rgba(16,185,129,.05), transparent 55%);
       pointer-events: none;
     }
     
     .harvest-game-header {
-      background: linear-gradient(90deg, rgba(245,158,11,0.9), rgba(217,119,6,0.9));
-      padding: 16px 24px;
+      background: linear-gradient(90deg, #f59e0b, #d97706);
+      padding: 20px 30px;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      border-bottom: 2px solid rgba(255,255,255,0.1);
+      border-bottom: 1px solid rgba(0,0,0,0.05);
       position: relative;
       z-index: 2;
     }
@@ -723,11 +1178,11 @@
     .harvest-game-title {
       color: white;
       font-weight: 900;
-      font-size: 1.25rem;
+      font-size: 1.5rem;
       display: flex;
       align-items: center;
-      gap: 10px;
-      text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+      gap: 12px;
+      text-shadow: 0 2px 4px rgba(0,0,0,0.1);
     }
     
     .harvest-game-controls {
@@ -736,30 +1191,31 @@
     }
     
     .harvest-game-btn {
-      background: rgba(255,255,255,0.2);
+      background: rgba(255,255,255,0.25);
       border: none;
       color: white;
-      width: 36px;
-      height: 36px;
-      border-radius: 8px;
+      width: 40px;
+      height: 40px;
+      border-radius: 10px;
       cursor: pointer;
-      font-size: 14px;
+      font-size: 16px;
       transition: all 0.2s;
       display: flex;
       align-items: center;
       justify-content: center;
+      backdrop-filter: blur(10px);
     }
     
     .harvest-game-btn:hover {
-      background: rgba(255,255,255,0.3);
-      transform: scale(1.1);
+      background: rgba(255,255,255,0.35);
+      transform: scale(1.1) rotate(90deg);
     }
     
     .harvest-game-content {
-      padding: 24px;
+      padding: 30px;
       display: flex;
       flex-direction: column;
-      gap: 16px;
+      gap: 20px;
       position: relative;
       z-index: 2;
     }
@@ -767,11 +1223,11 @@
     .harvest-game-stats {
       display: flex;
       justify-content: space-around;
-      background: rgba(248,250,252,0.95);
-      padding: 16px;
-      border-radius: 12px;
-      border: 1px solid rgba(226,232,240,.9);
-      box-shadow: 0 4px 15px rgba(2,6,23,.04);
+      background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%);
+      padding: 20px;
+      border-radius: 16px;
+      border: 1px solid #cbd5e1;
+      box-shadow: inset 0 2px 4px rgba(0,0,0,0.05);
     }
     
     .harvest-stat-item {
@@ -779,208 +1235,191 @@
     }
     
     .harvest-stat-value {
-      font-size: 1.75rem;
+      font-size: 2rem;
       font-weight: 950;
-      color: var(--primary-yellow);
-      text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      color: #d97706;
+      text-shadow: none;
+      margin-bottom: 5px;
     }
     
     .harvest-stat-label {
-      font-size: 0.875rem;
-      color: var(--slate-600);
-      margin-top: 4px;
-      font-weight: 600;
+      font-size: 0.9rem;
+      color: #64748b;
+      font-weight: 700;
     }
     
     #harvestCanvas {
       width: 100%;
       height: 400px;
       background: linear-gradient(180deg, #87CEEB 0%, #E0F6FF 50%, #90EE90 50%, #7CFC00 100%);
-      border-radius: 12px;
-      border: 3px solid rgba(226,232,240,.9);
+      border-radius: 16px;
+      border: 3px solid #e2e8f0;
       cursor: crosshair;
       display: block;
+      box-shadow: inset 0 4px 6px rgba(0,0,0,0.05);
     }
     
     .harvest-plant-selector {
       display: flex;
-      gap: 12px;
+      gap: 16px;
       justify-content: center;
       flex-wrap: wrap;
-      padding: 16px;
-      background: rgba(248,250,252,0.95);
-      border-radius: 12px;
-      border: 1px solid rgba(226,232,240,.9);
+      padding: 20px;
+      background: #f8fafc;
+      border-radius: 16px;
+      border: 1px solid #e2e8f0;
     }
     
     .harvest-plant-card {
-      width: 80px;
-      height: 90px;
-      background: linear-gradient(180deg, rgba(255,255,255,0.95), rgba(255,255,255,0.8));
-      border-radius: 12px;
+      width: 90px;
+      height: 100px;
+      background: linear-gradient(180deg, #ffffff 0%, #f1f5f9 100%);
+      border-radius: 16px;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
       cursor: pointer;
-      transition: all 0.2s;
-      border: 2px solid transparent;
-      box-shadow: 0 4px 15px rgba(2,6,23,.06);
+      transition: all 0.3s;
+      border: 2px solid #e2e8f0;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+      color: #1e293b;
     }
     
     .harvest-plant-card:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 8px 25px rgba(2,6,23,.1);
+      transform: translateY(-5px);
+      box-shadow: 0 12px 24px rgba(0,0,0,0.1);
+      border-color: #fbbf24;
     }
     
     .harvest-plant-card.selected {
-      border-color: var(--primary-yellow);
-      box-shadow: 0 0 0 3px rgba(245,158,11,0.2), 0 8px 25px rgba(2,6,23,.1);
+      border-color: #f59e0b;
+      background: linear-gradient(180deg, #fffbeb 0%, #fef3c7 100%);
+      box-shadow: 0 0 0 4px rgba(245,158,11,0.2), 0 12px 24px rgba(0,0,0,0.1);
     }
     
     .harvest-plant-card.disabled {
-      opacity: 0.5;
+      opacity: 0.4;
       cursor: not-allowed;
+      filter: grayscale(0.8);
     }
     
     .harvest-plant-icon {
-      font-size: 32px;
+      font-size: 36px;
       line-height: 1;
+      margin-bottom: 4px;
     }
     
     .harvest-plant-cost {
-      font-size: 12px;
-      font-weight: 700;
-      color: var(--primary-yellow);
-      margin-top: 4px;
+      font-size: 13px;
+      font-weight: 800;
+      color: #d97706;
+      background: rgba(245,158,11,0.1);
+      padding: 2px 8px;
+      border-radius: 12px;
     }
     
     .harvest-plant-name {
-      font-size: 11px;
-      color: var(--slate-700);
-      margin-top: 2px;
-      font-weight: 600;
+      font-size: 12px;
+      color: #475569;
+      margin-top: 4px;
+      font-weight: 700;
     }
     
+    /* 游戏开始界面 - 浅色主题 */
     .harvest-game-overlay {
       position: absolute;
       inset: 0;
-      background: rgba(15,23,42,0.9);
+      background: rgba(255,255,255,0.95);
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      color: white;
+      color: #1e293b;
       text-align: center;
       padding: 40px;
       border-radius: var(--radius-xl);
       z-index: 10;
-      backdrop-filter: blur(10px);
+      backdrop-filter: blur(20px);
     }
     
     .harvest-game-overlay h3 {
-      font-size: 2rem;
-      margin-bottom: 16px;
-      color: var(--primary-yellow);
+      font-size: 2.5rem;
+      margin-bottom: 20px;
+      color: #d97706;
       font-weight: 950;
     }
     
     .harvest-game-overlay p {
-      font-size: 1rem;
-      line-height: 1.8;
-      opacity: 0.9;
-      margin-bottom: 24px;
+      font-size: 1.1rem;
+      line-height: 2;
+      color: #475569;
+      margin-bottom: 30px;
       max-width: 600px;
+      font-weight: 500;
     }
     
     .harvest-start-btn {
-      background: linear-gradient(135deg, var(--primary-yellow), #d97706);
+      background: linear-gradient(135deg, #f59e0b, #d97706);
       color: white;
       border: none;
-      padding: 16px 48px;
+      padding: 18px 56px;
       border-radius: 999px;
-      font-size: 1.125rem;
+      font-size: 1.25rem;
       font-weight: 900;
       cursor: pointer;
       transition: all 0.3s;
-      box-shadow: 0 8px 30px rgba(245,158,11,0.3);
+      box-shadow: 0 10px 30px rgba(245,158,11,0.3);
     }
     
     .harvest-start-btn:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 12px 40px rgba(245,158,11,0.4);
-    }
-    
-    @media (max-width: 768px) {
-      .harvest-game-content {
-        padding: 16px;
-      }
-      
-      #harvestCanvas {
-        height: 300px;
-      }
-      
-      .harvest-plant-card {
-        width: 70px;
-        height: 80px;
-      }
-      
-      .harvest-plant-icon {
-        font-size: 28px;
-      }
+      transform: translateY(-3px);
+      box-shadow: 0 15px 40px rgba(245,158,11,0.4);
     }
 
-    /* =========================
-      乡村种菜小游戏样式 - 悬浮窗口版本
-    ========================= */
-    
-    /* 悬浮按钮 */
+    /* 乡村种菜小游戏 - 恢复原有浅色设计 */
     .farm-float-btn {
       position: fixed;
       bottom: 30px;
       right: 30px;
-      width: 60px;
-      height: 60px;
-      background: linear-gradient(135deg, var(--primary-green), #059669);
+      width: 70px;
+      height: 70px;
+      background: linear-gradient(135deg, #10b981, #059669);
       border-radius: 50%;
       display: flex;
       align-items: center;
       justify-content: center;
       cursor: pointer;
-      box-shadow: 0 8px 30px rgba(16,185,129,0.4);
+      box-shadow: 0 10px 30px rgba(16,185,129,0.3);
       z-index: 9999;
       transition: all 0.3s var(--ease-out);
       border: none;
+      color: white;
+      font-size: 28px;
       animation: farmBtnPulse 2s infinite;
     }
     
     .farm-float-btn:hover {
       transform: scale(1.1) translateY(-5px);
-      box-shadow: 0 12px 40px rgba(16,185,129,0.5);
-    }
-    
-    .farm-float-btn i {
-      font-size: 28px;
-      color: white;
+      box-shadow: 0 15px 40px rgba(16,185,129,0.4);
     }
     
     @keyframes farmBtnPulse {
-      0%, 100% { box-shadow: 0 8px 30px rgba(16,185,129,0.4); }
-      50% { box-shadow: 0 8px 30px rgba(16,185,129,0.6), 0 0 0 10px rgba(16,185,129,0.1); }
+      0%, 100% { box-shadow: 0 10px 30px rgba(16,185,129,0.3); }
+      50% { box-shadow: 0 10px 40px rgba(16,185,129,0.5), 0 0 0 15px rgba(16,185,129,0.1); }
     }
     
-    /* 悬浮窗口 */
     .farm-float-window {
       position: fixed;
-      bottom: 100px;
+      bottom: 110px;
       right: 30px;
       width: 420px;
       max-width: calc(100vw - 60px);
-      max-height: calc(100vh - 140px);
-      background: linear-gradient(180deg, rgba(248,250,252,0.98) 0%, rgba(255,255,255,0.98) 100%);
+      max-height: calc(100vh - 150px);
+      background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
       border-radius: var(--radius-xl);
-      border: 1px solid rgba(226,232,240,.9);
-      box-shadow: 0 20px 60px rgba(2,6,23,.2);
+      border: 1px solid #e2e8f0;
+      box-shadow: 0 25px 50px rgba(0,0,0,0.15);
       z-index: 9998;
       display: none;
       flex-direction: column;
@@ -989,14 +1428,8 @@
     }
     
     @keyframes farmWindowIn {
-      from {
-        opacity: 0;
-        transform: translateY(20px) scale(0.95);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0) scale(1);
-      }
+      from { opacity: 0; transform: translateY(20px) scale(0.95); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
     }
     
     .farm-float-window.active {
@@ -1004,33 +1437,33 @@
     }
     
     .farm-float-header {
-      background: linear-gradient(90deg, rgba(16,185,129,0.95), rgba(5,150,105,0.95));
-      padding: 12px 16px;
+      background: linear-gradient(90deg, #10b981, #059669);
+      padding: 16px 20px;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      border-bottom: 2px solid rgba(255,255,255,0.1);
+      border-bottom: 1px solid rgba(0,0,0,0.05);
       flex-shrink: 0;
     }
     
     .farm-float-title {
       color: white;
       font-weight: 800;
-      font-size: 1rem;
+      font-size: 1.1rem;
       display: flex;
       align-items: center;
-      gap: 8px;
+      gap: 10px;
     }
     
     .farm-float-close {
       background: rgba(255,255,255,0.2);
       border: none;
       color: white;
-      width: 32px;
-      height: 32px;
-      border-radius: 8px;
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
       cursor: pointer;
-      font-size: 16px;
+      font-size: 18px;
       transition: all 0.2s;
       display: flex;
       align-items: center;
@@ -1039,47 +1472,50 @@
     
     .farm-float-close:hover {
       background: rgba(255,255,255,0.3);
-      transform: scale(1.1);
+      transform: scale(1.1) rotate(90deg);
     }
     
     .farm-float-body {
-      padding: 16px;
+      padding: 20px;
       overflow-y: auto;
       flex: 1;
+      background: #f8fafc;
     }
     
     .farm-game-fields {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
-      gap: 10px;
-      margin-bottom: 16px;
-      max-width: 300px;
+      gap: 12px;
+      margin-bottom: 20px;
+      max-width: 320px;
       margin-left: auto;
       margin-right: auto;
     }
     
     .farm-field {
       aspect-ratio: 1/1;
-      border-radius: 10px;
-      background: linear-gradient(135deg, #dcfce7, #bbf7d0);
-      border: 2px solid var(--primary-green);
+      border-radius: 16px;
+      background: linear-gradient(135deg, #dcfce7 0%, #bbf7d0 100%);
+      border: 3px solid #86efac;
       display: flex;
       align-items: center;
       justify-content: center;
       cursor: pointer;
-      transition: all 0.2s ease;
+      transition: all 0.3s ease;
       position: relative;
       overflow: hidden;
-      box-shadow: 0 4px 15px rgba(16,185,129,0.1);
+      box-shadow: 0 4px 6px rgba(0,0,0,0.05);
     }
     
     .farm-field:hover {
-      transform: scale(1.03);
-      box-shadow: 0 8px 25px rgba(16,185,129,0.2);
+      transform: scale(1.08);
+      box-shadow: 0 8px 20px rgba(16,185,129,0.2);
+      border-color: #10b981;
     }
     
     .farm-field.planted {
-      background: linear-gradient(135deg, #f0fdf4, #dcfce7);
+      background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
+      border-color: #10b981;
     }
     
     .farm-field img {
@@ -1087,7 +1523,7 @@
       height: 70%;
       object-fit: contain;
       display: none;
-      border-radius: 8px;
+      border-radius: 12px;
     }
     
     .farm-field.planted img {
@@ -1096,211 +1532,519 @@
     
     .farm-game-tools {
       display: flex;
-      gap: 8px;
-      margin-bottom: 12px;
+      gap: 10px;
+      margin-bottom: 16px;
       flex-wrap: wrap;
       justify-content: center;
     }
     
     .farm-tool-btn {
       flex: 1;
-      min-width: 70px;
-      max-width: 90px;
-      padding: 10px 6px;
-      border-radius: 8px;
-      border: 1px solid var(--slate-200);
-      background: var(--slate-50);
-      color: var(--slate-800);
-      font-size: 12px;
-      font-weight: 700;
+      min-width: 75px;
+      max-width: 95px;
+      padding: 12px 8px;
+      border-radius: 12px;
+      border: 2px solid #e2e8f0;
+      background: #ffffff;
+      color: #475569;
+      font-size: 13px;
+      font-weight: 800;
       cursor: pointer;
       display: flex;
       align-items: center;
       justify-content: center;
       gap: 6px;
       transition: all 0.2s ease;
-      box-shadow: 0 4px 15px rgba(2,6,23,.04);
+      box-shadow: 0 2px 4px rgba(0,0,0,0.05);
     }
     
     .farm-tool-btn:hover {
-      background: var(--primary-green);
+      background: #10b981;
       color: white;
-      border-color: var(--primary-green);
+      border-color: #10b981;
       transform: translateY(-2px);
-      box-shadow: 0 8px 25px rgba(16,185,129,0.2);
+      box-shadow: 0 8px 20px rgba(16,185,129,0.25);
     }
     
     .farm-game-status {
-      font-size: 13px;
-      color: var(--slate-700);
+      font-size: 14px;
+      color: #334155;
       text-align: center;
-      padding: 10px;
-      border-radius: 8px;
-      background: rgba(248,250,252,0.95);
-      border: 1px solid rgba(226,232,240,.9);
-      margin-bottom: 8px;
-      font-weight: 500;
+      padding: 14px;
+      border-radius: 12px;
+      background: #ffffff;
+      border: 2px solid #e2e8f0;
+      margin-bottom: 10px;
+      font-weight: 600;
     }
     
     .farm-game-hint {
-      font-size: 11px;
-      color: var(--slate-500);
+      font-size: 12px;
+      color: #64748b;
       text-align: center;
-      line-height: 1.5;
+      line-height: 1.6;
+      font-weight: 500;
+    }
+
+    /* CTA按钮区域 */
+    .cta-section{
+      text-align:center;
+      padding: 80px 0 100px;
+      position:relative;
+      background: linear-gradient(180deg, transparent, rgba(245,158,11,0.05));
     }
     
-    /* 移动端适配 */
-    @media (max-width: 480px) {
-      .farm-float-btn {
-        width: 50px;
-        height: 50px;
-        bottom: 20px;
-        right: 20px;
-      }
-      
-      .farm-float-btn i {
-        font-size: 22px;
-      }
-      
-      .farm-float-window {
-        bottom: 80px;
-        right: 20px;
-        left: 20px;
-        width: auto;
-        max-height: calc(100vh - 120px);
-      }
-      
-      .farm-game-fields {
-        gap: 8px;
-      }
-      
-      .farm-tool-btn {
-        min-width: 60px;
-        font-size: 11px;
-        padding: 8px 4px;
-      }
+    .cta-section h3{
+      font-size: 2rem;
+      color: #fff;
+      margin-bottom: 30px;
+      font-weight: 900;
+      text-shadow: 0 4px 10px rgba(0,0,0,0.2);
+    }
+
+    .btn{
+      display:inline-flex;
+      align-items:center;
+      gap:12px;
+      padding: 18px 40px;
+      border-radius: 999px;
+      text-decoration:none;
+      font-weight: 900;
+      transition: all .25s var(--ease-out);
+      font-size: 1.1rem;
+      border:none;
+      cursor:pointer;
+      position:relative;
+      overflow:hidden;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+    }
+    
+    .btn::before {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 0;
+      height: 0;
+      background: rgba(255,255,255,0.2);
+      border-radius: 50%;
+      transform: translate(-50%, -50%);
+      transition: width 0.4s, height 0.4s;
+    }
+    
+    .btn:hover::before {
+      width: 400px;
+      height: 400px;
+    }
+    
+    .btn-primary{
+      background: linear-gradient(135deg, #f59e0b, #fbbf24);
+      color:#1e293b;
+      box-shadow: 0 10px 30px rgba(245,158,11,.4);
+    }
+    
+    .btn-primary:hover{
+      background: linear-gradient(135deg, #d97706, #f59e0b);
+      transform: translateY(-3px);
+      box-shadow: 0 15px 40px rgba(245,158,11,.5);
+    }
+
+    /* 数据编辑面板 */
+    .data-edit-panel {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%) scale(0.9);
+      width: 90%;
+      max-width: 800px;
+      max-height: 80vh;
+      background: rgba(15, 23, 42, 0.98);
+      backdrop-filter: blur(20px);
+      border: 1px solid rgba(245, 158, 11, 0.3);
+      border-radius: var(--radius-xl);
+      padding: 30px;
+      z-index: 10000;
+      opacity: 0;
+      visibility: hidden;
+      transition: all 0.3s;
+      overflow-y: auto;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.8);
+    }
+    
+    .data-edit-panel.active {
+      opacity: 1;
+      visibility: visible;
+      transform: translate(-50%, -50%) scale(1);
+    }
+    
+    .data-edit-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+      padding-bottom: 15px;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+    }
+    
+    .data-edit-title {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: #fff;
+      background: linear-gradient(90deg, #f59e0b, #8b5cf6);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    
+    .data-edit-close {
+      background: rgba(255,255,255,0.1);
+      border: none;
+      color: #fff;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      cursor: pointer;
+      font-size: 20px;
+      transition: all 0.2s;
+    }
+    
+    .data-edit-close:hover {
+      background: rgba(239, 68, 68, 0.5);
+      transform: rotate(90deg);
+    }
+    
+    .data-field {
+      margin-bottom: 15px;
+    }
+    
+    .data-field label {
+      display: block;
+      color: rgba(255,255,255,0.7);
+      font-size: 0.875rem;
+      margin-bottom: 5px;
+      font-weight: 600;
+    }
+    
+    .data-field input {
+      width: 100%;
+      padding: 12px 16px;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 8px;
+      color: #fff;
+      font-size: 1rem;
+      transition: all 0.2s;
+    }
+    
+    .data-field input:focus {
+      outline: none;
+      border-color: #f59e0b;
+      background: rgba(255,255,255,0.08);
+    }
+    
+    .data-save-btn {
+      width: 100%;
+      padding: 14px;
+      background: linear-gradient(135deg, #f59e0b, #d97706);
+      border: none;
+      border-radius: 8px;
+      color: #fff;
+      font-weight: 700;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: all 0.2s;
+      margin-top: 10px;
+    }
+    
+    .data-save-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 30px rgba(245,158,11,0.3);
+    }
+
+    .edit-data-btn {
+      position: fixed;
+      bottom: 30px;
+      left: 30px;
+      width: 60px;
+      height: 60px;
+      background: linear-gradient(135deg, #8b5cf6, #6d28d9);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      box-shadow: 0 8px 30px rgba(139,92,246,0.4);
+      z-index: 9999;
+      border: none;
+      color: white;
+      font-size: 24px;
+      transition: all 0.3s;
+      animation: pulse 2s infinite;
+    }
+    
+    @keyframes pulse {
+      0%, 100% { box-shadow: 0 8px 30px rgba(139,92,246,0.4); }
+      50% { box-shadow: 0 8px 40px rgba(139,92,246,0.6), 0 0 0 10px rgba(139,92,246,0.1); }
+    }
+    
+    .edit-data-btn:hover {
+      transform: scale(1.1) rotate(15deg);
+    }
+
+    .overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.7);
+      z-index: 9999;
+      opacity: 0;
+      visibility: hidden;
+      transition: all 0.3s;
+      backdrop-filter: blur(5px);
+    }
+    
+    .overlay.active {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    /* 滚动显示动画 */
+    .reveal-up{
+      opacity:0;
+      transform: translateY(30px);
+      transition: all .8s var(--ease-out);
+      will-change: transform, opacity;
+    }
+    
+    .reveal-up.active{
+      opacity:1;
+      transform: translateY(0);
+    }
+    
+    .delay-100{ transition-delay:.10s; }
+    .delay-200{ transition-delay:.20s; }
+    .delay-300{ transition-delay:.30s; }
+    .delay-400{ transition-delay:.40s; }
+
+    /* 响应式细节 */
+    @media (max-width: 960px){
+      header{ padding: 12px 18px; }
+      header.compact{ padding: 10px 18px; }
+      .logo{ margin-left: 92px; font-size: 1.12rem; }
+      nav{ gap: 10px; flex-wrap: wrap; justify-content:flex-end; }
+      nav a{ padding: 8px 10px; }
+      .pain-hero{ padding: 100px 0; }
+      .comparison-wrapper { padding: 0 20px; }
+    }
+    
+    @media (max-width: 640px){
+      .back-link{ display:none; }
+      .logo{ margin-left: 0; }
+      .pain-hero{ padding: 80px 0; }
+      .data-overview{ padding: 28px; }
+      .comparison-wrapper { grid-template-columns: 1fr; }
+      .vs-divider { display: none; }
+      .compare-card { padding: 30px 20px; }
+      .edit-data-btn { width: 50px; height: 50px; font-size: 20px; bottom: 20px; left: 20px; }
+      .data-edit-panel { width: 95%; padding: 20px; }
+      .cta-section { padding: 60px 20px; }
     }
   </style>
 </head>
 
 <body>
-  <!-- 滚动进度条（新增，不影响原逻辑） -->
+  <!-- WebGL 星云背景 -->
+  <canvas id="nebula-canvas"></canvas>
+  
+  <!-- 流体渐变背景 -->
+  <div class="fluid-gradient"></div>
+
+  <!-- 滚动进度条 -->
   <div class="scroll-progress" id="scrollProgress"></div>
 
-  <!-- 顶部导航（保留你的结构与链接） -->
-  <header id="topHeader">
+  <!-- 数据编辑面板 -->
+  <div class="overlay" id="editOverlay"></div>
+  <div class="data-edit-panel" id="dataEditPanel">
+    <div class="data-edit-header">
+      <div class="data-edit-title">✏️ 数据编辑控制台</div>
+      <button class="data-edit-close" onclick="closeDataEdit()">×</button>
+    </div>
+    <div id="editFormContent"></div>
+    <button class="data-save-btn" onclick="saveDataChanges()">
+      <i class="fa-solid fa-save"></i> 保存并更新视图
+    </button>
+  </div>
+
+  <!-- 编辑按钮 -->
+  <button class="edit-data-btn" onclick="openDataEdit()" title="编辑数据">
+    <i class="fa-solid fa-database"></i>
+  </button>
+
+  <!-- 顶部导航 -->
+  <header id="topHeader" class="glass-morph">
     <a href="../index.html" class="back-link">
       <span>←</span> 返回首页
     </a>
     <div class="logo">
-      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>兰州大学·金鹰</span>
+      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="shimmer-text">兰州大学·金鹰</span>
     </div>
     <nav>
-      <a href="vision.html">愿景模式</a>
-      <a href="painpoints.html" class="active">痛点破局</a>
-      <a href="solution.html">解决方案</a>
-      <a href="market.html">市场分析</a>
-      <a href="business.html">商业模式</a>
-      <a href="team.html">核心团队</a>
+      <a href="vision.html" class="ripple">愿景模式</a>
+      <a href="painpoints.html" class="active ripple">痛点破局</a>
+      <a href="solution.html" class="ripple">解决方案</a>
+      <a href="market.html" class="ripple">市场分析</a>
+      <a href="business.html" class="ripple">商业模式</a>
+      <a href="team.html" class="ripple">核心团队</a>
     </nav>
   </header>
 
-  <!-- Hero（保留你的素材背景图 + 新增装饰） -->
+  <!-- Hero区域 - 使用原有背景 -->
   <section class="pain-hero">
     <div class="hero-orb"></div>
     <div class="hero-orb orb2"></div>
 
-    <div class="container reveal-up" data-aos="fade-up" data-aos-duration="900">
-      <h1>四大顽疾 · 亟待破局</h1>
-      <p>传统农业模式的困境，正是我们数字化转型的机遇</p>
+    <div class="container reveal-up">
+      <h1 class="scan-text fragment-text" data-value="四大顽疾 · 亟待破局">四大顽疾 · 亟待破局</h1>
+      <p class="shimmer-text">传统农业模式的困境，正是我们数字化转型的机遇</p>
     </div>
   </section>
 
+  <!-- 四大顽疾 - 轮叠卡片系统 -->
   <section class="container section-padding">
-    <div class="pain-grid">
-      <!-- 痛点 1（保留内容与 id） -->
-      <div class="pain-card reveal-up delay-100" data-aos="fade-up" data-aos-delay="50">
-        <div class="pain-icon">📉</div>
-        <div class="pain-title">
-          产销信息不对称
-          <span class="mini-chip"><i class="fa-solid fa-signal"></i> 数据断链</span>
+    <div class="pain-grid-wrapper">
+      <div class="pain-grid" id="painGrid">
+        <!-- 卡片1 -->
+        <div class="pain-card reveal-up" data-index="0" onclick="rotateStack(0)">
+          <div class="pain-card-inner" onmousemove="handleCardTilt(event, this)" onmouseleave="resetCardTilt(this)">
+            <div class="pain-card-header">
+              <div class="pain-card-bg" style="background-image: url('https://images.unsplash.com/photo-1581092160562-40aa08e78837?q=80&w=800&auto=format&fit=crop')"></div>
+              <div class="pain-card-overlay"></div>
+              <div class="pain-icon-wrap">
+                <img src="https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?q=80&w=200&auto=format&fit=crop" alt="产销信息">
+              </div>
+              <div class="pain-title">
+                <span data-field="pain1_title">产销信息不对称</span>
+                <span class="mini-chip"><i class="fa-solid fa-signal"></i> 数据断链</span>
+              </div>
+            </div>
+            <div class="pain-card-body">
+              <div class="pain-desc" data-field="pain1_desc">农户盲目种植，丰产不丰收。中间环节多，利润被层层盘剥，终端价格高但农民收入低。</div>
+              <div class="pain-stat"><span class="count-up" data-target="30" data-field="pain1_stat">30</span>% <span>农产品滞销率</span></div>
+              <div class="chart-container" id="chart1"></div>
+            </div>
+          </div>
         </div>
-        <div class="pain-desc">农户盲目种植，丰产不丰收。中间环节多，利润被层层盘剥，终端价格高但农民收入低。</div>
-        <div class="pain-stat"><span class="count-up" data-target="30">30</span>% <span>农产品滞销率</span></div>
-        <div class="chart-container" id="chart1"></div>
+
+        <!-- 卡片2 -->
+        <div class="pain-card reveal-up delay-100" data-index="1" onclick="rotateStack(1)">
+          <div class="pain-card-inner" onmousemove="handleCardTilt(event, this)" onmouseleave="resetCardTilt(this)">
+            <div class="pain-card-header">
+              <div class="pain-card-bg" style="background-image: url('https://images.unsplash.com/photo-1523741543316-beb7fc7023d8?q=80&w=800&auto=format&fit=crop')"></div>
+              <div class="pain-card-overlay"></div>
+              <div class="pain-icon-wrap">
+                <img src="https://images.unsplash.com/photo-1561484930-998b6a7b22e8?q=80&w=200&auto=format&fit=crop" alt="抗风险">
+              </div>
+              <div class="pain-title">
+                <span data-field="pain2_title">抗风险能力弱</span>
+                <span class="mini-chip"><i class="fa-solid fa-cloud-bolt"></i> 预警滞后</span>
+              </div>
+            </div>
+            <div class="pain-card-body">
+              <div class="pain-desc" data-field="pain2_desc">靠天吃饭，缺乏精准气象指导。灾害预警滞后，保险理赔难，一次灾害可能让农户一年白干。</div>
+              <div class="pain-stat">¥ <span class="count-up" data-target="0" data-field="pain2_stat">0</span> <span>精准防灾投入</span></div>
+              <div class="chart-container" id="chart2"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 卡片3 -->
+        <div class="pain-card reveal-up delay-200" data-index="2" onclick="rotateStack(2)">
+          <div class="pain-card-inner" onmousemove="handleCardTilt(event, this)" onmouseleave="resetCardTilt(this)">
+            <div class="pain-card-header">
+              <div class="pain-card-bg" style="background-image: url('https://images.unsplash.com/photo-1625246333195-78d9c38ad449?q=80&w=800&auto=format&fit=crop')"></div>
+              <div class="pain-card-overlay"></div>
+              <div class="pain-icon-wrap">
+                <img src="https://images.unsplash.com/photo-1605000797499-95a51c5269ae?q=80&w=200&auto=format&fit=crop" alt="产业链">
+              </div>
+              <div class="pain-title">
+                <span data-field="pain3_title">产业链条断裂</span>
+                <span class="mini-chip"><i class="fa-solid fa-link-slash"></i> 无品牌</span>
+              </div>
+            </div>
+            <div class="pain-card-body">
+              <div class="pain-desc" data-field="pain3_desc">只卖原料，无深加工。有产品无品牌，有产量无销量。赛事、旅游与农业互不相通，资源浪费。</div>
+              <div class="pain-stat"><span class="count-up-decimal" data-target="1.2" data-field="pain3_stat">1.2</span> <span>倍 附加值 (远低于平均3.5倍)</span></div>
+              <div class="chart-container" id="chart3"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 卡片4 -->
+        <div class="pain-card reveal-up delay-300" data-index="3" onclick="rotateStack(3)">
+          <div class="pain-card-inner" onmousemove="handleCardTilt(event, this)" onmouseleave="resetCardTilt(this)">
+            <div class="pain-card-header">
+              <div class="pain-card-bg" style="background-image: url('https://images.unsplash.com/photo-1469571486292-0ba58a3f068b?q=80&w=800&auto=format&fit=crop')"></div>
+              <div class="pain-card-overlay"></div>
+              <div class="pain-icon-wrap">
+                <img src="https://images.unsplash.com/photo-1500382017468-9049fed747ef?q=80&w=200&auto=format&fit=crop" alt="人才流失">
+              </div>
+              <div class="pain-title">
+                <span data-field="pain4_title">空心化与人才流失</span>
+                <span class="mini-chip"><i class="fa-solid fa-person-walking-arrow-right"></i> 外流</span>
+              </div>
+            </div>
+            <div class="pain-card-body">
+              <div class="pain-desc" data-field="pain4_desc">年轻人不愿回乡，留守老人无力耕种。缺乏懂技术、懂运营的新农人，乡村发展缺乏内生动力。</div>
+              <div class="pain-stat"><span class="count-up" data-target="65" data-field="pain4_stat">65</span>% <span>从业人员年龄&gt;55岁</span></div>
+              <div class="chart-container" id="chart4"></div>
+            </div>
+          </div>
+        </div>
       </div>
 
-      <!-- 痛点 2 -->
-      <div class="pain-card reveal-up delay-200" data-aos="fade-up" data-aos-delay="120">
-        <div class="pain-icon">🌪️</div>
-        <div class="pain-title">
-          抗风险能力弱
-          <span class="mini-chip"><i class="fa-solid fa-cloud-bolt"></i> 预警滞后</span>
-        </div>
-        <div class="pain-desc">靠天吃饭，缺乏精准气象指导。灾害预警滞后，保险理赔难，一次灾害可能让农户一年白干。</div>
-        <!-- 保留你原有展示：¥ 0 -->
-        <div class="pain-stat">¥ <span class="count-up" data-target="0">0</span> <span>精准防灾投入</span></div>
-        <div class="chart-container" id="chart2"></div>
+      <!-- 轮叠控制 -->
+      <div class="stack-nav">
+        <button class="stack-btn" onclick="prevCard()"><i class="fa-solid fa-chevron-left"></i></button>
+        <button class="stack-btn" onclick="nextCard()"><i class="fa-solid fa-chevron-right"></i></button>
       </div>
-
-      <!-- 痛点 3 -->
-      <div class="pain-card reveal-up delay-300" data-aos="fade-up" data-aos-delay="190">
-        <div class="pain-icon">🔗</div>
-        <div class="pain-title">
-          产业链条断裂
-          <span class="mini-chip"><i class="fa-solid fa-link-slash"></i> 无品牌</span>
-        </div>
-        <div class="pain-desc">只卖原料，无深加工。有产品无品牌，有产量无销量。赛事、旅游与农业互不相通，资源浪费。</div>
-        <div class="pain-stat"><span class="count-up" data-target="12">1.2</span> <span>倍 附加值 (远低于平均3.5倍)</span></div>
-        <div class="chart-container" id="chart3"></div>
-      </div>
-
-      <!-- 痛点 4 -->
-      <div class="pain-card reveal-up delay-400" data-aos="fade-up" data-aos-delay="260">
-        <div class="pain-icon">👵</div>
-        <div class="pain-title">
-          空心化与人才流失
-          <span class="mini-chip"><i class="fa-solid fa-person-walking-arrow-right"></i> 外流</span>
-        </div>
-        <div class="pain-desc">年轻人不愿回乡，留守老人无力耕种。缺乏懂技术、懂运营的新农人，乡村发展缺乏内生动力。</div>
-        <div class="pain-stat"><span class="count-up" data-target="65">65</span>% <span>从业人员年龄&gt;55岁</span></div>
-        <div class="chart-container" id="chart4"></div>
+      
+      <div class="stack-indicators">
+        <div class="stack-dot active" onclick="rotateStack(0)"></div>
+        <div class="stack-dot" onclick="rotateStack(1)"></div>
+        <div class="stack-dot" onclick="rotateStack(2)"></div>
+        <div class="stack-dot" onclick="rotateStack(3)"></div>
       </div>
     </div>
 
-    <!-- 数据总览（保留内容 + 新增计数动画，不删除原逻辑） -->
-    <div class="data-overview reveal-up delay-500" data-aos="fade-up" data-aos-delay="280">
-      <h3>夏官营农业痛点数据总览</h3>
+    <!-- 数据总览看板 -->
+    <div class="data-overview reveal-up delay-400 glass-morph">
+      <h3 class="shimmer-text">夏官营农业痛点数据总览</h3>
       <div class="overview-grid">
         <div class="overview-item">
-          <div class="overview-number"><span class="count-up" data-target="30">30</span>%</div>
+          <div class="overview-number"><span class="count-up" data-target="30" data-field="overview1">30</span>%</div>
           <div class="overview-label">农产品年均滞销率</div>
         </div>
         <div class="overview-item">
-          <div class="overview-number"><span class="count-up" data-target="85">85</span>%</div>
+          <div class="overview-number"><span class="count-up" data-target="85" data-field="overview2">85</span>%</div>
           <div class="overview-label">农户靠天吃饭比例</div>
         </div>
         <div class="overview-item">
-          <div class="overview-number"><span class="count-up-decimal" data-target="1.2">1.2</span>x</div>
+          <div class="overview-number"><span class="count-up-decimal" data-target="1.2" data-field="overview3">1.2</span>x</div>
           <div class="overview-label">农产品平均附加值</div>
         </div>
         <div class="overview-item">
-          <div class="overview-number"><span class="count-up" data-target="65">65</span>%</div>
+          <div class="overview-number"><span class="count-up" data-target="65" data-field="overview4">65</span>%</div>
           <div class="overview-label">55岁以上从业占比</div>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- =========================
-      丰收保卫战 - 嵌入背景的游戏区域（第一个游戏）
-  ========================= -->
+  <!-- 丰收保卫战游戏 - 保持原有浅色设计 -->
   <section class="harvest-game-section">
-    <div class="harvest-game-container reveal-up" data-aos="fade-up">
+    <div class="harvest-game-container reveal-up">
       <div class="harvest-game-header">
         <div class="harvest-game-title">🌾 丰收保卫战</div>
         <div class="harvest-game-controls">
-          <button class="harvest-game-btn" onclick="resetHarvestGame()" title="重新开始">↻</button>
+          <button class="harvest-game-btn ripple" onclick="resetHarvestGame()" title="重新开始">↻</button>
         </div>
       </div>
       
@@ -1323,22 +2067,22 @@
         <canvas id="harvestCanvas" width="1140" height="400"></canvas>
         
         <div class="harvest-plant-selector">
-          <div class="harvest-plant-card selected" data-plant="sunflower" onclick="selectHarvestPlant('sunflower')">
+          <div class="harvest-plant-card selected ripple" data-plant="sunflower" onclick="selectHarvestPlant('sunflower')">
             <div class="harvest-plant-icon">🌻</div>
             <div class="harvest-plant-cost">50☀️</div>
             <div class="harvest-plant-name">向日葵</div>
           </div>
-          <div class="harvest-plant-card" data-plant="corn" onclick="selectHarvestPlant('corn')">
+          <div class="harvest-plant-card ripple" data-plant="corn" onclick="selectHarvestPlant('corn')">
             <div class="harvest-plant-icon">🌽</div>
             <div class="harvest-plant-cost">100☀️</div>
             <div class="harvest-plant-name">玉米炮</div>
           </div>
-          <div class="harvest-plant-card" data-plant="rice" onclick="selectHarvestPlant('rice')">
+          <div class="harvest-plant-card ripple" data-plant="rice" onclick="selectHarvestPlant('rice')">
             <div class="harvest-plant-icon">🌾</div>
             <div class="harvest-plant-cost">150☀️</div>
             <div class="harvest-plant-name">水稻墙</div>
           </div>
-          <div class="harvest-plant-card" data-plant="tomato" onclick="selectHarvestPlant('tomato')">
+          <div class="harvest-plant-card ripple" data-plant="tomato" onclick="selectHarvestPlant('tomato')">
             <div class="harvest-plant-icon">🍅</div>
             <div class="harvest-plant-cost">200☀️</div>
             <div class="harvest-plant-name">番茄投手</div>
@@ -1349,56 +2093,99 @@
       <div class="harvest-game-overlay" id="harvestGameOverlay">
         <h3>🌾 丰收保卫战</h3>
         <p>害虫和灾害正在侵袭农田！<br>种植作物抵御入侵，保卫乡村振兴成果<br><br>🌻 向日葵产生阳光<br>🌽 玉米发射子弹<br>🌾 水稻阻挡敌人<br>🍅 番茄范围攻击</p>
-        <button class="harvest-start-btn" onclick="startHarvestGame()">开始游戏</button>
+        <button class="harvest-start-btn ripple" onclick="startHarvestGame()">开始游戏</button>
       </div>
     </div>
   </section>
 
-  <!-- 对比区域（保留内容 + 强化视觉） -->
+  <!-- 传统模式 vs 夏官营新模式 -->
   <section class="comparison-section">
     <div class="container">
-      <div class="section-title reveal-up" data-aos="fade-up">
-        <h2>传统模式 vs 夏官营新模式</h2>
+      <div class="section-title reveal-up">
+        <h2>传统模式 <span style="color: #f59e0b;">VS</span> 夏官营新模式</h2>
       </div>
 
-      <div class="compare-container">
-        <div class="compare-box box-bad reveal-up" data-aos="fade-up" data-aos-delay="60">
-          <span class="badge badge-bad"><i class="fa-solid fa-triangle-exclamation"></i> 传统模式</span>
-          <h3>分散、低效、被动</h3>
-          <ul class="check-list">
-            <li><span class="icon-cross">✕</span> 单户作战，议价能力弱</li>
-            <li><span class="icon-cross">✕</span> 经验种植，灾害损失大</li>
-            <li><span class="icon-cross">✕</span> 等待收购，销售渠道窄</li>
-            <li><span class="icon-cross">✕</span> 品牌缺失，产品同质化</li>
+      <div class="comparison-wrapper">
+        <!-- 传统模式 -->
+        <div class="compare-card bad-mode reveal-up">
+          <div class="compare-header">
+            <div class="compare-icon">
+              <img src="https://images.unsplash.com/photo-1598897516650-e4dc73d8e417?q=80&w=200&auto=format&fit=crop" alt="传统">
+            </div>
+            <div class="compare-title-group">
+              <h3 data-field="mode_bad_title">传统模式</h3>
+              <div class="compare-subtitle" data-field="mode_bad_subtitle">分散、低效、被动</div>
+            </div>
+          </div>
+          <ul class="feature-list">
+            <li class="feature-item">
+              <div class="feature-icon">✕</div>
+              <div class="feature-text" data-field="mode_bad_1">单户作战，议价能力弱</div>
+            </li>
+            <li class="feature-item">
+              <div class="feature-icon">✕</div>
+              <div class="feature-text" data-field="mode_bad_2">经验种植，灾害损失大</div>
+            </li>
+            <li class="feature-item">
+              <div class="feature-icon">✕</div>
+              <div class="feature-text" data-field="mode_bad_3">等待收购，销售渠道窄</div>
+            </li>
+            <li class="feature-item">
+              <div class="feature-icon">✕</div>
+              <div class="feature-text" data-field="mode_bad_4">品牌缺失，产品同质化</div>
+            </li>
           </ul>
         </div>
 
-        <div class="compare-box box-good reveal-up delay-200" data-aos="fade-up" data-aos-delay="120">
-          <span class="badge badge-good"><i class="fa-solid fa-rocket"></i> 夏官营模式</span>
-          <h3>联营、智能、主动</h3>
-          <ul class="check-list">
-            <li><span class="icon-check">✓</span> 组织共建，统一议价</li>
-            <li><span class="icon-check">✓</span> 数据驱动，精准防灾</li>
-            <li><span class="icon-check">✓</span> 平台直销，赛事引流</li>
-            <li><span class="icon-check">✓</span> 品牌赋能，三产融合</li>
+        <!-- VS分隔 -->
+        <div class="vs-divider reveal-up delay-200">
+          <div class="vs-badge">VS</div>
+        </div>
+
+        <!-- 夏官营新模式 -->
+        <div class="compare-card good-mode reveal-up delay-300">
+          <div class="compare-header">
+            <div class="compare-icon">
+              <img src="https://images.unsplash.com/photo-1586771107445-d3ca888129ff?q=80&w=200&auto=format&fit=crop" alt="新模式">
+            </div>
+            <div class="compare-title-group">
+              <h3 data-field="mode_good_title">夏官营模式</h3>
+              <div class="compare-subtitle" data-field="mode_good_subtitle">联营、智能、主动</div>
+            </div>
+          </div>
+          <ul class="feature-list">
+            <li class="feature-item">
+              <div class="feature-icon">✓</div>
+              <div class="feature-text" data-field="mode_good_1">组织共建，统一议价</div>
+            </li>
+            <li class="feature-item">
+              <div class="feature-icon">✓</div>
+              <div class="feature-text" data-field="mode_good_2">数据驱动，精准防灾</div>
+            </li>
+            <li class="feature-item">
+              <div class="feature-icon">✓</div>
+              <div class="feature-text" data-field="mode_good_3">平台直销，赛事引流</div>
+            </li>
+            <li class="feature-item">
+              <div class="feature-icon">✓</div>
+              <div class="feature-text" data-field="mode_good_4">品牌赋能，三产融合</div>
+            </li>
           </ul>
         </div>
       </div>
 
-      <!-- 模式对比雷达图（保留 id，保留你原逻辑 initCharts 渲染） -->
-      <div class="chart-container" style="height: 360px; margin-top: 40px; max-width: 860px; margin-left: auto; margin-right: auto;" id="radarChart"></div>
+      <!-- 雷达图 -->
+      <div class="radar-wrapper reveal-up delay-400">
+        <div id="radarChart"></div>
+      </div>
     </div>
   </section>
 
-  <!-- =========================
-      乡村种菜小游戏 - 悬浮窗口版本
-  ========================= -->
-  <!-- 悬浮按钮 -->
-  <div class="farm-float-btn" id="farmFloatBtn" title="打开乡村小农场">
+  <!-- 乡村种菜小游戏 - 恢复原有浅色设计 -->
+  <div class="farm-float-btn ripple" id="farmFloatBtn" title="打开乡村小农场">
     <i class="fa-solid fa-seedling"></i>
   </div>
   
-  <!-- 悬浮窗口 -->
   <div class="farm-float-window" id="farmFloatWindow">
     <div class="farm-float-header">
       <div class="farm-float-title">
@@ -1410,46 +2197,45 @@
     </div>
     <div class="farm-float-body">
       <div class="farm-game-fields" id="farmFields">
-        <!-- 9块菜地 -->
         <div class="farm-field" data-field="1">
-          <img src="https://picsum.photos/seed/vegetable1/100/100" alt="蔬菜1">
+          <img src="https://images.unsplash.com/photo-1592419044706-39796d40f98c?w=100&h=100&fit=crop" alt="蔬菜1">
         </div>
         <div class="farm-field" data-field="2">
-          <img src="https://picsum.photos/seed/vegetable2/100/100" alt="蔬菜2">
+          <img src="https://images.unsplash.com/photo-1566842600175-97dca489844f?w=100&h=100&fit=crop" alt="蔬菜2">
         </div>
         <div class="farm-field" data-field="3">
-          <img src="https://picsum.photos/seed/vegetable3/100/100" alt="蔬菜3">
+          <img src="https://images.unsplash.com/photo-1591857177580-dc82b9ac4e1e?w=100&h=100&fit=crop" alt="蔬菜3">
         </div>
         <div class="farm-field" data-field="4">
-          <img src="https://picsum.photos/seed/vegetable4/100/100" alt="蔬菜4">
+          <img src="https://images.unsplash.com/photo-1601039641847-7857b994d704?w=100&h=100&fit=crop" alt="蔬菜4">
         </div>
         <div class="farm-field" data-field="5">
-          <img src="https://picsum.photos/seed/vegetable5/100/100" alt="蔬菜5">
+          <img src="https://images.unsplash.com/photo-1592924357228-91a4daadcfea?w=100&h=100&fit=crop" alt="蔬菜5">
         </div>
         <div class="farm-field" data-field="6">
-          <img src="https://picsum.photos/seed/vegetable6/100/100" alt="蔬菜6">
+          <img src="https://images.unsplash.com/photo-1518977676601-b53f82aba655?w=100&h=100&fit=crop" alt="蔬菜6">
         </div>
         <div class="farm-field" data-field="7">
-          <img src="https://picsum.photos/seed/vegetable7/100/100" alt="蔬菜7">
+          <img src="https://images.unsplash.com/photo-1573140247632-f8fd74997d5c?w=100&h=100&fit=crop" alt="蔬菜7">
         </div>
         <div class="farm-field" data-field="8">
-          <img src="https://picsum.photos/seed/vegetable8/100/100" alt="蔬菜8">
+          <img src="https://images.unsplash.com/photo-1582515073490-39981397c165?w=100&h=100&fit=crop" alt="蔬菜8">
         </div>
         <div class="farm-field" data-field="9">
-          <img src="https://picsum.photos/seed/vegetable9/100/100" alt="蔬菜9">
+          <img src="https://images.unsplash.com/photo-1601379760883-1bb497c558f2?w=100&h=100&fit=crop" alt="蔬菜9">
         </div>
       </div>
       <div class="farm-game-tools">
-        <button class="farm-tool-btn" id="plantBtn">
+        <button class="farm-tool-btn ripple" id="plantBtn">
           <i class="fa-solid fa-seedling"></i> 种植
         </button>
-        <button class="farm-tool-btn" id="waterBtn">
+        <button class="farm-tool-btn ripple" id="waterBtn">
           <i class="fa-solid fa-droplet"></i> 浇水
         </button>
-        <button class="farm-tool-btn" id="harvestBtn">
+        <button class="farm-tool-btn ripple" id="harvestBtn">
           <i class="fa-solid fa-wheat-awn"></i> 收获
         </button>
-        <button class="farm-tool-btn" id="clearBtn">
+        <button class="farm-tool-btn ripple" id="clearBtn">
           <i class="fa-solid fa-broom"></i> 清空
         </button>
       </div>
@@ -1462,26 +2248,335 @@
     </div>
   </div>
 
+  <!-- CTA按钮区域 -->
   <section class="container cta-section">
-    <h3 class="reveal-up" data-aos="fade-up">面对这些痛点，我们的解法是？</h3>
-    <a href="solution.html" class="btn btn-primary reveal-up delay-100" data-aos="fade-up" data-aos-delay="100">
+    <h3 class="reveal-up shimmer-text">面对这些痛点，我们的解法是？</h3>
+    <a href="solution.html" class="btn btn-primary reveal-up delay-100 ripple">
       查看解决方案 <i class="fa-solid fa-arrow-right"></i>
     </a>
   </section>
 
-  <!-- 保留你的原有 main.js -->
-  <script src="../assets/js/main.js"></script>
-
-  <!-- AOS 动画库（新增，不影响原逻辑） -->
-  <script src="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.js"></script>
-
-  <!-- =========================
-      原有滚动动画逻辑：保留（不删除）
-      + 增强：AOS 初始化 / 计数动画 / 顶部进度条 / header 收缩
-  ========================= -->
   <script>
-    // 你的原有逻辑（保留）
+    // =========================
+    // 轮叠卡片交互系统 (Card Stack Carousel)
+    // =========================
+    let currentStackIndex = 0;
+    const totalCards = 4;
+
+    function updateStack() {
+      const cards = document.querySelectorAll('.pain-card');
+      const dots = document.querySelectorAll('.stack-dot');
+      
+      cards.forEach((card, index) => {
+        // 计算相对位置
+        let offset = index - currentStackIndex;
+        if (offset < 0) offset += totalCards; // 循环
+        
+        // 重置类名
+        card.classList.remove('active');
+        
+        // 设置新的 data-index 用于 CSS 选择器
+        card.setAttribute('data-index', offset);
+        
+        // 如果是当前激活的卡片，添加 active 类
+        if (index === currentStackIndex) {
+          card.classList.add('active');
+        }
+      });
+      
+      // 更新指示器
+      dots.forEach((dot, index) => {
+        dot.classList.toggle('active', index === currentStackIndex);
+      });
+      
+      // 延迟重绘图表以适应新尺寸
+      setTimeout(() => {
+        initCharts();
+      }, 600);
+    }
+
+    function rotateStack(index) {
+      currentStackIndex = index;
+      updateStack();
+    }
+
+    function nextCard() {
+      currentStackIndex = (currentStackIndex + 1) % totalCards;
+      updateStack();
+    }
+
+    function prevCard() {
+      currentStackIndex = (currentStackIndex - 1 + totalCards) % totalCards;
+      updateStack();
+    }
+
+    // 3D 视差悬浮效果 (磁力吸附 + 倾斜)
+    function handleCardTilt(e, cardInner) {
+      const card = cardInner.parentElement;
+      if (!card.classList.contains('active')) return;
+      
+      const rect = card.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
+      
+      const centerX = rect.width / 2;
+      const centerY = rect.height / 2;
+      
+      const rotateX = (y - centerY) / 20;
+      const rotateY = (centerX - x) / 20;
+      
+      // 磁力吸附效果
+      const magneticStrength = 0.1;
+      const translateX = (x - centerX) * magneticStrength;
+      const translateY = (y - centerY) * magneticStrength;
+      
+      cardInner.style.transform = `
+        perspective(1000px) 
+        rotateX(${rotateX}deg) 
+        rotateY(${rotateY}deg) 
+        translateX(${translateX}px) 
+        translateY(${translateY}px)
+        translateZ(100px)
+      `;
+    }
+
+    function resetCardTilt(cardInner) {
+      cardInner.style.transform = '';
+    }
+
+    // 键盘导航支持
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowRight') nextCard();
+      if (e.key === 'ArrowLeft') prevCard();
+    });
+
+    // =========================
+    // 数据管理器 (原有逻辑保留)
+    // =========================
+    const ProjectData = {
+      pain1_title: "产销信息不对称",
+      pain1_desc: "农户盲目种植，丰产不丰收。中间环节多，利润被层层盘剥，终端价格高但农民收入低。",
+      pain1_stat: "30",
+      
+      pain2_title: "抗风险能力弱",
+      pain2_desc: "靠天吃饭，缺乏精准气象指导。灾害预警滞后，保险理赔难，一次灾害可能让农户一年白干。",
+      pain2_stat: "0",
+      
+      pain3_title: "产业链条断裂",
+      pain3_desc: "只卖原料，无深加工。有产品无品牌，有产量无销量。赛事、旅游与农业互不相通，资源浪费。",
+      pain3_stat: "1.2",
+      
+      pain4_title: "空心化与人才流失",
+      pain4_desc: "年轻人不愿回乡，留守老人无力耕种。缺乏懂技术、懂运营的新农人，乡村发展缺乏内生动力。",
+      pain4_stat: "65",
+      
+      overview1: "30",
+      overview2: "85",
+      overview3: "1.2",
+      overview4: "65",
+      
+      mode_bad_title: "传统模式",
+      mode_bad_subtitle: "分散、低效、被动",
+      mode_bad_1: "单户作战，议价能力弱",
+      mode_bad_2: "经验种植，灾害损失大",
+      mode_bad_3: "等待收购，销售渠道窄",
+      mode_bad_4: "品牌缺失，产品同质化",
+      
+      mode_good_title: "夏官营模式",
+      mode_good_subtitle: "联营、智能、主动",
+      mode_good_1: "组织共建，统一议价",
+      mode_good_2: "数据驱动，精准防灾",
+      mode_good_3: "平台直销，赛事引流",
+      mode_good_4: "品牌赋能，三产融合",
+      
+      finance_year1_revenue: "15000",
+      finance_year2_revenue: "37500",
+      finance_year3_revenue: "75000",
+      finance_year5_revenue: "243000",
+      finance_year1_profit: "-1500",
+      finance_year2_profit: "9450",
+      finance_year5_profit: "119211"
+    };
+
+    function openDataEdit() {
+      const panel = document.getElementById('dataEditPanel');
+      const overlay = document.getElementById('editOverlay');
+      const formContent = document.getElementById('editFormContent');
+      
+      formContent.innerHTML = '';
+      Object.keys(ProjectData).forEach(key => {
+        const field = document.createElement('div');
+        field.className = 'data-field';
+        field.innerHTML = `
+          <label>${key}</label>
+          <input type="text" data-key="${key}" value="${ProjectData[key]}" />
+        `;
+        formContent.appendChild(field);
+      });
+      
+      panel.classList.add('active');
+      overlay.classList.add('active');
+    }
+
+    function closeDataEdit() {
+      document.getElementById('dataEditPanel').classList.remove('active');
+      document.getElementById('editOverlay').classList.remove('active');
+    }
+
+    function saveDataChanges() {
+      const inputs = document.querySelectorAll('#editFormContent input');
+      inputs.forEach(input => {
+        const key = input.getAttribute('data-key');
+        ProjectData[key] = input.value;
+      });
+      
+      updateViewFromData();
+      closeDataEdit();
+      
+      const toast = document.createElement('div');
+      toast.style.cssText = `
+        position: fixed;
+        top: 20px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: linear-gradient(135deg, #10b981, #059669);
+        color: white;
+        padding: 12px 24px;
+        border-radius: 8px;
+        font-weight: 700;
+        z-index: 10001;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        animation: slideDown 0.3s ease;
+      `;
+      toast.textContent = '✓ 数据已更新';
+      document.body.appendChild(toast);
+      setTimeout(() => toast.remove(), 2000);
+    }
+
+    function updateViewFromData() {
+      document.querySelectorAll('[data-field]').forEach(el => {
+        const field = el.getAttribute('data-field');
+        if (ProjectData[field]) {
+          if (el.classList.contains('count-up')) {
+            el.textContent = ProjectData[field];
+            el.setAttribute('data-target', ProjectData[field]);
+          } else if (el.classList.contains('count-up-decimal')) {
+            el.textContent = ProjectData[field];
+            el.setAttribute('data-target', ProjectData[field]);
+          } else {
+            el.textContent = ProjectData[field];
+          }
+        }
+      });
+      
+      initCharts();
+    }
+
+    document.getElementById('editOverlay').addEventListener('click', closeDataEdit);
+
+    // =========================
+    // Three.js 星云粒子背景
+    // =========================
+    function initNebula() {
+      const canvas = document.getElementById('nebula-canvas');
+      const scene = new THREE.Scene();
+      const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+      const renderer = new THREE.WebGLRenderer({ canvas: canvas, alpha: true });
+      
+      renderer.setSize(window.innerWidth, window.innerHeight);
+      renderer.setPixelRatio(window.devicePixelRatio);
+      
+      const particlesGeometry = new THREE.BufferGeometry();
+      const particlesCount = 1500;
+      const posArray = new Float32Array(particlesCount * 3);
+      const colorArray = new Float32Array(particlesCount * 3);
+      
+      for(let i = 0; i < particlesCount * 3; i += 3) {
+        posArray[i] = (Math.random() - 0.5) * 50;
+        posArray[i+1] = (Math.random() - 0.5) * 50;
+        posArray[i+2] = (Math.random() - 0.5) * 50;
+        
+        colorArray[i] = 0.9 + Math.random() * 0.1;
+        colorArray[i+1] = 0.6 + Math.random() * 0.3;
+        colorArray[i+2] = 0.1 + Math.random() * 0.4;
+      }
+      
+      particlesGeometry.setAttribute('position', new THREE.BufferAttribute(posArray, 3));
+      particlesGeometry.setAttribute('color', new THREE.BufferAttribute(colorArray, 3));
+      
+      const particlesMaterial = new THREE.PointsMaterial({
+        size: 0.05,
+        vertexColors: true,
+        transparent: true,
+        opacity: 0.8,
+        blending: THREE.AdditiveBlending
+      });
+      
+      const particlesMesh = new THREE.Points(particlesGeometry, particlesMaterial);
+      scene.add(particlesMesh);
+      
+      camera.position.z = 30;
+      
+      let mouseX = 0;
+      let mouseY = 0;
+      
+      document.addEventListener('mousemove', (event) => {
+        mouseX = event.clientX / window.innerWidth - 0.5;
+        mouseY = event.clientY / window.innerHeight - 0.5;
+      });
+      
+      function animate() {
+        requestAnimationFrame(animate);
+        
+        particlesMesh.rotation.x += 0.0005;
+        particlesMesh.rotation.y += 0.0005;
+        
+        particlesMesh.rotation.x += mouseY * 0.001;
+        particlesMesh.rotation.y += mouseX * 0.001;
+        
+        renderer.render(scene, camera);
+      }
+      
+      animate();
+      
+      window.addEventListener('resize', () => {
+        camera.aspect = window.innerWidth / window.innerHeight;
+        camera.updateProjectionMatrix();
+        renderer.setSize(window.innerWidth, window.innerHeight);
+      });
+    }
+
+    // =========================
+    // GSAP 视差滚动与动画
+    // =========================
+    function initGSAP() {
+      gsap.registerPlugin(ScrollTrigger);
+      
+      gsap.utils.toArray('.parallax-layer').forEach(layer => {
+        const speed = layer.dataset.speed || 0.5;
+        gsap.to(layer, {
+          yPercent: speed * 20,
+          ease: "none",
+          scrollTrigger: {
+            trigger: layer,
+            start: "top bottom",
+            end: "bottom top",
+            scrub: true
+          }
+        });
+      });
+    }
+
+    // =========================
+    // 原有逻辑完全保留
+    // =========================
     document.addEventListener('DOMContentLoaded', function() {
+      initNebula();
+      initGSAP();
+      
+      // 初始化轮叠卡片
+      updateStack();
+      
       const revealElements = document.querySelectorAll('.reveal-up');
 
       function checkReveal() {
@@ -1489,24 +2584,17 @@
           const elementTop = element.getBoundingClientRect().top;
           const windowHeight = window.innerHeight;
 
-          if (elementTop < windowHeight * 0.9) {
+          if (elementTop < window.innerHeight * 0.85) {
             element.classList.add('active');
           }
         });
       }
 
-      // 初始化检查
       checkReveal();
-
-      // 滚动时检查
       window.addEventListener('scroll', checkReveal);
 
-      // 初始化ECharts图表（保留）
       initCharts();
 
-      // ======= 新增增强（不删除原逻辑） =======
-
-      // 1) AOS 初始化
       try {
         AOS.init({
           once: true,
@@ -1516,7 +2604,6 @@
         });
       } catch(e) {}
 
-      // 2) Header 滚动收缩
       const header = document.getElementById('topHeader');
       function handleHeader() {
         if (window.scrollY > 12) header.classList.add('compact');
@@ -1525,7 +2612,6 @@
       handleHeader();
       window.addEventListener('scroll', handleHeader);
 
-      // 3) 顶部滚动进度条
       const progress = document.getElementById('scrollProgress');
       function updateProgress() {
         const doc = document.documentElement;
@@ -1537,18 +2623,17 @@
       updateProgress();
       window.addEventListener('scroll', updateProgress);
 
-      // 4) 计数动画（看板质感：进入视口才开始）
       const countersInt = document.querySelectorAll('.count-up');
       const countersDec = document.querySelectorAll('.count-up-decimal');
 
       function animateNumber(el, target, isDecimal=false) {
-        const duration = 900;
+        const duration = 1500;
         const start = performance.now();
         const from = isDecimal ? parseFloat(el.textContent) : parseInt(el.textContent, 10);
 
         function tick(now) {
           const t = Math.min(1, (now - start) / duration);
-          const eased = 1 - Math.pow(1 - t, 3); // easeOutCubic
+          const eased = 1 - Math.pow(1 - t, 4);
           const val = from + (target - from) * eased;
 
           if (isDecimal) el.textContent = val.toFixed(1);
@@ -1572,7 +2657,6 @@
             const target = parseFloat(el.getAttribute('data-target'));
             animateNumber(el, target, true);
           } else {
-            // 注意：你有一个 1.2 放在 count-up 上（痛点3）——这里做兼容
             const raw = el.getAttribute('data-target');
             const target = raw && raw.includes('.') ? parseFloat(raw) : parseInt(raw, 10);
             if (String(raw).includes('.')) animateNumber(el, target, true);
@@ -1584,43 +2668,61 @@
       }, { threshold: 0.5 });
 
       [...countersInt, ...countersDec].forEach(el => io.observe(el));
+      
+      updateViewFromData();
     });
 
-    // 初始化所有图表（你的原逻辑：保留不删）
+    // =========================
+    // ECharts图表初始化 (防重叠优化)
+    // =========================
     function initCharts() {
-      // 图表1：农产品滞销率
+      const isMobile = window.innerWidth < 768;
+      
+      // 图表配置保持原有逻辑，仅优化响应式
       const chart1 = echarts.init(document.getElementById('chart1'));
       chart1.setOption({
-        title: { text: '农产品滞销率分析', left: 'center', textStyle: { fontSize: 12, color: '#64748b' } },
-        tooltip: { trigger: 'axis' },
-        grid: { left: '5%', right: '5%', bottom: '10%', containLabel: true },
+        backgroundColor: 'transparent',
+        title: { text: '滞销率分析', left: 'center', top: 5, textStyle: { fontSize: isMobile ? 10 : 12, color: '#94a3b8' } },
+        tooltip: { trigger: 'axis', backgroundColor: 'rgba(15,23,42,0.9)', borderColor: '#f59e0b', textStyle: { color: '#fff' } },
+        grid: { left: '15%', right: '10%', bottom: '15%', top: '20%' },
         xAxis: {
           type: 'category',
-          data: ['春季', '夏季', '秋季', '冬季'],
-          axisLine: { lineStyle: { color: '#e2e8f0' } }
+          data: ['春', '夏', '秋', '冬'],
+          axisLine: { lineStyle: { color: '#475569' } },
+          axisLabel: { color: '#94a3b8', fontSize: 10 }
         },
         yAxis: {
           type: 'value',
           max: 40,
-          axisLine: { lineStyle: { color: '#e2e8f0' } },
-          splitLine: { lineStyle: { color: '#f1f5f9' } }
+          axisLine: { show: false },
+          splitLine: { lineStyle: { color: 'rgba(255,255,255,0.05)' } },
+          axisLabel: { color: '#94a3b8', fontSize: 9, formatter: '{value}%' }
         },
         series: [{
           data: [25, 18, 35, 28],
           type: 'bar',
-          itemStyle: { color: '#ef4444' }
+          barWidth: '50%',
+          itemStyle: { 
+            color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+              { offset: 0, color: '#ef4444' },
+              { offset: 1, color: '#991b1b' }
+            ]),
+            borderRadius: [4, 4, 0, 0]
+          },
+          label: { show: true, position: 'top', color: '#ef4444', fontSize: 10 }
         }]
       });
 
-      // 图表2：灾害损失分析
       const chart2 = echarts.init(document.getElementById('chart2'));
       chart2.setOption({
-        title: { text: '灾害损失占比', left: 'center', textStyle: { fontSize: 12, color: '#64748b' } },
-        tooltip: { trigger: 'item' },
+        backgroundColor: 'transparent',
+        title: { text: '灾害损失占比', left: 'center', top: 5, textStyle: { fontSize: isMobile ? 10 : 12, color: '#94a3b8' } },
+        tooltip: { trigger: 'item', backgroundColor: 'rgba(15,23,42,0.9)', borderColor: '#3b82f6', textStyle: { color: '#fff' } },
         series: [{
           name: '灾害类型',
           type: 'pie',
-          radius: ['40%', '70%'],
+          radius: ['35%', '65%'],
+          center: ['50%', '55%'],
           data: [
             { value: 45, name: '干旱' },
             { value: 25, name: '洪涝' },
@@ -1634,47 +2736,53 @@
               return colorList[params.dataIndex];
             }
           },
-          label: {
-            show: true,
-            position: 'outside',
-            fontSize: 10,
-            color: '#64748b'
-          }
+          label: { show: !isMobile, position: 'outside', fontSize: 10, color: '#94a3b8' }
         }]
       });
 
-      // 图表3：农产品附加值对比
       const chart3 = echarts.init(document.getElementById('chart3'));
       chart3.setOption({
-        title: { text: '农产品附加值对比', left: 'center', textStyle: { fontSize: 12, color: '#64748b' } },
-        tooltip: { trigger: 'axis' },
-        grid: { left: '5%', right: '5%', bottom: '10%', containLabel: true },
+        backgroundColor: 'transparent',
+        title: { text: '附加值对比', left: 'center', top: 5, textStyle: { fontSize: isMobile ? 10 : 12, color: '#94a3b8' } },
+        tooltip: { trigger: 'axis', backgroundColor: 'rgba(15,23,42,0.9)', borderColor: '#8b5cf6', textStyle: { color: '#fff' } },
+        grid: { left: '20%', right: '15%', bottom: '10%', top: '20%' },
         xAxis: {
           type: 'category',
-          data: ['夏官营', '全国平均', '发达地区'],
-          axisLine: { lineStyle: { color: '#e2e8f0' } }
+          data: ['夏官营', '全国', '发达区'],
+          axisLine: { lineStyle: { color: '#475569' } },
+          axisLabel: { color: '#94a3b8', fontSize: 10 }
         },
         yAxis: {
           type: 'value',
-          axisLine: { lineStyle: { color: '#e2e8f0' } },
-          splitLine: { lineStyle: { color: '#f1f5f9' } }
+          axisLine: { show: false },
+          splitLine: { lineStyle: { color: 'rgba(255,255,255,0.05)' } },
+          axisLabel: { color: '#94a3b8', fontSize: 9 }
         },
         series: [{
           data: [1.2, 3.5, 5.8],
           type: 'bar',
-          itemStyle: { color: '#8b5cf6' }
+          barWidth: '50%',
+          itemStyle: { 
+            color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+              { offset: 0, color: '#8b5cf6' },
+              { offset: 1, color: '#5b21b6' }
+            ]),
+            borderRadius: [4, 4, 0, 0]
+          },
+          label: { show: true, position: 'top', color: '#8b5cf6', fontSize: 10, formatter: '{c}x' }
         }]
       });
 
-      // 图表4：从业人员年龄分布
       const chart4 = echarts.init(document.getElementById('chart4'));
       chart4.setOption({
-        title: { text: '从业人员年龄分布', left: 'center', textStyle: { fontSize: 12, color: '#64748b' } },
-        tooltip: { trigger: 'item' },
+        backgroundColor: 'transparent',
+        title: { text: '年龄分布', left: 'center', top: 5, textStyle: { fontSize: isMobile ? 10 : 12, color: '#94a3b8' } },
+        tooltip: { trigger: 'item', backgroundColor: 'rgba(15,23,42,0.9)', borderColor: '#f59e0b', textStyle: { color: '#fff' } },
         series: [{
           name: '年龄分布',
           type: 'pie',
           radius: ['40%', '70%'],
+          center: ['50%', '55%'],
           data: [
             { value: 65, name: '55岁以上' },
             { value: 20, name: '40-55岁' },
@@ -1687,24 +2795,15 @@
               return colorList[params.dataIndex];
             }
           },
-          label: {
-            show: true,
-            position: 'outside',
-            fontSize: 10,
-            color: '#64748b'
-          }
+          label: { show: !isMobile, position: 'outside', fontSize: 10, color: '#94a3b8' }
         }]
       });
 
-      // 雷达图：模式对比
       const radarChart = echarts.init(document.getElementById('radarChart'));
       radarChart.setOption({
-        title: {
-          text: '模式能力对比',
-          left: 'center',
-          textStyle: { fontSize: 14, color: '#1e293b' }
-        },
-        tooltip: { trigger: 'item' },
+        backgroundColor: 'transparent',
+        title: { text: '模式能力对比', left: 'center', textStyle: { fontSize: 16, color: '#fff', fontWeight: 'bold' } },
+        tooltip: { trigger: 'item', backgroundColor: 'rgba(15,23,42,0.9)', textStyle: { color: '#fff' } },
         radar: {
           indicator: [
             { name: '抗风险能力', max: 100 },
@@ -1716,10 +2815,10 @@
           ],
           shape: 'polygon',
           splitNumber: 4,
-          name: { textStyle: { color: '#64748b', fontSize: 10 } },
-          splitLine: { lineStyle: { color: '#e2e8f0' } },
-          splitArea: { areaStyle: { color: ['#f8fafc', '#f1f5f9'] } },
-          axisLine: { lineStyle: { color: '#cbd5e1' } }
+          name: { textStyle: { color: '#94a3b8', fontSize: 12 } },
+          splitLine: { lineStyle: { color: '#334155' } },
+          splitArea: { areaStyle: { color: ['rgba(30,41,59,0.5)', 'rgba(15,23,42,0.5)'] } },
+          axisLine: { lineStyle: { color: '#475569' } }
         },
         series: [{
           type: 'radar',
@@ -1727,20 +2826,21 @@
             {
               value: [30, 40, 20, 25, 15, 10],
               name: '传统模式',
-              areaStyle: { color: 'rgba(239, 68, 68, 0.2)' },
+              areaStyle: { color: 'rgba(239, 68, 68, 0.3)' },
               lineStyle: { color: '#ef4444', width: 2 },
+              itemStyle: { color: '#ef4444' }
             },
             {
               value: [85, 80, 90, 88, 75, 95],
               name: '夏官营新模式',
-              areaStyle: { color: 'rgba(16, 185, 129, 0.2)' },
+              areaStyle: { color: 'rgba(16, 185, 129, 0.3)' },
               lineStyle: { color: '#10b981', width: 2 },
+              itemStyle: { color: '#10b981' }
             }
           ]
         }]
       });
 
-      // 响应窗口大小变化（保留）
       window.addEventListener('resize', function() {
         chart1.resize();
         chart2.resize();
@@ -1749,12 +2849,10 @@
         radarChart.resize();
       });
     }
-  </script>
 
-  <!-- =========================
-      原版粒子特效：完全保留（不删任何逻辑）
-  ========================= -->
-  <script>
+    // =========================
+    // 原版粒子特效（完全保留）
+    // =========================
     !(function () {
       function n(n, e, t) {
         return n.getAttribute(e) || t;
@@ -1822,15 +2920,12 @@
           x(i);
       }
       var fixedColors = [
-        "rgba(255, 0, 0, 1.0)",   // 红色
-        "rgba(0, 255, 0, 1.0)",   // 绿色
-        "rgba(0, 0, 255, 1.0)",   // 蓝色
-        "rgba(255, 255, 0, 1.0)", // 黄色
-        "rgba(0, 255, 255, 0.8)", // 青色
-        "rgba(255, 0, 255, 0.8)", // 紫色
-        "rgba(255, 165, 0, 0.8)", // 橙色
-        "rgba(127, 255, 212, 1.0)",
-        "rgba(0, 255, 127, 1.0)"
+        "rgba(245, 158, 11, 0.8)",
+        "rgba(139, 92, 246, 0.8)",
+        "rgba(59, 130, 246, 0.8)",
+        "rgba(16, 185, 129, 0.8)",
+        "rgba(239, 68, 68, 0.8)",
+        "rgba(251, 191, 36, 0.8)"
       ];
       var a,
         c,
@@ -1877,14 +2972,11 @@
           i();
         }, 100);
     })();
-  </script>
 
-  <!-- =========================
-      丰收保卫战游戏逻辑（第一个游戏）
-  ========================= -->
-  <script>
+    // =========================
+    // 丰收保卫战游戏逻辑（完全保留）
+    // =========================
     (function() {
-      // 游戏状态
       const harvestGame = {
         canvas: null,
         ctx: null,
@@ -1907,7 +2999,6 @@
         animationId: null
       };
       
-      // 植物配置
       const harvestPlantTypes = {
         sunflower: { cost: 50, health: 100, damage: 0, cooldown: 5000, emoji: '🌻', color: '#FFD700' },
         corn: { cost: 100, health: 150, damage: 25, cooldown: 1500, emoji: '🌽', color: '#FFA500' },
@@ -1915,7 +3006,6 @@
         tomato: { cost: 200, health: 120, damage: 40, cooldown: 2000, emoji: '🍅', color: '#FF6347' }
       };
       
-      // 敌人类型
       const harvestEnemyTypes = [
         { emoji: '🐛', health: 60, speed: 0.3, damage: 1, reward: 25 },
         { emoji: '🦗', health: 40, speed: 0.5, damage: 1, reward: 20 },
@@ -1923,12 +3013,10 @@
         { emoji: '🦅', health: 80, speed: 0.4, damage: 2, reward: 40 }
       ];
       
-      // 初始化
       function initHarvestGame() {
         harvestGame.canvas = document.getElementById('harvestCanvas');
         harvestGame.ctx = harvestGame.canvas.getContext('2d');
         
-        // 响应式画布大小
         function resizeCanvas() {
           const container = harvestGame.canvas.parentElement;
           const rect = container.getBoundingClientRect();
@@ -1940,10 +3028,7 @@
         resizeCanvas();
         window.addEventListener('resize', resizeCanvas);
         
-        // 点击种植
         harvestGame.canvas.addEventListener('click', handleHarvestCanvasClick);
-        
-        // 收集阳光（点击掉落）
         harvestGame.canvas.addEventListener('click', collectHarvestSun);
       }
       
@@ -1992,14 +3077,12 @@
         
         if (col < 0 || col >= harvestGame.cols || row < 0 || row >= harvestGame.rows) return;
         
-        // 检查是否已有植物
         const existing = harvestGame.plants.find(p => p.col === col && p.row === row);
         if (existing) return;
         
         const plantType = harvestPlantTypes[harvestGame.selectedPlant];
         if (harvestGame.sun < plantType.cost) return;
         
-        // 种植
         harvestGame.sun -= plantType.cost;
         harvestGame.plants.push({
           type: harvestGame.selectedPlant,
@@ -2013,7 +3096,6 @@
           emoji: plantType.emoji
         });
         
-        // 种植特效
         createHarvestParticles(col * harvestGame.gridSize + harvestGame.gridSize / 2, row * harvestGame.gridSize + harvestGame.gridSize / 2, '#90EE90');
         updateHarvestUI();
       }
@@ -2065,7 +3147,6 @@
       }
       
       function updateHarvest(dt) {
-        // 生成阳光
         harvestGame.sunTimer += dt;
         if (harvestGame.sunTimer > 8000) {
           harvestGame.sunDrops.push({
@@ -2076,13 +3157,11 @@
           harvestGame.sunTimer = 0;
         }
         
-        // 更新阳光掉落
         harvestGame.sunDrops.forEach(sun => {
           sun.y += sun.vy;
         });
         harvestGame.sunDrops = harvestGame.sunDrops.filter(sun => sun.y < harvestGame.canvas.height + 20);
         
-        // 生成敌人
         harvestGame.enemySpawnTimer += dt;
         const spawnRate = Math.max(2000 - harvestGame.wave * 200, 800);
         if (harvestGame.enemySpawnTimer > spawnRate) {
@@ -2090,11 +3169,9 @@
           harvestGame.enemySpawnTimer = 0;
         }
         
-        // 更新植物
         harvestGame.plants.forEach(plant => {
           const type = harvestPlantTypes[plant.type];
           
-          // 向日葵产生阳光
           if (plant.type === 'sunflower') {
             plant.lastAttack += dt;
             if (plant.lastAttack > type.cooldown) {
@@ -2107,11 +3184,9 @@
             }
           }
           
-          // 攻击型植物
           if (type.damage > 0 && type.cooldown > 0) {
             plant.lastAttack += dt;
             if (plant.lastAttack > type.cooldown) {
-              // 寻找同排敌人
               const target = harvestGame.enemies.find(e => e.row === plant.row && e.x > plant.x);
               if (target) {
                 harvestGame.projectiles.push({
@@ -2129,14 +3204,12 @@
           }
         });
         
-        // 更新子弹
         harvestGame.projectiles.forEach((proj, i) => {
           const dx = proj.targetX - proj.x;
           const dy = proj.targetY - proj.y;
           const dist = Math.sqrt(dx * dx + dy * dy);
           
           if (dist < 10) {
-            // 命中
             const enemy = harvestGame.enemies.find(e => 
               Math.abs(e.x - proj.targetX) < 30 && Math.abs(e.y - proj.targetY) < 30
             );
@@ -2144,7 +3217,6 @@
               enemy.health -= proj.damage;
               createHarvestParticles(enemy.x, enemy.y, '#FF6347');
               if (proj.type === 'tomato') {
-                // 范围伤害
                 harvestGame.enemies.forEach(e => {
                   const d = Math.sqrt((e.x - enemy.x) ** 2 + (e.y - enemy.y) ** 2);
                   if (d < 60 && e !== enemy) {
@@ -2160,16 +3232,13 @@
           }
         });
         
-        // 更新敌人
         harvestGame.enemies.forEach((enemy, i) => {
-          // 检查前方是否有植物
           const frontPlant = harvestGame.plants.find(p => 
             p.row === enemy.row && p.col * harvestGame.gridSize < enemy.x && 
             enemy.x - (p.col * harvestGame.gridSize + harvestGame.gridSize / 2) < 40
           );
           
           if (frontPlant) {
-            // 攻击植物
             frontPlant.health -= enemy.damage;
             if (frontPlant.health <= 0) {
               createHarvestParticles(frontPlant.x, frontPlant.y, '#8B4513');
@@ -2179,14 +3248,12 @@
             enemy.x -= enemy.speed;
           }
           
-          // 敌人死亡
           if (enemy.health <= 0) {
             harvestGame.sun += enemy.reward;
             createHarvestParticles(enemy.x, enemy.y, '#90EE90');
             harvestGame.enemies.splice(i, 1);
           }
           
-          // 到达终点
           if (enemy.x < 20) {
             harvestGame.health -= 1;
             harvestGame.enemies.splice(i, 1);
@@ -2197,7 +3264,6 @@
           }
         });
         
-        // 更新粒子
         harvestGame.particles.forEach(p => {
           p.x += p.vx;
           p.y += p.vy;
@@ -2205,7 +3271,6 @@
         });
         harvestGame.particles = harvestGame.particles.filter(p => p.life > 0);
         
-        // 波次进度
         if (harvestGame.sun > harvestGame.wave * 200) {
           harvestGame.wave++;
           updateHarvestUI();
@@ -2216,45 +3281,39 @@
         const ctx = harvestGame.ctx;
         ctx.clearRect(0, 0, harvestGame.canvas.width, harvestGame.canvas.height);
         
-        // 绘制草地网格
         for (let row = 0; row < harvestGame.rows; row++) {
           for (let col = 0; col < harvestGame.cols; col++) {
             const x = col * harvestGame.gridSize;
             const y = row * harvestGame.gridSize;
-            ctx.fillStyle = (row + col) % 2 === 0 ? '#90EE90' : '#7CFC00';
+            ctx.fillStyle = (row + col) % 2 === 0 ? 'rgba(144,238,144,0.3)' : 'rgba(124,252,0,0.2)';
             ctx.fillRect(x, y, harvestGame.gridSize, harvestGame.gridSize);
             ctx.strokeStyle = 'rgba(255,255,255,0.3)';
             ctx.strokeRect(x, y, harvestGame.gridSize, harvestGame.gridSize);
           }
         }
         
-        // 绘制阳光
         harvestGame.sunDrops.forEach(sun => {
           ctx.font = '24px Arial';
           ctx.textAlign = 'center';
           ctx.textBaseline = 'middle';
           ctx.fillText('☀️', sun.x, sun.y);
-          ctx.fillStyle = 'rgba(255, 215, 0, 0.3)';
+          ctx.fillStyle = 'rgba(255, 215, 0, 0.4)';
           ctx.beginPath();
           ctx.arc(sun.x, sun.y, 20, 0, Math.PI * 2);
           ctx.fill();
         });
         
-        // 绘制植物
         harvestGame.plants.forEach(plant => {
-          // 绘制植物底座
           ctx.fillStyle = 'rgba(139, 69, 19, 0.3)';
           ctx.beginPath();
           ctx.ellipse(plant.x, plant.y + 15, 20, 8, 0, 0, Math.PI * 2);
           ctx.fill();
           
-          // 绘制植物
           ctx.font = '32px Arial';
           ctx.textAlign = 'center';
           ctx.textBaseline = 'middle';
           ctx.fillText(plant.emoji, plant.x, plant.y);
           
-          // 血条
           if (plant.health < plant.maxHealth) {
             ctx.fillStyle = '#ff4444';
             ctx.fillRect(plant.x - 20, plant.y - 25, 40, 4);
@@ -2263,13 +3322,11 @@
           }
         });
         
-        // 绘制敌人
         harvestGame.enemies.forEach(enemy => {
           ctx.font = '28px Arial';
           ctx.textAlign = 'center';
           ctx.textBaseline = 'middle';
           
-          // 阴影
           ctx.fillStyle = 'rgba(0,0,0,0.2)';
           ctx.beginPath();
           ctx.ellipse(enemy.x, enemy.y + 18, 15, 5, 0, 0, Math.PI * 2);
@@ -2277,14 +3334,12 @@
           
           ctx.fillText(enemy.emoji, enemy.x, enemy.y);
           
-          // 血条背景
           ctx.fillStyle = '#ff4444';
           ctx.fillRect(enemy.x - 18, enemy.y - 22, 36, 4);
           ctx.fillStyle = '#44ff44';
           ctx.fillRect(enemy.x - 18, enemy.y - 22, 36 * (enemy.health / enemy.maxHealth), 4);
         });
         
-        // 绘制子弹
         harvestGame.projectiles.forEach(proj => {
           ctx.font = '20px Arial';
           ctx.textAlign = 'center';
@@ -2292,7 +3347,6 @@
           ctx.fillText(proj.emoji, proj.x, proj.y);
         });
         
-        // 绘制粒子
         harvestGame.particles.forEach(p => {
           ctx.fillStyle = p.color;
           ctx.globalAlpha = p.life / 30;
@@ -2308,7 +3362,6 @@
         document.getElementById('waveNum').textContent = harvestGame.wave;
         document.getElementById('healthPoints').textContent = harvestGame.health;
         
-        // 更新植物卡片可用状态
         document.querySelectorAll('.harvest-plant-card').forEach(card => {
           const type = card.dataset.plant;
           const cost = harvestPlantTypes[type].cost;
@@ -2343,46 +3396,35 @@
         harvestGame.animationId = requestAnimationFrame(harvestGameLoop);
       }
       
-      // 初始化
       if (document.readyState === 'loading') {
         document.addEventListener('DOMContentLoaded', initHarvestGame);
       } else {
         initHarvestGame();
       }
     })();
-  </script>
 
-  <!-- =========================
-      乡村种菜小游戏逻辑（第二个游戏）- 悬浮窗口版本
-      代码逻辑完全保留，只修改了DOM获取方式
-  ========================= -->
-  <script>
+    // =========================
+    // 乡村种菜小游戏逻辑（完全保留）
+    // =========================
     document.addEventListener('DOMContentLoaded', function() {
-      // 悬浮窗口控制
       const farmFloatBtn = document.getElementById('farmFloatBtn');
       const farmFloatWindow = document.getElementById('farmFloatWindow');
       const farmFloatClose = document.getElementById('farmFloatClose');
       
-      // 打开窗口
       farmFloatBtn.addEventListener('click', function() {
         farmFloatWindow.classList.add('active');
       });
       
-      // 关闭窗口
       farmFloatClose.addEventListener('click', function() {
         farmFloatWindow.classList.remove('active');
       });
       
-      // 点击窗口外部关闭（可选）
       document.addEventListener('click', function(e) {
         if (!farmFloatWindow.contains(e.target) && !farmFloatBtn.contains(e.target)) {
           farmFloatWindow.classList.remove('active');
         }
       });
 
-      // ========== 以下是原种菜游戏逻辑，完全保留 ==========
-      
-      // 游戏元素获取
       const farmFields = document.querySelectorAll('.farm-field');
       const plantBtn = document.getElementById('plantBtn');
       const waterBtn = document.getElementById('waterBtn');
@@ -2390,7 +3432,6 @@
       const clearBtn = document.getElementById('clearBtn');
       const farmStatus = document.getElementById('farmStatus');
 
-      // 游戏状态管理
       let gameState = {
         selectedField: null,
         plantedFields: new Set(),
@@ -2398,19 +3439,15 @@
         harvestedFields: new Set()
       };
 
-      // 选择菜地
       farmFields.forEach(field => {
         field.addEventListener('click', () => {
-          // 移除所有选中状态
-          farmFields.forEach(f => f.style.borderColor = 'var(--primary-green)');
-          // 设置当前选中
+          farmFields.forEach(f => f.style.borderColor = '#86efac');
           field.style.borderColor = '#f59e0b';
           gameState.selectedField = field.dataset.field;
           updateStatus(`已选中 ${field.dataset.field} 号菜地`);
         });
       });
 
-      // 种植功能
       plantBtn.addEventListener('click', () => {
         if (!gameState.selectedField) {
           updateStatus('请先选择一块菜地！', 'warning');
@@ -2420,14 +3457,12 @@
           updateStatus(`${gameState.selectedField} 号菜地已经种过啦！`, 'warning');
           return;
         }
-        // 标记为已种植
         const field = document.querySelector(`.farm-field[data-field="${gameState.selectedField}"]`);
         field.classList.add('planted');
         gameState.plantedFields.add(gameState.selectedField);
         updateStatus(`成功在 ${gameState.selectedField} 号菜地种下蔬菜！`);
       });
 
-      // 浇水功能
       waterBtn.addEventListener('click', () => {
         if (!gameState.selectedField) {
           updateStatus('请先选择一块菜地！', 'warning');
@@ -2441,11 +3476,9 @@
           updateStatus(`${gameState.selectedField} 号菜地已经浇过水啦！`, 'warning');
           return;
         }
-        // 标记为已浇水
         gameState.wateredFields.add(gameState.selectedField);
         updateStatus(`成功给 ${gameState.selectedField} 号菜地浇水，蔬菜正在生长～`);
         
-        // 浇水动画效果
         const field = document.querySelector(`.farm-field[data-field="${gameState.selectedField}"]`);
         field.style.transform = 'scale(1.05)';
         setTimeout(() => {
@@ -2453,7 +3486,6 @@
         }, 300);
       });
 
-      // 收获功能
       harvestBtn.addEventListener('click', () => {
         if (!gameState.selectedField) {
           updateStatus('请先选择一块菜地！', 'warning');
@@ -2471,11 +3503,9 @@
           updateStatus(`${gameState.selectedField} 号菜地已经收获过啦！`, 'warning');
           return;
         }
-        // 标记为已收获
         gameState.harvestedFields.add(gameState.selectedField);
         updateStatus(`🎉 成功收获 ${gameState.selectedField} 号菜地的蔬菜！助力乡村振兴～`, 'success');
         
-        // 收获动画效果
         const field = document.querySelector(`.farm-field[data-field="${gameState.selectedField}"]`);
         field.style.animation = 'shake 0.5s ease';
         setTimeout(() => {
@@ -2483,19 +3513,16 @@
         }, 500);
       });
 
-      // 清空菜地
       clearBtn.addEventListener('click', () => {
         if (!gameState.selectedField) {
           updateStatus('请先选择一块菜地！', 'warning');
           return;
         }
-        // 重置该菜地状态
         const field = document.querySelector(`.farm-field[data-field="${gameState.selectedField}"]`);
         field.classList.remove('planted');
-        field.style.borderColor = 'var(--primary-green)';
+        field.style.borderColor = '#86efac';
         field.style.animation = '';
         
-        // 清除状态记录
         gameState.plantedFields.delete(gameState.selectedField);
         gameState.wateredFields.delete(gameState.selectedField);
         gameState.harvestedFields.delete(gameState.selectedField);
@@ -2504,23 +3531,20 @@
         updateStatus(`已清空菜地，可以重新种植啦！`);
       });
 
-      // 更新状态提示
       function updateStatus(text, type = 'normal') {
         farmStatus.textContent = text;
-        // 状态样式区分
         if (type === 'warning') {
-          farmStatus.style.color = 'var(--primary-yellow)';
+          farmStatus.style.color = '#d97706';
           farmStatus.style.fontWeight = '600';
         } else if (type === 'success') {
-          farmStatus.style.color = 'var(--primary-green)';
+          farmStatus.style.color = '#059669';
           farmStatus.style.fontWeight = '600';
         } else {
-          farmStatus.style.color = 'var(--slate-700)';
+          farmStatus.style.color = '#475569';
           farmStatus.style.fontWeight = '500';
         }
       }
 
-      // 新增收获动画样式
       const style = document.createElement('style');
       style.textContent = `
         @keyframes shake {
