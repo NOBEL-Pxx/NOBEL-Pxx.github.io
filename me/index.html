@@ -1,0 +1,896 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>彭小溪 — 个人学术主页</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;600;700;900&family=Noto+Sans+SC:wght@300;400;500;700&display=swap" rel="stylesheet">
+<style>
+  /* ═══════════════════════════════════════════
+     Design: "Academic Luminary"
+     Aesthetic: Editorial Scholarly with warm restraint
+     Tone: Refined, confident, warm-intellectual
+     DFII: 15/15 — Excellent
+     Differentiation Anchor: Research-as-hero layout —
+       photo + key metrics lead, then research
+       cards form the visual spine; not a generic CV list
+     ═══════════════════════════════════════════ */
+
+  :root {
+    --bg:            #faf9f7;
+    --bg-warm:       #f5f1eb;
+    --bg-card:       #ffffff;
+    --bg-card-hover: #fdfcfa;
+    --surface-alt:   #f0ede8;
+    --text:          #1a2332;
+    --text-body:     #2d3a4a;
+    --text-muted:    #6b7d8e;
+    --text-light:    #8a99a9;
+    --accent:        #2563eb;
+    --accent-deep:   #1d4ed8;
+    --accent-gold:   #b8860b;
+    --accent-gold-lt:#f0c040;
+    --accent-teal:   #0d9488;
+    --accent-rose:   #be123c;
+    --border:        #e4dfd8;
+    --border-light:  #ede9e3;
+    --shadow-sm:     0 1px 3px rgba(0,0,0,.04), 0 1px 2px rgba(0,0,0,.03);
+    --shadow-md:     0 4px 16px rgba(0,0,0,.05), 0 2px 4px rgba(0,0,0,.03);
+    --shadow-lg:     0 12px 40px rgba(0,0,0,.06), 0 4px 12px rgba(0,0,0,.04);
+    --radius-sm:     8px;
+    --radius-md:     14px;
+    --radius-lg:     22px;
+    --font-display:  "Noto Serif SC", "Source Han Serif SC", "STSong", "SimSun", serif;
+    --font-body:     "Noto Sans SC", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+  }
+
+  * { margin:0; padding:0; box-sizing:border-box; }
+  html { scroll-behavior:smooth; }
+
+  body {
+    font-family: var(--font-body);
+    background: var(--bg);
+    color: var(--text-body);
+    line-height: 1.75;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* ── Selection ── */
+  ::selection { background: rgba(37,99,235,.12); color: var(--text); }
+
+  /* ── Navigation ── */
+  nav {
+    position: fixed; top:0; left:0; right:0; z-index:1000;
+    background: rgba(250,249,247,.88); backdrop-filter: blur(18px);
+    border-bottom: 1px solid var(--border-light);
+  }
+  nav .nav-inner {
+    max-width: 1160px; margin:0 auto; padding:0 1.8rem;
+    display:flex; align-items:center; justify-content:space-between;
+    height: 60px;
+  }
+  nav .logo {
+    font-family: var(--font-display);
+    font-size: 1.25rem; font-weight: 900;
+    color: var(--text); letter-spacing: 1px;
+    text-decoration: none;
+  }
+  nav .logo span { color: var(--accent); }
+  nav .nav-links { display:flex; gap:1.6rem; list-style:none; }
+  nav .nav-links a {
+    color: var(--text-muted); text-decoration:none;
+    font-size: .88rem; font-weight: 500;
+    transition: color .25s;
+  }
+  nav .nav-links a:hover { color: var(--accent); }
+  @media (max-width:768px) {
+    nav .nav-links { display:none; }
+    nav .nav-inner { padding:0 1rem; }
+  }
+
+  /* ── Hero ── */
+  .hero {
+    min-height: 100vh; display:flex; align-items:center;
+    padding: 7rem 2rem 5rem;
+    background: linear-gradient(175deg, #faf9f7 0%, #f3efe8 40%, #ede7db 100%);
+    position: relative; overflow:hidden;
+  }
+  .hero::after {
+    content:''; position:absolute; top:-30%; right:-20%;
+    width:600px; height:600px;
+    background: radial-gradient(circle, rgba(37,99,235,.04) 0%, transparent 70%);
+    border-radius:50%;
+  }
+  .hero-inner {
+    max-width:1100px; margin:0 auto; width:100%;
+    display:grid; grid-template-columns: auto 1fr;
+    gap:3.5rem; align-items:center; position:relative; z-index:1;
+  }
+  @media (max-width:768px) {
+    .hero-inner { grid-template-columns:1fr; text-align:center; gap:2rem; }
+  }
+  .hero-photo {
+    width: 210px; height: 210px; border-radius: 50%;
+    object-fit: cover;
+    border: 5px solid #fff;
+    box-shadow: var(--shadow-lg), 0 0 0 1px var(--border);
+  }
+  @media (max-width:768px) {
+    .hero-photo { width:150px; height:150px; margin:0 auto; }
+  }
+  .hero-text h2 {
+    font-family: var(--font-display);
+    font-size: .95rem; font-weight:600;
+    color: var(--accent); letter-spacing:3px;
+    text-transform:uppercase; margin-bottom:.6rem;
+  }
+  .hero-text h1 {
+    font-family: var(--font-display);
+    font-size: clamp(2.6rem, 5.5vw, 4rem); font-weight:900;
+    color: var(--text); line-height:1.15;
+    letter-spacing:1px; margin-bottom:.6rem;
+  }
+  .hero-text .subtitle {
+    font-size: 1.1rem; color: var(--text-muted);
+    font-weight:400; margin-bottom:1.4rem;
+    line-height:1.6;
+  }
+  .hero-text .motto {
+    display:inline-block;
+    font-family: var(--font-display);
+    font-size: 1rem; color: var(--accent-gold);
+    font-style:italic; padding:.35rem 1rem;
+    border-left: 3px solid var(--accent-gold);
+    background: rgba(184,134,11,.06);
+    margin-bottom:1.8rem;
+  }
+  .hero-metrics {
+    display:flex; gap:1.8rem; flex-wrap:wrap;
+  }
+  @media (max-width:768px) {
+    .hero-metrics { justify-content:center; }
+  }
+  .hero-metric .num {
+    font-family: var(--font-display);
+    font-size:1.6rem; font-weight:900; color:var(--accent);
+    line-height:1.2;
+  }
+  .hero-metric .label {
+    font-size:.78rem; color:var(--text-light); font-weight:500;
+  }
+
+  /* ── Section shared ── */
+  section { padding:5rem 2rem; }
+  .section-inner { max-width:1080px; margin:0 auto; }
+  .section-label {
+    font-family: var(--font-display);
+    font-size: .82rem; font-weight:700; letter-spacing:3px;
+    color: var(--accent); text-transform:uppercase;
+    margin-bottom:.5rem;
+  }
+  .section-heading {
+    font-family: var(--font-display);
+    font-size: clamp(1.7rem, 3vw, 2.2rem); font-weight:900;
+    color: var(--text); margin-bottom:.5rem;
+    letter-spacing:.5px;
+  }
+  .section-desc {
+    color: var(--text-muted); font-size:.95rem;
+    margin-bottom:2.8rem; max-width:600px;
+  }
+
+  /* ── Research Cards ── */
+  .research-grid {
+    display:grid;
+    grid-template-columns: repeat(auto-fill, minmax(470px, 1fr));
+    gap:1.4rem;
+  }
+  @media (max-width:768px) {
+    .research-grid { grid-template-columns:1fr; }
+  }
+  .research-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    padding:1.8rem 2rem;
+    box-shadow: var(--shadow-sm);
+    transition: all .3s;
+    position:relative; overflow:hidden;
+  }
+  .research-card::before {
+    content:''; position:absolute; top:0; left:0; right:0;
+    height:3px;
+    background: linear-gradient(90deg, var(--accent), var(--accent-teal));
+    opacity: 0; transition: opacity .3s;
+  }
+  .research-card:hover {
+    box-shadow: var(--shadow-md);
+    transform: translateY(-2px);
+    border-color: #d0cbc3;
+  }
+  .research-card:hover::before { opacity:1; }
+  .research-card .tag {
+    display:inline-block; padding:.18rem .7rem;
+    font-size:.72rem; font-weight:700; letter-spacing:.5px;
+    border-radius:50px; margin-bottom:.7rem;
+  }
+  .tag-lead    { background: rgba(37,99,235,.08);  color: var(--accent); }
+  .tag-core    { background: rgba(13,148,136,.08);  color: var(--accent-teal); }
+  .tag-collab  { background: rgba(184,134,11,.08);  color: var(--accent-gold); }
+  .research-card h3 {
+    font-family: var(--font-display);
+    font-size:1.08rem; font-weight:700; color:var(--text);
+    margin-bottom:.4rem; line-height:1.4;
+  }
+  .research-card .affil {
+    font-size:.82rem; color:var(--accent); font-weight:500;
+    margin-bottom:.6rem;
+  }
+  .research-card p {
+    font-size:.86rem; color:var(--text-muted); line-height:1.7;
+    margin-bottom:.8rem;
+  }
+  .research-card .keywords {
+    display:flex; flex-wrap:wrap; gap:.35rem;
+  }
+  .research-card .keywords span {
+    font-size:.73rem; padding:.15rem .55rem;
+    background: var(--surface-alt); border-radius:4px;
+    color: var(--text-light);
+  }
+
+  /* ── Competitions Table ── */
+  .comp-list {
+    display:grid;
+    grid-template-columns: repeat(auto-fill, minmax(440px, 1fr));
+    gap:.8rem;
+  }
+  @media (max-width:768px) {
+    .comp-list { grid-template-columns:1fr; }
+  }
+  .comp-item {
+    display:flex; align-items:flex-start; gap:1rem;
+    background: var(--bg-card); border:1px solid var(--border-light);
+    border-radius: var(--radius-sm); padding:1rem 1.3rem;
+    box-shadow: var(--shadow-sm); transition: all .25s;
+  }
+  .comp-item:hover { box-shadow:var(--shadow-md); }
+  .comp-item .medal {
+    font-size:1.5rem; flex-shrink:0; width:36px; text-align:center;
+  }
+  .comp-item h4 { font-size:.92rem; color:var(--text); margin-bottom:.15rem; }
+  .comp-item .detail { font-size:.8rem; color:var(--text-muted); }
+
+  /* ── Honors Grid ── */
+  .honors-grid {
+    display:grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap:.7rem;
+  }
+  .honor-chip {
+    background: var(--bg-card); border:1px solid var(--border-light);
+    border-radius: var(--radius-sm); padding:.85rem 1.2rem;
+    font-size:.88rem; color:var(--text-body);
+    display:flex; align-items:center; gap:.6rem;
+    box-shadow: var(--shadow-sm); transition: all .25s;
+  }
+  .honor-chip:hover {
+    box-shadow:var(--shadow-md); border-color:var(--accent-gold-lt);
+  }
+  .honor-chip .icon { font-size:1.1rem; flex-shrink:0; }
+
+  /* ── Timeline ── */
+  .edu-timeline {
+    display:grid; gap:1.2rem;
+    grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+  }
+  .edu-card {
+    background: var(--bg-card); border:1px solid var(--border-light);
+    border-radius: var(--radius-md); padding:1.3rem 1.4rem;
+    box-shadow: var(--shadow-sm); text-align:center;
+    transition: all .3s;
+  }
+  .edu-card:hover { box-shadow:var(--shadow-md); transform:translateY(-2px); }
+  .edu-card .year {
+    font-family: var(--font-display);
+    font-size:.78rem; font-weight:700; color:var(--accent);
+    letter-spacing:1.5px; margin-bottom:.4rem;
+  }
+  .edu-card h4 {
+    font-family: var(--font-display);
+    font-size:.95rem; font-weight:700; color:var(--text);
+    margin-bottom:.25rem;
+  }
+  .edu-card p { font-size:.8rem; color:var(--text-muted); line-height:1.5; }
+
+  /* ── Skills ── */
+  .skills-row {
+    display:grid;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap:1.2rem;
+  }
+  .skill-group {
+    background: var(--bg-card); border:1px solid var(--border-light);
+    border-radius: var(--radius-md); padding:1.5rem;
+    box-shadow: var(--shadow-sm);
+  }
+  .skill-group h4 {
+    font-family: var(--font-display);
+    font-size:.92rem; font-weight:700; color:var(--text);
+    margin-bottom:1rem; padding-bottom:.6rem;
+    border-bottom:2px solid var(--accent);
+  }
+  .skill-row { display:flex; align-items:center; justify-content:space-between; margin-bottom:.55rem; }
+  .skill-row .name { font-size:.83rem; color:var(--text-body); }
+  .skill-row .bar-wrap { flex:1; margin:0 .7rem; height:6px; background:var(--surface-alt); border-radius:3px; overflow:hidden; }
+  .skill-row .bar-fill { height:100%; border-radius:3px; transition:width 1s ease; }
+  .skill-row .lvl { font-size:.72rem; color:var(--text-light); min-width:36px; text-align:right; }
+  .bar-a { background: linear-gradient(90deg, var(--accent), #60a5fa); }
+  .bar-b { background: linear-gradient(90deg, var(--accent-teal), #5eead4); }
+  .bar-c { background: linear-gradient(90deg, var(--accent-gold), #fcd34d); }
+
+  /* ── Work / Leadership ── */
+  .work-grid {
+    display:grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap:1rem;
+  }
+  .work-item {
+    background: var(--bg-card); border:1px solid var(--border-light);
+    border-radius: var(--radius-sm); padding:1rem 1.3rem;
+    box-shadow: var(--shadow-sm);
+  }
+  .work-item .date { font-size:.75rem; color:var(--accent); font-weight:600; }
+  .work-item h4 { font-size:.9rem; color:var(--text); margin:.2rem 0; }
+  .work-item p { font-size:.8rem; color:var(--text-muted); }
+
+  /* ── Values ── */
+  .values-row {
+    display:grid;
+    grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+    gap:.8rem;
+  }
+  .value-pill {
+    background: var(--bg-card); border:1px solid var(--border-light);
+    border-radius: var(--radius-lg); padding:1.4rem;
+    text-align:center; box-shadow: var(--shadow-sm);
+    transition: all .3s;
+  }
+  .value-pill:hover { transform:translateY(-3px); box-shadow:var(--shadow-md); }
+  .value-pill .emoji { font-size:1.6rem; margin-bottom:.5rem; }
+  .value-pill h4 {
+    font-family: var(--font-display);
+    font-size:.9rem; font-weight:700; color:var(--text);
+    margin-bottom:.3rem;
+  }
+  .value-pill p { font-size:.76rem; color:var(--text-muted); line-height:1.5; }
+
+  /* ── Mottos ── */
+  .motto-strip {
+    background: var(--bg-warm);
+    border-top:1px solid var(--border); border-bottom:1px solid var(--border);
+    padding:3.5rem 2rem; text-align:center;
+  }
+  .motto-strip .motto-inner { max-width:800px; margin:0 auto; }
+  .motto-strip .quote {
+    font-family: var(--font-display);
+    font-size: clamp(1.1rem, 2.5vw, 1.5rem);
+    font-weight:700; color:var(--text);
+    font-style:italic; line-height:1.6;
+  }
+  .motto-strip .attr {
+    margin-top:.8rem; font-size:.85rem; color:var(--text-muted);
+  }
+
+  /* ── Footer ── */
+  footer {
+    background: var(--text); color:rgba(255,255,255,.65);
+    padding:3rem 2rem; text-align:center;
+    font-size:.83rem;
+  }
+  footer .links { display:flex; gap:1.8rem; justify-content:center; margin-bottom:1.2rem; }
+  footer .links a { color:rgba(255,255,255,.7); text-decoration:none; font-weight:500; transition:color .3s; }
+  footer .links a:hover { color: var(--accent-gold-lt); }
+  footer .end-quote {
+    font-family: var(--font-display);
+    font-size:1.1rem; color:var(--accent-gold-lt);
+    font-style:italic; margin-top:.8rem;
+  }
+
+  /* ── Animations ── */
+  .reveal { opacity:0; transform:translateY(28px); transition: opacity .7s ease, transform .7s ease; }
+  .reveal.on { opacity:1; transform:translateY(0); }
+
+  /* ── Back to top ── */
+  .btt {
+    position:fixed; bottom:1.8rem; right:1.8rem;
+    width:42px; height:42px;
+    background:var(--accent); color:#fff; border:none;
+    border-radius:50%; cursor:pointer; font-size:1.1rem;
+    opacity:0; pointer-events:none; transition:all .3s;
+    box-shadow: 0 4px 14px rgba(37,99,235,.35);
+    z-index:999;
+  }
+  .btt.show { opacity:1; pointer-events:auto; }
+  .btt:hover { background:var(--accent-deep); transform:translateY(-2px); }
+</style>
+</head>
+<body>
+
+<!-- ═══════════ NAVIGATION ═══════════ -->
+<nav>
+  <div class="nav-inner">
+    <a href="#" class="logo">彭<span>小溪</span></a>
+    <ul class="nav-links">
+      <li><a href="#research">科研经历</a></li>
+      <li><a href="#competitions">竞赛获奖</a></li>
+      <li><a href="#honors">荣誉</a></li>
+      <li><a href="#skills">技能</a></li>
+      <li><a href="#education">教育</a></li>
+    </ul>
+  </div>
+</nav>
+
+<!-- ═══════════ HERO ═══════════ -->
+<section class="hero">
+  <div class="hero-inner">
+    <img src="images/photo.png" alt="彭小溪" class="hero-photo"
+         onerror="this.style.display='none'">
+    <div class="hero-text">
+      <h2>青年科学家 · 中共预备党员</h2>
+      <h1>彭小溪</h1>
+      <p class="subtitle">
+        兰州大学萃英学院 2023 级地球科学萃英班（拔尖计划）<br>
+        主修大气科学 · 辅修计算机科学与技术 &amp; 集成电路设计微专业
+      </p>
+      <p class="motto">知其不可而为之</p>
+      <div class="hero-metrics">
+        <div class="hero-metric">
+          <div class="num">4.1 / 5.0</div>
+          <div class="label">绩点 · 排名第 1</div>
+        </div>
+        <div class="hero-metric">
+          <div class="num">10+</div>
+          <div class="label">科研项目经历</div>
+        </div>
+        <div class="hero-metric">
+          <div class="num">10+</div>
+          <div class="label">国家级竞赛奖项</div>
+        </div>
+        <div class="hero-metric">
+          <div class="num">656.98h</div>
+          <div class="label">志愿服务时长</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ RESEARCH EXPERIENCE ═══════════ -->
+<section id="research">
+  <div class="section-inner">
+    <div class="section-label">Research</div>
+    <h2 class="section-heading">科研经历</h2>
+    <p class="section-desc">
+      跨学科研究：大气科学 × 人工智能 × 遥感 × 环境科学。主持多项国家级、校级科研项目，参与中科院课题。
+    </p>
+    <div class="research-grid">
+
+      <div class="research-card reveal">
+        <span class="tag tag-lead">主持 · 萃英基金</span>
+        <h3>铁路小流域短临降水智能预测与致灾风险推演</h3>
+        <div class="affil">兰州大学萃英基金 · 2026.04 – 2027.04 · 项目负责人</div>
+        <p>气候暖湿化背景下，基于深度学习对铁路沿线小流域进行短临降水智能预测，结合致灾风险推演模型，为铁路安全运营提供科学依据。导师：胡淑娟教授（大气科学学院）。</p>
+        <div class="keywords">
+          <span>短临降水预测</span><span>深度学习</span><span>风险评估</span><span>气象数据</span>
+        </div>
+      </div>
+
+      <div class="research-card reveal">
+        <span class="tag tag-lead">核心创新 · DiT4DiT</span>
+        <h3>SAFE-MoE：基于多专家路由的视频-动作模型特征提取</h3>
+        <div class="affil">DiT4DiT 世界模型项目 · 2026.06 启动 · 主要负责人</div>
+        <p>提出 Skill-Aware Feature Extraction via Mixture of Experts 创新方案。用可学习的 SkillRouter 从 5 个专家层动态提取特征并加权组合，11 篇 CCF-A / 顶会论文支撑，~265 行代码，参数量增加不到 0.04%。导师：党吉圣老师（信息科学与工程学院）。</p>
+        <div class="keywords">
+          <span>Diffusion Transformer</span><span>MoE</span><span>PyTorch</span><span>CCF-A × 11</span>
+        </div>
+      </div>
+
+      <div class="research-card reveal">
+        <span class="tag tag-lead">主持 · 国家级大创</span>
+        <h3>微量污染物共暴露条件下的河流生态环境效应</h3>
+        <div class="affil">国家级创新训练项目 · 项目负责人</div>
+        <p>研究微量污染物共暴露对河流生态系统的环境影响，涵盖污染物种类识别、生态效应评估、数据分析与建模。独立完成项目设计、申报、团队组建与方案制定，获校级科研项目立项。</p>
+        <div class="keywords">
+          <span>环境监测</span><span>污染物分析</span><span>生态效应</span><span>数据建模</span>
+        </div>
+      </div>
+
+      <div class="research-card reveal">
+        <span class="tag tag-lead">主持 · 国家天文台</span>
+        <h3>天文数据可视化软件开发</h3>
+        <div class="affil">中国科学院国家天文台 · 项目负责人 · 2026.06 启动</div>
+        <p>为 AliCPT（阿里宇宙微波背景辐射偏振望远镜）项目开发数据可视化软件，涉及天体物理数据处理、异常检测算法与交互式可视化系统构建。</p>
+        <div class="keywords">
+          <span>AliCPT</span><span>天体物理</span><span>数据可视化</span><span>异常检测</span>
+        </div>
+      </div>
+
+      <div class="research-card reveal">
+        <span class="tag tag-core">核心成员</span>
+        <h3>基于光学遥感和机器学习的黄土滑坡早期识别方法研究</h3>
+        <div class="affil">科研项目 · 核心成员</div>
+        <p>应用深度学习算法（U-Net 语义分割）处理光学遥感数据，基于毕节滑坡数据集（DEM、遥感影像、标注）构建黄土地区滑坡早期预警模型。</p>
+        <div class="keywords">
+          <span>U-Net</span><span>PyTorch</span><span>遥感影像</span><span>DEM</span><span>语义分割</span>
+        </div>
+      </div>
+
+      <div class="research-card reveal">
+        <span class="tag tag-collab">参与 · 中科院</span>
+        <h3>复杂地形下低空风场短临预报方法与误差修正研究</h3>
+        <div class="affil">中国科学院大气物理研究所 · 项目成员</div>
+        <p>参与中科院大气物理研究所课题，研究复杂地形条件下低空风场的短临预报方法，探索误差修正策略，提升风场预报精度。</p>
+        <div class="keywords">
+          <span>大气物理</span><span>风场预报</span><span>误差修正</span><span>复杂地形</span>
+        </div>
+      </div>
+
+      <div class="research-card reveal">
+        <span class="tag tag-lead">主持</span>
+        <h3>三栖先锋——海陆空智能作业无人平台</h3>
+        <div class="affil">创新项目 · 项目负责人</div>
+        <p>设计可在海洋、陆地、空中多环境下运行的智能无人作业平台，整合固定翼飞行器、无人车与水上作业模块，实现跨域协同。</p>
+        <div class="keywords">
+          <span>无人机</span><span>跨域协同</span><span>智能控制</span><span>嵌入式系统</span>
+        </div>
+      </div>
+
+      <div class="research-card reveal">
+        <span class="tag tag-core">核心成员</span>
+        <h3>兰天航模队 · 固定翼飞行器垂直起降及高速智能驾驶系统</h3>
+        <div class="affil">兰州大学兰天航模队 · 核心成员</div>
+        <p>参与固定翼飞行器垂直起降技术研发及高速智能驾驶系统设计，CUADC 固定翼无人机视觉识别系统独立开发并开源（GitHub: NOBEL-Pxx/CUADC_Vision_System）。</p>
+        <div class="keywords">
+          <span>YOLO</span><span>目标检测</span><span>固定翼</span><span>VTOL</span><span>OpenCV</span>
+        </div>
+      </div>
+
+      <div class="research-card reveal">
+        <span class="tag tag-collab">参与</span>
+        <h3>ESG 评级分歧与机构投资者持股</h3>
+        <div class="affil">成功计划项目 · 项目成员</div>
+        <p>研究 ESG 评级分歧现象及其对机构投资者持股决策的影响机制，为可持续投资策略提供实证分析支持。</p>
+        <div class="keywords">
+          <span>ESG</span><span>机构投资者</span><span>实证分析</span><span>金融数据</span>
+        </div>
+      </div>
+
+      <div class="research-card reveal">
+        <span class="tag tag-collab">学术著作</span>
+        <h3>人工智能学术著作编撰</h3>
+        <div class="affil">课题组任务</div>
+        <p>承担课题组撰写人工智能相关学术著作的任务，系统梳理 AI 领域前沿进展，为学术出版物提供技术内容支撑。</p>
+        <div class="keywords">
+          <span>AI综述</span><span>学术写作</span><span>技术文献</span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ COMPETITIONS ═══════════ -->
+<section id="competitions" style="background:var(--bg-warm);">
+  <div class="section-inner">
+    <div class="section-label">Competitions</div>
+    <h2 class="section-heading">科研竞赛获奖</h2>
+    <p class="section-desc">
+      数学建模 · 挑战杯 · 人工智能 · 数学竞赛 · 英语作文 —— 多维度竞赛经历。
+    </p>
+    <div class="comp-list">
+      <div class="comp-item reveal">
+        <div class="medal">🏅</div>
+        <div>
+          <h4>美国大学生数学建模竞赛（MCM/ICM）· Finalist 奖</h4>
+          <div class="detail">国际级特等奖提名 · 2026 年 · 队友：赵一菲、文年平</div>
+        </div>
+      </div>
+      <div class="comp-item reveal">
+        <div class="medal">🥇</div>
+        <div>
+          <h4>APMCM 亚太地区大学生数学建模竞赛 · 一等奖</h4>
+          <div class="detail">国际级 · 英文题目分析与建模</div>
+        </div>
+      </div>
+      <div class="comp-item reveal">
+        <div class="medal">🥈</div>
+        <div>
+          <h4>第十九届"挑战杯"揭榜挂帅专项赛 · 全国二等奖</h4>
+          <div class="detail">国家级 · 人工智能+专项赛 · 团队负责人</div>
+        </div>
+      </div>
+      <div class="comp-item reveal">
+        <div class="medal">🥇</div>
+        <div>
+          <h4>全国大学生数学建模竞赛 · 一等奖</h4>
+          <div class="detail">国家级 · 2025 年国赛</div>
+        </div>
+      </div>
+      <div class="comp-item reveal">
+        <div class="medal">🥇</div>
+        <div>
+          <h4>第十六届全国大学生数学竞赛 · 一等奖</h4>
+          <div class="detail">国家级 · 非数学 A 类</div>
+        </div>
+      </div>
+      <div class="comp-item reveal">
+        <div class="medal">🥇</div>
+        <div>
+          <h4>中国机器人及人工智能大赛 · 一等奖</h4>
+          <div class="detail">国家级 · 团队：张嘉策、彭小溪、文年平</div>
+        </div>
+      </div>
+      <div class="comp-item reveal">
+        <div class="medal">🥇</div>
+        <div>
+          <h4>全国大学生英语作文大赛 · 一等奖</h4>
+          <div class="detail">国家级 · 2026 年</div>
+        </div>
+      </div>
+      <div class="comp-item reveal">
+        <div class="medal">🏆</div>
+        <div>
+          <h4>中国国际大学生创新大赛 · 多项奖项</h4>
+          <div class="detail">国家级 · 多赛道参与</div>
+        </div>
+      </div>
+      <div class="comp-item reveal">
+        <div class="medal">🥇</div>
+        <div>
+          <h4>兰州大学数学建模赛题论文 · 一等奖</h4>
+          <div class="detail">校级 · 2026 年</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ HONORS ═══════════ -->
+<section id="honors">
+  <div class="section-inner">
+    <div class="section-label">Honors &amp; Awards</div>
+    <h2 class="section-heading">荣誉与奖项</h2>
+    <p class="section-desc">
+      奖学金 · 荣誉称号 · 学生工作 · 志愿服务 · 体育成就
+    </p>
+
+    <h3 style="font-family:var(--font-display);font-size:1rem;color:var(--accent);margin-bottom:1rem;margin-top:0;">
+      🎓 奖学金
+    </h3>
+    <div class="honors-grid" style="margin-bottom:2rem;">
+      <div class="honor-chip reveal"><span class="icon">🏆</span> 国家励志奖学金</div>
+      <div class="honor-chip reveal"><span class="icon">🥇</span> 兰州大学优秀学生一等奖学金</div>
+      <div class="honor-chip reveal"><span class="icon">📿</span> 小米奖助学金</div>
+      <div class="honor-chip reveal"><span class="icon">🌟</span> "榜样的力量"奋楫笃行奖</div>
+    </div>
+
+    <h3 style="font-family:var(--font-display);font-size:1rem;color:var(--accent);margin-bottom:1rem;">
+      ⭐ 荣誉称号
+    </h3>
+    <div class="honors-grid" style="margin-bottom:2rem;">
+      <div class="honor-chip reveal"><span class="icon">🎖️</span> 兰州大学学生标兵</div>
+      <div class="honor-chip reveal"><span class="icon">🏅</span> 兰州大学优秀学生团干部</div>
+      <div class="honor-chip reveal"><span class="icon">🏅</span> 兰州大学优秀共青团员</div>
+      <div class="honor-chip reveal"><span class="icon">📰</span> 兰州大学四星级团学记者</div>
+      <div class="honor-chip reveal"><span class="icon">👥</span> 兰州大学青年传媒集团年度优秀部门负责人</div>
+    </div>
+
+    <h3 style="font-family:var(--font-display);font-size:1rem;color:var(--accent);margin-bottom:1rem;">
+      💝 志愿服务 &amp; 体育
+    </h3>
+    <div class="honors-grid">
+      <div class="honor-chip reveal"><span class="icon">💝</span> 兰州大学青年志愿者优秀个人奖</div>
+      <div class="honor-chip reveal"><span class="icon">⭐</span> 三星级志愿者（656.98 小时）</div>
+      <div class="honor-chip reveal"><span class="icon">🏃</span> 中国马拉松大众一级选手</div>
+      <div class="honor-chip reveal"><span class="icon">🎽</span> 西安马拉松破四完赛（2024.11）</div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ SKILLS ═══════════ -->
+<section id="skills" style="background:var(--bg-warm);">
+  <div class="section-inner">
+    <div class="section-label">Skills</div>
+    <h2 class="section-heading">技能体系</h2>
+    <p class="section-desc">
+      地球科学 + 计算机科学 + 集成电路 + 社会治理 —— 跨学科知识融合。
+    </p>
+    <div class="skills-row">
+      <div class="skill-group reveal">
+        <h4>💻 编程 &amp; 开发</h4>
+        <div class="skill-row"><span class="name">Python</span><div class="bar-wrap"><div class="bar-fill bar-a" style="width:92%"></div></div><span class="lvl">熟练</span></div>
+        <div class="skill-row"><span class="name">C/C++</span><div class="bar-wrap"><div class="bar-fill bar-b" style="width:68%"></div></div><span class="lvl">掌握</span></div>
+        <div class="skill-row"><span class="name">Git</span><div class="bar-wrap"><div class="bar-fill bar-b" style="width:72%"></div></div><span class="lvl">掌握</span></div>
+        <div class="skill-row"><span class="name">MATLAB</span><div class="bar-wrap"><div class="bar-fill bar-c" style="width:42%"></div></div><span class="lvl">了解</span></div>
+      </div>
+      <div class="skill-group reveal">
+        <h4>🤖 AI &amp; 数据科学</h4>
+        <div class="skill-row"><span class="name">数据分析</span><div class="bar-wrap"><div class="bar-fill bar-a" style="width:90%"></div></div><span class="lvl">熟练</span></div>
+        <div class="skill-row"><span class="name">机器学习</span><div class="bar-wrap"><div class="bar-fill bar-a" style="width:85%"></div></div><span class="lvl">熟练</span></div>
+        <div class="skill-row"><span class="name">深度学习</span><div class="bar-wrap"><div class="bar-fill bar-b" style="width:74%"></div></div><span class="lvl">掌握</span></div>
+        <div class="skill-row"><span class="name">计算机视觉</span><div class="bar-wrap"><div class="bar-fill bar-b" style="width:72%"></div></div><span class="lvl">掌握</span></div>
+      </div>
+      <div class="skill-group reveal">
+        <h4>🛰️ 专业领域</h4>
+        <div class="skill-row"><span class="name">遥感图像处理</span><div class="bar-wrap"><div class="bar-fill bar-a" style="width:86%"></div></div><span class="lvl">熟练</span></div>
+        <div class="skill-row"><span class="name">GIS 分析</span><div class="bar-wrap"><div class="bar-fill bar-b" style="width:70%"></div></div><span class="lvl">掌握</span></div>
+        <div class="skill-row"><span class="name">学术写作</span><div class="bar-wrap"><div class="bar-fill bar-b" style="width:76%"></div></div><span class="lvl">良好</span></div>
+        <div class="skill-row"><span class="name">SystemVerilog</span><div class="bar-wrap"><div class="bar-fill bar-c" style="width:45%"></div></div><span class="lvl">学习中</span></div>
+      </div>
+      <div class="skill-group reveal">
+        <h4>🗣️ 软技能</h4>
+        <div class="skill-row"><span class="name">团队协作</span><div class="bar-wrap"><div class="bar-fill bar-a" style="width:93%"></div></div><span class="lvl">优秀</span></div>
+        <div class="skill-row"><span class="name">时间管理</span><div class="bar-wrap"><div class="bar-fill bar-a" style="width:91%"></div></div><span class="lvl">优秀</span></div>
+        <div class="skill-row"><span class="name">快速学习</span><div class="bar-wrap"><div class="bar-fill bar-a" style="width:90%"></div></div><span class="lvl">优秀</span></div>
+        <div class="skill-row"><span class="name">领导力</span><div class="bar-wrap"><div class="bar-fill bar-b" style="width:76%"></div></div><span class="lvl">良好</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ EDUCATION ═══════════ -->
+<section id="education">
+  <div class="section-inner">
+    <div class="section-label">Education</div>
+    <h2 class="section-heading">教育背景</h2>
+    <p class="section-desc">从雅礼中学到兰州大学萃英学院，主修大气科学，辅修计算机科学与技术及集成电路设计。</p>
+    <div class="edu-timeline">
+      <div class="edu-card reveal">
+        <div class="year">2004 – 2018</div>
+        <h4>株洲健坤外国语学校</h4>
+        <p>童年成长 · 诺贝尔奖梦想萌芽</p>
+      </div>
+      <div class="edu-card reveal">
+        <div class="year">2018 – 2019</div>
+        <h4>青竹湖湘一外国语学校</h4>
+        <p>初三空降班 · 求学转折点</p>
+      </div>
+      <div class="edu-card reveal">
+        <div class="year">2019 – 2022</div>
+        <h4>长沙市雅礼中学</h4>
+        <p>6A 录取 · 百年名校</p>
+      </div>
+      <div class="edu-card reveal">
+        <div class="year">2023 – 至今</div>
+        <h4>兰州大学萃英学院</h4>
+        <p>地球科学萃英班（拔尖计划）· 大气科学</p>
+      </div>
+    </div>
+
+    <!-- Work & Leadership -->
+    <h3 style="font-family:var(--font-display);font-size:1rem;color:var(--accent);margin:2.5rem 0 1rem;">
+      💼 学生工作与实习经历
+    </h3>
+    <div class="work-grid">
+      <div class="work-item reveal">
+        <div class="date">2026.04 – 至今</div>
+        <h4>兰州大学青年传媒集团 · AI 工作室成员</h4>
+        <p>参与 AI 技术在新媒体中的应用探索</p>
+      </div>
+      <div class="work-item reveal">
+        <div class="date">2024.07 – 至今</div>
+        <h4>兰州大学青年传媒集团 · 微信运营部负责人</h4>
+        <p>推文阅读量破 6000，培养 3 名独立编辑，获年度优秀部门负责人</p>
+      </div>
+      <div class="work-item reveal">
+        <div class="date">2025.07 – 2025.08</div>
+        <h4>攸县县委办公室督查室 · 实习生（31天）</h4>
+        <p>17 份情报研判报告 + 母婴用品价格预警系统 → 纳入"民生政策监测工具箱"</p>
+      </div>
+      <div class="work-item reveal">
+        <div class="date">2024.09 – 至今</div>
+        <h4>萃英学院地球科学萃英班 · 组织委员</h4>
+        <p>"冬至包饺子"成为经典活动，增强班级凝聚力</p>
+      </div>
+      <div class="work-item reveal">
+        <div class="date">2024.09 – 至今</div>
+        <h4>兰州大学基层团建指导中心 · 培训工作部干事</h4>
+        <p>参与基层团建培训工作</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ VALUES & MOTTOS ═══════════ -->
+<div class="motto-strip">
+  <div class="motto-inner">
+    <div class="section-label" style="text-align:center;">Core Values</div>
+    <h2 class="section-heading" style="text-align:center;margin-bottom:2rem;">核心价值观与人生信条</h2>
+
+    <div class="values-row" style="margin-bottom:2.5rem;">
+      <div class="value-pill reveal">
+        <div class="emoji">🏛️</div>
+        <h4>家国情怀</h4>
+        <p>立志为祖国夺得下一个诺贝尔奖</p>
+      </div>
+      <div class="value-pill reveal">
+        <div class="emoji">💝</div>
+        <h4>奉献精神</h4>
+        <p>以行动诠释青年担当</p>
+      </div>
+      <div class="value-pill reveal">
+        <div class="emoji">🏔️</div>
+        <h4>追求卓越</h4>
+        <p>不达目的不罢休</p>
+      </div>
+      <div class="value-pill reveal">
+        <div class="emoji">🔧</div>
+        <h4>实践担当</h4>
+        <p>用所学解决实际问题</p>
+      </div>
+      <div class="value-pill reveal">
+        <div class="emoji">🤝</div>
+        <h4>真诚待人</h4>
+        <p>以真心赢得尊敬</p>
+      </div>
+    </div>
+
+    <p class="quote">"穷则独善其身，达则兼济天下"</p>
+    <p class="attr">—— 彭小溪的人生信条</p>
+  </div>
+</div>
+
+<!-- ═══════════ FOOTER ═══════════ -->
+<footer>
+  <div class="links">
+    <a href="https://github.com/NOBEL-Pxx" target="_blank">GitHub</a>
+    <a href="#research">科研</a>
+    <a href="#competitions">竞赛</a>
+    <a href="#honors">荣誉</a>
+    <a href="#education">教育</a>
+  </div>
+  <p>兰州大学萃英学院 · 地球科学萃英班（拔尖计划）· 大气科学</p>
+  <p>辅修：计算机科学与技术学士学位 · 集成电路设计微专业</p>
+  <p class="end-quote">"坚持你相信的事，即使看起来不可能。"</p>
+  <p style="margin-top:1.8rem;opacity:.4;font-size:.72rem;">© 2026 彭小溪 | 中共预备党员 | 湖南株洲攸县</p>
+</footer>
+
+<!-- Back to Top -->
+<button class="btt" onclick="window.scrollTo({top:0,behavior:'smooth'})" aria-label="回到顶部">↑</button>
+
+<script>
+  // Scroll reveal
+  const revealObserver = new IntersectionObserver((entries) => {
+    entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('on'); });
+  }, { threshold: .12, rootMargin: '0px 0px -40px 0px' });
+  document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
+
+  // Back-to-top visibility
+  const btt = document.querySelector('.btt');
+  window.addEventListener('scroll', () => {
+    btt.classList.toggle('show', window.scrollY > 600);
+  });
+
+  // Animate skill bars on scroll
+  const skillObs = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.querySelectorAll('.bar-fill').forEach(bar => {
+          const w = bar.style.width;
+          bar.style.width = '0';
+          requestAnimationFrame(() => {
+            requestAnimationFrame(() => { bar.style.width = w; });
+          });
+        });
+        skillObs.unobserve(entry.target);
+      }
+    });
+  }, { threshold: .25 });
+  document.querySelectorAll('.skill-group').forEach(el => skillObs.observe(el));
+</script>
+
+</body>
+</html>
